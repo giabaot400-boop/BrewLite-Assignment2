@@ -4,8 +4,13 @@ Ngày lập: 10/11/2026.
 Lead: E. Reviewer: C.
 Trạng thái: DRAFT — local đã kiểm chứng; Railway production là phương án đề xuất, chờ duyệt tài khoản/ngân sách và kiểm chứng triển khai.
 Nền triển khai local: commit 0846f3a, PR #40.
+Nguồn kế thừa: [PR A1 #44](https://github.com/giabaot400-boop/BrewLite/pull/44),
+commit 1952ea6. Bằng chứng Compose/local bên dưới thuộc A1,
+không phải kết quả chạy source A2.
+Nền A2 đối chiếu: d0a92b9; chưa có Dockerfile/Compose.
 
-## 1. Deployment local đã chạy
+
+## 1. Deployment local tham khảo — đã chạy tại A1
 
 ```mermaid
 flowchart LR
@@ -48,7 +53,7 @@ flowchart LR
 | Điều phối | compose.yaml, đúng ba service |
 | Dữ liệu bền | Named volume của service db |
 | Secret local | .env.compose, không commit hoặc đưa vào image |
-| Hướng dẫn chạy | ../SPRINT3_COMPOSE.md |
+| Hướng dẫn chạy A1 | [Tài liệu nguồn A1](https://github.com/giabaot400-boop/BrewLite/blob/c7eb6c9/docs/SPRINT3_COMPOSE.md); chưa phải hướng dẫn A2 |
 | Migration | apps/api/prisma/migrations |
 | Catalog seed | apps/api/prisma/seed.ts |
 | Demo seed | apps/api/prisma/seed-demo.ts |
@@ -68,7 +73,7 @@ Backend chờ db healthy; frontend chờ backend healthy.
 UTC được cấu hình cho kết nối backend và demo seed.
 Không dùng down -v trên dữ liệu cần giữ.
 
-## 4. Bằng chứng local
+## 4. Bằng chứng local A1 — chưa tái kiểm chứng tại A2
 
 Đã thực hiện trên máy E:
 - Build hai image thành công.
@@ -176,25 +181,34 @@ Mọi thay đổi PORT/listen phải có PR, review và test tương ứng.
 - Gói Hobby/Pro và quyền cộng tác thực tế phải được kiểm tra
   trước khi nhóm duyệt; chưa có xác nhận tài khoản hiện hành.
 
-### 5.4 Quality gate và phát hành
+### 5.4 Quality gate, registry và phát hành — đề xuất
 
-B phối hợp E thiết lập:
-1. PR chạy npm ci, lint, typecheck, unit test, integration phù hợp
-   trên DB test riêng và build.
-2. Required checks chặn merge khi thất bại.
-3. Workflow push trên main/release kiểm tra đúng SHA triển khai.
-4. Nếu dùng Railway GitHub autodeploy, bật Wait for CI
-   cho cả Web/API và kiểm chứng một lượt gate thất bại không deploy.
-5. Phê duyệt release, chạy migration rồi đưa ứng dụng mới vào phục vụ.
-6. Lưu commit SHA, deployment IDs, log gate và kết quả smoke.
+- Source và SHA phát hành phải thuộc repo BrewLite-Assignment2.
+- PR/release chạy install, lint, typecheck, unit/integration test và build.
+- Required checks chặn merge khi thất bại.
+- Sau gate PASS, build Web/API image, tag bằng SHA và lưu digest.
+- Đề xuất push image lên GHCR, chờ B xác nhận.
+- Chỉ triển khai image digest đã được duyệt lên Railway.
+- Chạy migration an toàn, health/smoke và lưu kết quả.
 
-Không để đồng thời hai đường deploy không qua cùng quality gate.
-Chưa có bằng chứng pipeline Railway đã chạy.
+Điều kiện phải kiểm chứng trước khi chốt:
+- CI có quyền push đúng image A2.
+- Railway được xác thực để pull private image GHCR.
+- Deploy và rollback truy xuất đúng digest.
+- Secret registry/CD không xuất hiện trong Git hoặc log.
+- Một lượt gate thất bại thực sự chặn deployment.
+
+Không đồng thời bật GitHub source autodeploy hoặc đường deploy khác
+bỏ qua quality gate và phê duyệt của pipeline này.
+
+Chưa xác nhận GHCR, CI/CD hoặc Railway production A2 đã chạy.
 
 ### 5.5 Migration, seed, health và rollback
 
 - API pre-deploy dự kiến:
-  npm run db:deploy --workspace apps/api
+  npm exec --workspace apps/api -- prisma migrate deploy
+- Lệnh cần kiểm chứng trong image A2. Nền A2 d0a92b9 chưa có
+  script db:deploy hoặc Dockerfile.
 - Xác nhận pre-deploy truy cập được private DB trong môi trường thật.
 - Chỉ API chạy migration, không để Web và API cùng migrate.
 - Sao lưu trước thay đổi schema; kiểm tra migration trên bản sao/test DB.
@@ -245,7 +259,8 @@ Cơ sở ước tính từ tài liệu Railway:
 
 ### 5.7 Trạng thái cần review
 
-Đã chạy: Compose local và các bằng chứng ở mục 4.
+Đã chạy tại A1: Compose local và bằng chứng ở mục 4.
+Các kết quả này không chứng minh Docker/Compose hoặc production A2 đã chạy.
 Đề xuất: toàn bộ topology/config/pipeline Railway trong mục 5.
 
 Chưa xác nhận:
