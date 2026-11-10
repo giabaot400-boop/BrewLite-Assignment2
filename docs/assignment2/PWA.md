@@ -1,8 +1,8 @@
 # PWA tối thiểu — hướng dẫn kiểm tra
 
-Ngày cập nhật: 08/11/2026. Nền code: main `82c7675` sau PR #30.
+Ngày cập nhật: 10/11/2026. Nền code PWA kế thừa tại A1: main `82c7675` sau [PR A1 #30](https://github.com/giabaot400-boop/BrewLite/pull/30).
 Phần này triển khai phía A cho NFR-07; không xác nhận hoàn tất Task 3–5 A2.
-Phương án frontend/BFF/PWA nằm trong PR #31; kết quả implementation được ghi riêng dưới đây.
+Phương án frontend/BFF/PWA nằm trong [PR A1 #31](https://github.com/giabaot400-boop/BrewLite/pull/31); kết quả implementation được ghi riêng dưới đây.
 
 ## Phạm vi
 
@@ -16,6 +16,8 @@ Phương án frontend/BFF/PWA nằm trong PR #31; kết quả implementation đ�
 - Không thay auth, Order API, nghiệp vụ giỏ, schema, migration hoặc dependency. Hành vi dọn giỏ hiện vẫn theo Sprint 2; phần đổi sang giữ giỏ đến paid-current thuộc tích hợp Sprint 3 riêng.
 
 Trade-off: trang offline chung giúp tránh giữ dữ liệu cá nhân/giá cũ, nhưng không hỗ trợ duyệt menu hoặc đặt hàng offline. Không thêm push notification hoặc thư viện PWA.
+
+Các kết quả dưới đây được kế thừa từ A1 trước khi tách repo, không ghi là đã chạy lại trên A2. Xem [nguồn kế thừa](SOURCE_PROVENANCE.md).
 
 ## Kiểm tra tự động đã chạy trong môi trường trợ lý
 
@@ -36,32 +38,32 @@ và bypass mutation/API/RSC. Chúng không thay bằng chứng browser thật.
 Đã thử khởi chạy Chromium nhưng môi trường chặn thao tác hệ thống; chưa chạy
 thành công kiểm tra browser, cài app, PostgreSQL hoặc production HTTPS cho PWA.
 
-## Kiểm tra trên máy A
+## Chuẩn bị lượt kiểm tra trên source A2
 
 Dùng Chrome trên Windows, **profile thường** có hỗ trợ cài web app; ghi phiên bản
 tại `chrome://version`. Chọn viewport từ SRS và ghi kích thước đã thử.
 Production HTTPS còn cần kiểm chứng trên hạ tầng triển khai thực tế; localhost
 được dùng cho lượt kiểm tra local, không thay chứng cứ deployment production.
 
-Dừng các server BrewLite đang chạy. Terminal backend test:
+Thiết lập database/cấu hình riêng theo [README A2](../../README.md) trước. Dừng các server BrewLite A1 đang chạy và dùng profile browser riêng cho A2. Terminal backend A2:
 
 ```powershell
-Set-Location D:\cnpm\brewlite\apps\api
-$env:PORT = "3002"
-node --env-file=.env.test dist/main.js
+Set-Location D:\cnpm\brewlite-a2\apps\api
+$env:PORT = "3001"
+node --env-file=.env dist/main.js
 ```
 
-Lệnh trên dùng backend đã build và database test hiện có. Nếu chưa build sau khi
+Lệnh trên dùng backend A2 đã build và database A2 đã migration/seed. Nếu chưa build sau khi
 cài dependency, chạy `npm run build --workspace apps/api` từ gốc repo trước.
 Không reset/migrate/seed chỉ vì thêm PWA.
 
 Terminal frontend, đặt biến **trước build** vì `NEXT_PUBLIC_*` được đưa vào bundle:
 
 ```powershell
-Set-Location D:\cnpm\brewlite
-$env:NEXT_PUBLIC_API_URL = "http://localhost:3002"
+Set-Location D:\cnpm\brewlite-a2
+$env:NEXT_PUBLIC_API_URL = "http://localhost:3001"
 $env:NEXT_PUBLIC_PRODUCTS_SOURCE = "api"
-$env:BACKEND_INTERNAL_URL = "http://localhost:3002"
+$env:BACKEND_INTERNAL_URL = "http://localhost:3001"
 $env:APP_ORIGIN = "http://localhost:3000"
 npm run build --workspace apps/web
 npm run start --workspace apps/web
@@ -73,6 +75,8 @@ activated/controller hoặc tải lại một lần; browser mới chưa từng 
 có sẵn trang offline. Bản cập nhật worker có thể chờ các tab cũ đóng.
 
 ### Kết quả local ngày 07/11/2026
+
+Đây là kết quả tại repo A1 trước khi tách; giữ nguyên môi trường và quan sát đã ghi nhận.
 
 A thực hiện thủ công trên Windows, Chrome **156.0.8078.80 Stable, 64 bit**,
 profile thường; Node 24.16.0, npm 11.13.0. Frontend dùng bản production tại
