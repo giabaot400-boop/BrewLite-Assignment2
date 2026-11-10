@@ -1,31 +1,29 @@
 # Tài liệu BrewLite — Assignment 2
 
 Repository hiện hành: https://github.com/giabaot400-boop/BrewLite-Assignment2.
-A1 và A2 có hai bộ source riêng theo yêu cầu giảng viên do PO thông báo ngày
-10/11/2026. Xem [nguồn kế thừa và quy tắc đồng bộ](assignment2/SOURCE_PROVENANCE.md).
+A1 và A2 có hai source riêng theo yêu cầu giảng viên do PO thông báo ngày
+10/11/2026. [Nguồn kế thừa](assignment2/SOURCE_PROVENANCE.md) ghi commit, kiểm tra
+local và giới hạn bằng chứng; các PR A1 được dẫn đúng repo nguồn.
 
 ## Tạo phẩm A2
 
-- [Task 1–2](assignment2/README.md): bối cảnh, SRS, UC-09, UML và truy vết.
-- [Task 3.1 — đóng góp frontend/BFF/PWA](architecture/frontend-bff-pwa.md): chưa thay kiến trúc tổng thể/ADR hoặc Task 3.2 deployment.
-- [Kế hoạch Task 1–5](assignment2/TEAM_PLAN.md): đầu ra, lead/reviewer và cổng nghiệm thu.
-- [PWA](assignment2/PWA.md): code kế thừa, cách kiểm tra và giới hạn bằng chứng local.
-- [Ma trận truy vết](traceability-matrix.md): code/test chưa đối chiếu đủ bằng chứng vẫn ghi CHỜ.
-- [Quy trình Git A2](GIT_WORKFLOW.md) và [README chạy source A2](../README.md).
+| Nhóm | Tài liệu |
+|---|---|
+| Task 1 | [Bối cảnh](requirements/context-and-scope.md), [SRS](requirements/srs.md), [UC-09](requirements/use-case-checkout.md), [ngữ cảnh hỗ trợ](requirements/checkout-supporting-flows.md) |
+| Task 2 | [Danh mục UML](diagrams/README.md): use case, activity, sequence và class, kèm nguồn/SVG |
+| Task 3 | [Kiến trúc frontend/BFF/PWA](architecture/frontend-bff-pwa.md); phần tổng thể/module/ADR và deployment còn phải hoàn thiện |
+| Kế hoạch Task 1–5 | [Phân công/cổng nghiệm thu](assignment2/TEAM_PLAN.md), [contract A2](assignment2/CONTRACTS.md) |
+| PWA | [Hướng dẫn và kết quả theo môi trường](assignment2/PWA.md) |
+| Truy vết | [Ma trận FR/NFR→thiết kế→code/test](traceability-matrix.md) |
+| Kỹ thuật và chạy source | [API sản phẩm](guides/API_CONTRACT.md), [UI dùng chung](guides/UI_SHARED_COMPONENTS.md), [Git A2](guides/GIT_WORKFLOW.md), [README gốc](../README.md) |
 
-## Tài liệu tham khảo từ A1
+## Tham khảo có giới hạn
 
-Các hồ sơ `SPRINT1_*`, `SPRINT2_*`, `SPRINT3_B_UI.md`, `Testing/`,
-`sprint3/`, sơ đồ `diagrams/sprint1/` và `diagrams/sprint3/` được giữ từ
-source kế thừa để tra chính sách và lịch sử. Chúng chưa là bằng chứng chạy
-trên repo A2 hoặc nghiệm thu Sprint/Task A2. Không sửa nội dung lịch sử để
-đổi tên thành báo cáo A2. Mục lục [sơ đồ Sprint 1](diagrams/README.md) cũng
-thuộc hồ sơ A1, không phải danh mục Task 2 hiện hành.
+[Ba bản tham khảo A1](reference/a1/README.md) chỉ gồm contract checkout, thiết kế
+nghiệp vụ và mô tả UI đơn hàng được source A2 kế thừa. Chúng có nguồn cố định,
+không phải Sprint/Review/Retro hoặc nghiệm thu A2. Không giữ toàn bộ báo cáo,
+checklist, ảnh kiểm thử và bộ sơ đồ Sprint 1–3 A1 trong cây A2 hiện hành.
+Hồ sơ gốc tiếp tục ở [repo A1](https://github.com/giabaot400-boop/BrewLite).
 
-Master A2 giữ **14 UC = UC-01 đến UC-13 và S2-UC-LOGOUT**; Task 1.3 chỉ đặc tả
-UC-09. Activity/sequence tạo đơn, hủy và hết hạn là ngữ cảnh hỗ trợ. Nguồn và
-hình hiện hành được liệt kê trong [bảng tạo phẩm](assignment2/README.md).
-
-Mã nguồn A2 ở `apps/web` và `apps/api`; tài liệu hiện hành tham chiếu đường dẫn
-này. Đường dẫn cũ trong hồ sơ A1 giữ ý nghĩa tại thời điểm ghi nhận. Những PR
-kế thừa được dẫn về repo A1; PR mới của A2 có lịch sử review riêng.
+A2 giữ 14 UC = UC-01…UC-13 và S2-UC-LOGOUT; Task 1.3 chỉ đặc tả UC-09. Các AC,
+chính sách và trạng thái kiểm thử không đổi vì lượt sắp xếp tài liệu này.

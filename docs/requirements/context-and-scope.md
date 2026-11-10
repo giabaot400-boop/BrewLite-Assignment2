@@ -200,4 +200,4 @@ Các tạo phẩm Task 1 và mô hình Task 2 đã được đưa vào repositor
 | `BrewLite-CongNghePhanMem.pdf`, mục 3–6, Task 8–10/mục 9 | Vision nhận đồ tại quầy, stakeholder, chức năng tối thiểu, thanh toán mock, trạng thái đơn, tồn kho và ưu đãi/điểm |
 | `BrewLite_Sprint1_Analysis_Design_v1.1.docx.pdf`, mục 1, 3, 8–10 | Danh mục/size/topping, giá do backend kiểm tra, phạm vi barista và vai trò A–E |
 | `BrewLite_Sprint2_Phan_Tich_Thiet_Ke_v0.6.docx`, P01–P10 | Phạm vi giỏ/auth/tạo đơn, phiên/cookie/BFF, yêu cầu bất biến, replay và tương thích nền |
-| `docs/sprint3/DESIGN.md`, phiên bản ngày 06/11/2026 | Chính sách đề xuất giỏ–kho–hủy, mock, ưu đãi/điểm và tạo/xem đơn v2; dùng làm đầu vào review, không làm bằng chứng triển khai |
+| `docs/reference/a1/checkout-design.md`, phiên bản ngày 06/11/2026 | Chính sách đề xuất giỏ–kho–hủy, mock, ưu đãi/điểm và tạo/xem đơn v2; dùng làm đầu vào review, không làm bằng chứng triển khai |

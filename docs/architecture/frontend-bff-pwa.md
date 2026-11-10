@@ -51,7 +51,7 @@ Giữ giới hạn body tạo đơn 32 KiB, deadline orders BFF 10 giây và UI 
 
 Code Sprint 2 hiện tạo và hiển thị PENDING; phần payment/read/cancel mới chưa có
 trong code đối chiếu. Sprint 3 kế thừa kiến trúc BFF và bổ sung nghiệp vụ theo
-[contract Sprint 3](../sprint3/CONTRACTS.md); giữ giỏ đến khi đọc trạng thái đã trả
+[contract Sprint 3](../reference/a1/checkout-contract.md); giữ giỏ đến khi đọc trạng thái đã trả
 hiện tại và binding còn khớp theo [delta giỏ](../assignment2/CONTRACTS.md#delta-giỏ-có-chủ-đích).
 Không âm thầm đổi hành vi dọn giỏ Sprint 2 trong PR PWA.
 

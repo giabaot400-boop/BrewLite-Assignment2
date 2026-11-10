@@ -7,7 +7,7 @@
 | Ngày cập nhật | 10/11/2026 |
 | Trạng thái | Kế thừa từ main A1 qua [PR A1 #29](https://github.com/giabaot400-boop/BrewLite/pull/29); chưa là schema/migration hoặc xác nhận code/test đạt |
 | Căn cứ | [SRS](../requirements/srs.md), [Task 1.3](../requirements/use-case-checkout.md), [activity](activity-checkout.md), [sequence](sequence-checkout.md) |
-| Đối chiếu dữ liệu | ERD Sprint 3 hiện hành và `docs/sprint3/DESIGN.md`, ngày 06/11/2026; kế thừa Sprint 2 v0.6 |
+| Đối chiếu dữ liệu | [ERD A1 tại mốc kế thừa](https://github.com/giabaot400-boop/BrewLite/blob/69b801165fc0b199ac70fdc3afa75932a82601c9/docs/diagrams/sprint3/README.md) và `docs/reference/a1/checkout-design.md`, ngày 06/11/2026; kế thừa Sprint 2 v0.6 |
 | Nguồn và hình | [class-domain.puml](class-domain.puml) · [class-domain.svg](class-domain.svg) |
 
 ## Nền sử dụng và trạng thái

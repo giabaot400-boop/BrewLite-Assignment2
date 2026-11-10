@@ -372,4 +372,4 @@ Những điểm mở không phải lý do tự phát sinh chức năng ngoài OU
 | [context-and-scope.md](context-and-scope.md) | IN-01…10, OUT-01…08, stakeholder, ràng buộc và chính sách đang review |
 | `BrewLite-CongNghePhanMem.pdf`, mục 4/8/9/12 | Chức năng nền, mục tiêu API, mock, state, idempotency, optimistic locking, ưu đãi/điểm |
 | `BrewLite_Sprint2_Phan_Tich_Thiet_Ke_v0.6.docx`, P01–P10 và master | Phiên/giỏ/owner, đăng xuất, canonical/replay v1, giới hạn chờ và mã UC kế thừa |
-| `docs/sprint3/DESIGN.md`, ngày 06/11/2026; master Sprint 3 hiện hành | BR-01…06, xác nhận/giữ giỏ, payment/kho/điểm, cách dùng UC-10, UC-13 và retry |
+| `docs/reference/a1/checkout-design.md`, ngày 06/11/2026; master Sprint 3 tại mốc nguồn A1 | BR-01…06, xác nhận/giữ giỏ, payment/kho/điểm, cách dùng UC-10, UC-13 và retry |

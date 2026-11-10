@@ -80,5 +80,7 @@ commit bổ sung đoạn ghi nhận này chỉ thay đổi tài liệu.
    diagram và cấu hình phải trỏ đúng source này. Không dùng một URL deploy A1
    làm bằng chứng production A2 nếu chưa có bản A2 được xác định/triển khai.
 
-Các thư mục hồ sơ A1 còn trong bản kế thừa được phân loại tại [mục lục docs](../README.md).
+Sau khi phân tách tài liệu, báo cáo/checklist/ảnh và sơ đồ Sprint A1 không còn
+trong cây A2 hiện hành; hồ sơ gốc vẫn ở repo A1 và lịch sử Git. Chỉ giữ
+[ba bản tham khảo cần thiết](../reference/a1/README.md); xem [mục lục docs](../README.md).
 Không sửa migration cũ, reset database A1 hoặc xóa lịch sử Git chỉ vì tách repo.

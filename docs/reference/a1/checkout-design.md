@@ -1,5 +1,9 @@
 # BrewLite Sprint 3 thiết kế triển khai
 
+> Tham khảo từ [A1 tại 69b8011](https://github.com/giabaot400-boop/BrewLite/blob/69b801165fc0b199ac70fdc3afa75932a82601c9/docs/sprint3/DESIGN.md).
+> Các ticket, lệnh và kết quả cũ bên dưới thuộc A1, chưa là bằng chứng A2.
+> Xem [ranh giới tham khảo](README.md) và [cách chạy A2](../../../README.md).
+
 Cập nhật • 07/11/2026 • Đã đồng bộ nền Sprint 2 main a1a0e4a • Assignment 1 • Gửi nhóm A–E.
 
 Bản 1.3 kế thừa ba thay đổi đã được PO đồng ý: bỏ API quote riêng, bỏ GET payment riêng, chỉ kiểm soát tồn Product. Nhóm dùng bản này làm cơ sở triển khai Task 8–10. Các lựa chọn nghiệp vụ đã được PO cho phép cụ thể hóa; mỗi lead có đầu ra và tiêu chí kiểm tra riêng trong TEAM_PLAN.md. Không cần chờ một cuộc họp để bắt đầu các việc không bị chặn. Contract và schema ở CONTRACTS.md, ca nghiệm thu ở TEST_MATRIX.md. Khi phát hiện code nền khác contract, ghi đúng chỗ khác trên PR trước khi thay đổi; không tự mở rộng phạm vi.
@@ -37,7 +41,7 @@ mục của đề; các story dưới đây là cách phân tách nhu cầu đ�
 | S3-US-05 | Là một khách hàng, tôi muốn áp mã giảm giá khi tạo đơn và xem số tiền chính thức, để biết ưu đãi được chấp nhận và số tiền cần thanh toán. | S3-PRO-01, S3-PRO-02 | S3-A-02, S3-C-01, S3-D-01 |
 | S3-US-06 | Là một khách hàng, tôi muốn được cộng đúng điểm khi thanh toán thành công và điều chỉnh đúng khi hủy đơn được phép, để điểm thưởng phản ánh giao dịch thực tế. | S3-LOY-01 | S3-C-01, S3-D-01, S3-D-02 |
 
-Các story tuân [CONTRACTS.md](CONTRACTS.md): tạo PENDING chưa phải thanh toán
+Các story tuân [CONTRACTS.md](checkout-contract.md): tạo PENDING chưa phải thanh toán
 thành công; pending/recovery chưa rõ giữ owner/key/body và không tự gửi sau
 đăng nhập. Sau FAILED đã xác nhận, khách có thể xác nhận một lần thanh toán mới
 với key mới trên cùng đơn còn hạn. Chỉ dọn giỏ khi đọc trạng thái thanh toán
@@ -63,7 +67,7 @@ thuật. Việc nghiệm thu từng Task vẫn theo các AC và DoD hiện có.
 
 Bảng nối trên phủ đủ 27 AC, mỗi AC xuất hiện một lần để tiện tra cứu; một AC
 có thể bảo vệ nhiều story. Lead/reviewer của AC và ticket tiếp tục lấy từ
-[TEST_MATRIX.md](TEST_MATRIX.md) và [TEAM_PLAN.md](TEAM_PLAN.md), không suy
+[TEST_MATRIX.md](https://github.com/giabaot400-boop/BrewLite/blob/69b801165fc0b199ac70fdc3afa75932a82601c9/docs/sprint3/TEST_MATRIX.md) và [TEAM_PLAN.md](https://github.com/giabaot400-boop/BrewLite/blob/69b801165fc0b199ac70fdc3afa75932a82601c9/docs/sprint3/TEAM_PLAN.md), không suy
 lead mới từ thứ tự liệt kê. B có thể dẫn bảng này từ board/AC links; kết quả
 kiểm thử vẫn được ghi tại hồ sơ AC, không đánh dấu đạt chỉ vì đã có story,
 fixture hoặc unit test. Lần bổ sung này chỉ cập nhật tài liệu; các story

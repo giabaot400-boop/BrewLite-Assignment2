@@ -1,5 +1,8 @@
 # Product API cho Sprint 1
 
+> Hướng dẫn kỹ thuật kế thừa từ [A1 tại 69b8011](https://github.com/giabaot400-boop/BrewLite/blob/69b801165fc0b199ac70fdc3afa75932a82601c9/docs/API_CONTRACT.md).
+> Các kết quả/giới hạn kiểm thử cũ dưới đây thuộc A1; không tự ghi thành PASS A2.
+
 Backend NestJS chạy tại `http://localhost:3001`. Frontend đọc URL từ
 `NEXT_PUBLIC_API_URL`, không gọi trực tiếp database.
 
@@ -62,5 +65,5 @@ Mốc code đối chiếu: 7df9f61.
 - Các lần đo API đã thực hiện đều dưới 500 ms trong môi trường local.
 
 Chi tiết kết quả và những mục còn cần xác nhận nằm trong
-SPRINT1_CHECKLIST.md. Trạng thái triển khai API không thay thế
+[checklist A1](https://github.com/giabaot400-boop/BrewLite/blob/69b801165fc0b199ac70fdc3afa75932a82601c9/docs/SPRINT1_CHECKLIST.md). Trạng thái triển khai API không thay thế
 nghiệm thu toàn Sprint theo 24 AC/DoD.

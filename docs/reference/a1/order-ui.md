@@ -1,5 +1,9 @@
 # Sprint 3 phần B: UI đơn hàng dùng chung (S3-B-01)
 
+> Tham khảo từ [A1 tại 69b8011](https://github.com/giabaot400-boop/BrewLite/blob/69b801165fc0b199ac70fdc3afa75932a82601c9/docs/SPRINT3_B_UI.md).
+> Các ticket, lệnh và kết quả cũ bên dưới thuộc A1, chưa là bằng chứng A2.
+> Xem [ranh giới tham khảo](README.md) và [cách chạy A2](../../../README.md).
+
 Phiên bản 1.1 ngày 08/11/2026 (sửa theo review PR #32). Nền: main `82c7675` (sau PR #29 và #30; thiết kế Sprint 3 gốc đồng bộ với Sprint 2 `a1a0e4a`). Contract nguồn:
 `docs/sprint3/CONTRACTS.md` v1.3 mục 2 (response) và mục 3 (lỗi và hành vi UI).
 

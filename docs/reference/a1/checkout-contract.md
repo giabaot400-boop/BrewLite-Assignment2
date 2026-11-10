@@ -1,5 +1,9 @@
 # BrewLite Sprint 3 contract thực hiện
 
+> Tham khảo từ [A1 tại 69b8011](https://github.com/giabaot400-boop/BrewLite/blob/69b801165fc0b199ac70fdc3afa75932a82601c9/docs/sprint3/CONTRACTS.md).
+> Các ticket, lệnh và kết quả cũ bên dưới thuộc A1, chưa là bằng chứng A2.
+> Xem [ranh giới tham khảo](README.md) và [cách chạy A2](../../../README.md).
+
 Cập nhật ngày 06/11/2026. Thiết kế phải hiện thực và test trên nền Sprint 2 main `a1a0e4ae92de681deac538685e24407b3190866b` đã chốt. Kế thừa các bản sửa auth/logout, bcrypt và đối chiếu Order/ledger trong PR #24/#26/#28; hồ sơ nghiệm thu tại PR #27. Các tên helper/script ở đây là giao diện mục tiêu, chưa khẳng định repo đã có. Nếu code nền thay đổi, lead ghi diff có ảnh hưởng trước khi tích hợp. File này được dẫn chiếu bởi bản phạm vi, không mở thêm tính năng.
 
 ## 1 Các miền dữ liệu

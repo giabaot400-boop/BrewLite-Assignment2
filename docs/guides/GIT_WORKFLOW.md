@@ -2,7 +2,7 @@
 
 Repository A2: https://github.com/giabaot400-boop/BrewLite-Assignment2.
 Source A1 ở [BrewLite](https://github.com/giabaot400-boop/BrewLite), có lịch sử
-và PR riêng. Xem [nguồn kế thừa](assignment2/SOURCE_PROVENANCE.md).
+và PR riêng. Xem [nguồn kế thừa](../assignment2/SOURCE_PROVENANCE.md).
 
 ## Kiểm tra đúng repo trước khi làm
 

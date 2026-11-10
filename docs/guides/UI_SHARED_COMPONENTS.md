@@ -1,5 +1,8 @@
 # UI dùng chung (phần B)
 
+> Hướng dẫn kỹ thuật kế thừa từ [A1 tại 69b8011](https://github.com/giabaot400-boop/BrewLite/blob/69b801165fc0b199ac70fdc3afa75932a82601c9/docs/UI_SHARED_COMPONENTS.md).
+> Các kết quả/giới hạn kiểm thử cũ dưới đây thuộc A1; không tự ghi thành PASS A2.
+
 Tài liệu để A và B chốt props trước khi review chéo (hồ sơ v1.1, mục 6.5).
 Code hiện nằm trong `apps/web/src/components/`. A giữ `apps/web/src/features/products`.
 
@@ -20,7 +23,7 @@ loading dùng `role="status"`.
 
 ## Thành phần dùng chung cho đơn hàng (Sprint 3)
 
-Nằm ở `apps/web/src/features/orders/`, mô tả đầy đủ trong [SPRINT3_B_UI.md](SPRINT3_B_UI.md).
+Nằm ở `apps/web/src/features/orders/`, mô tả đầy đủ trong [SPRINT3_B_UI.md](../reference/a1/order-ui.md).
 
 | Thành phần | Dùng để |
 |---|---|
@@ -53,4 +56,4 @@ Hồ sơ ghi mốc desktop là 1024 px; nếu nhóm muốn khớp chính xác, �
 
 - Chưa thử bằng trình đọc màn hình thật (NVDA, VoiceOver).
 - Chưa kiểm tra Safari và Firefox; đã chạy thử trên Chromium ở 390, 768 và 1280 px.
-- Chưa tick mục "B rà layout..." trong `docs/SPRINT1_CHECKLIST.md`; tick sau khi có người review.
+- Trạng thái mục "B rà layout..." của A1 nằm trong [checklist nguồn](https://github.com/giabaot400-boop/BrewLite/blob/69b801165fc0b199ac70fdc3afa75932a82601c9/docs/SPRINT1_CHECKLIST.md); không chuyển thành checklist đã chạy ở A2.

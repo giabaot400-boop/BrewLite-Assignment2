@@ -140,13 +140,16 @@ Kết quả PWA local trước khi tách repo được ghi rõ là bằng chứn
 | `docs/requirements/` | Task 1: bối cảnh, SRS, UC-09 và ngữ cảnh hỗ trợ |
 | `docs/diagrams/` | Task 2: nguồn PlantUML, SVG và giải thích |
 | `docs/architecture/` | Đóng góp kiến trúc; còn cần hoàn thiện tổng thể/ADR/deployment |
+| `docs/guides/` | Hướng dẫn kỹ thuật và Git A2 |
+| `docs/reference/a1/` | Ba bản tham khảo có nguồn, không phải hồ sơ nghiệm thu A2 |
 | `docs/assignment2/` | Kế hoạch, contract, nguồn kế thừa và PWA |
 | `docs/traceability-matrix.md` | Yêu cầu → thiết kế → code/test/evidence |
 | `scripts/` | Thiết lập cấu hình local |
 
-Đọc [mục lục tài liệu A2](docs/README.md) và [quy trình Git](docs/GIT_WORKFLOW.md).
-Các hồ sơ Sprint 1–3 A1 còn trong bản kế thừa là tài liệu tham khảo có nguồn,
-không phải Review/Retro hoặc nghiệm thu hai Sprint của A2.
+Đọc [mục lục tài liệu A2](docs/README.md) và [quy trình Git](docs/guides/GIT_WORKFLOW.md).
+Cây A2 không giữ toàn bộ hồ sơ Sprint 1–3 A1. Chỉ ba tài liệu
+[tham khảo có nguồn](docs/reference/a1/README.md) còn được giữ cho contract/thiết kế/UI;
+chúng không phải Review/Retro hoặc nghiệm thu hai Sprint của A2.
 
 Mọi thay đổi A2 mở PR tại repo này, có reviewer trước merge. Task 1→5 được
 nghiệm thu theo thứ tự và lịch sử thật. CI/CD, Compose, health/deployment,

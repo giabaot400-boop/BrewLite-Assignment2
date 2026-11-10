@@ -1,4 +1,4 @@
-// Contract: docs/sprint3/CONTRACTS.md v1.3, mục 1 (miền dữ liệu) và mục 2 (response chính xác).
+// Contract: docs/reference/a1/checkout-contract.md v1.3, mục 1 (miền dữ liệu) và mục 2 (response chính xác).
 // Đây là hình dạng S3 mà backend (C: GET Order/history) phải trả. UI không thêm trường.
 
 export type OrderStatus =
