@@ -1,10 +1,14 @@
-import { productFixtures } from "./fixtures";
+import { productFixtures } from "./fixtures.ts";
 import type { ProductDetail, ProductSummary, SizeOption, ToppingOption } from "./types";
 
 export class ProductApiError extends Error {
-  constructor(message: string, public readonly status?: number) {
+  readonly status?: number;
+
+  // Không dùng parameter property để module chạy được dưới `node --test` (chế độ strip-only của Node).
+  constructor(message: string, status?: number) {
     super(message);
     this.name = "ProductApiError";
+    this.status = status;
   }
 }
 

@@ -1,0 +1,69 @@
+# CI cho Pull Request và main (A2-REPO-CI, Task 4).
+# Thứ tự bắt buộc: cài đặt -> lint -> typecheck -> test -> build. Bước nào lỗi thì job lỗi.
+# Cần bật branch protection yêu cầu check "verify" trước khi merge (xem docs/assignment2/CI.md).
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: verify
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      # Build chỉ cần dữ liệu mẫu; CI không kết nối database hay backend thật.
+      NEXT_PUBLIC_PRODUCTS_SOURCE: fixture
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js (theo .nvmrc)
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Ghi phiên bản môi trường
+        run: |
+          node --version
+          npm --version
+          echo "### Môi trường CI" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Commit: \`${GITHUB_SHA}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Node: $(node --version), npm: $(npm --version)" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Cài đặt (theo lockfile)
+        run: npm ci --ignore-scripts
+
+      - name: Sinh Prisma Client (không cần database)
+        run: npm run db:generate
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck (web và api)
+        run: npm run typecheck
+
+      - name: Unit test (web và api)
+        run: npm test
+
+      - name: Test script cấu hình local
+        run: node --test scripts/setup-env.test.mjs
+
+      - name: Build (web và api)
+        run: npm run build
+
+      - name: Ghi kết quả
+        if: always()
+        run: |
+          echo "- Kết quả job: ${{ job.status }}" >> "$GITHUB_STEP_SUMMARY"
