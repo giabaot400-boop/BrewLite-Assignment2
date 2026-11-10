@@ -40,6 +40,37 @@ Chúng không được đổi nhãn thành kết quả A2. Mỗi lượt kiểm 
 môi trường, lệnh, expected/actual và giới hạn trong evidence/ma trận tương ứng.
 Việc tách giữ nguyên 17 FR, 12 NFR, 59 AC, 14 UC và thiết kế nghiệp vụ hiện tại.
 
+## Kiểm tra local sau khi tách — 10/11/2026
+
+Source A2 được kiểm tra tại commit `f37c1aa7cd9bdddd1ef4baceb0f46b59e40aad1d`,
+nhánh `chore/a2-independent-repo`, thư mục `D:\cnpm\brewlite-a2`.
+A thực hiện trên Windows/PowerShell với PostgreSQL 17; ứng dụng chạy bằng
+`npm run dev` tại frontend `http://localhost:3000` và backend cổng 3001,
+cấu hình database riêng `brewlite_a2`.
+
+| Chuẩn bị môi trường | Kết quả do A cung cấp |
+|---|---|
+| `node --test scripts/setup-env.test.mjs` | 8/8 đạt, không fail/skip; test dùng thư mục tạm |
+| `npm run setup` | Đã tạo `apps/web/.env.local` và `apps/api/.env`; working tree vẫn sạch |
+| Migration và seed A2 | Hai migration `20261024160346_init_products`, `20261030152601_sprint2_auth_orders` áp dụng thành công; seed báo bốn sản phẩm và hai topping mẫu |
+
+Sau khi khởi chạy source A2, A xác nhận cả bốn nhóm thao tác thủ công sau cho
+kết quả đúng theo hướng dẫn:
+
+| Nhóm thao tác | Kết quả quan sát theo A |
+|---|---|
+| Menu/chi tiết và giỏ | Có bốn món; mở chi tiết, chọn size/topping và thêm vào giỏ được |
+| Tài khoản | Đăng ký tài khoản test mới và đăng nhập được |
+| Tạo đơn | Chủ động xác nhận từ giỏ, nhận mã đơn và trạng thái PENDING |
+| Đăng xuất | Đăng xuất thành công, giao diện trở về trạng thái chưa đăng nhập |
+
+Đây là lượt kiểm tra thủ công phần nền local do A báo lại trong phiên hướng
+dẫn; chưa có HTTP log/ảnh hoặc đối soát trực tiếp từng bản ghi database được
+lưu kèm. Không diễn giải thành đã đạt toàn bộ AC, test E2E tự động, hiệu năng,
+PWA production hoặc Task 1–5. Payment/checkout V2, kho/điểm và luồng Sprint 3
+chưa được kiểm chứng trong lượt này. Kết quả gắn với commit ứng dụng nêu trên;
+commit bổ sung đoạn ghi nhận này chỉ thay đổi tài liệu.
+
 ## Những thay đổi tiếp theo
 
 1. Người phụ trách A1 hoàn thiện/review phần việc tại A1 theo phân công.
