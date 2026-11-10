@@ -20,6 +20,7 @@ Repository hiện hành: [BrewLite-Assignment2](https://github.com/giabaot400-bo
 | 2.1 | [Activity](../diagrams/activity-checkout.md) | [Tạo đơn](../diagrams/activity-checkout-order.svg), [payment](../diagrams/activity-checkout-payment.svg) / [nguồn](../diagrams/activity-checkout.puml) |
 | 2.2 | [Sequence](../diagrams/sequence-checkout.md) | [CHÍNH: UC-09 thanh toán](../diagrams/sequence-checkout-payment.svg), bổ trợ: [tạo đơn](../diagrams/sequence-checkout-order.svg), [hủy/hết hạn](../diagrams/sequence-checkout-cancel-expiry.svg) / [nguồn](../diagrams/sequence-checkout.puml) |
 | 2.3 | [Domain class](../diagrams/class-domain.md) | [SVG](../diagrams/class-domain.svg) / [nguồn](../diagrams/class-domain.puml) |
+| 3.2 | [Deployment A2 — đề xuất](DEPLOYMENT.md) | [UML SVG](deployment-production.svg) / [nguồn](deployment-production.puml); Railway chưa triển khai |
 | Truy vết | [Ma trận FR/NFR→UC→thiết kế→API→test](../traceability-matrix.md) | Code/test chưa xác minh ghi CHỜ |
 
 Trong repo, đọc trực tiếp các liên kết bên dưới docs; mở SVG bằng trình duyệt và chỉnh qua nguồn PlantUML. Các tệp được bố trí theo đường dẫn tạo phẩm của đề, không commit gói ZIP. Bảy tài liệu nội dung (gồm ngữ cảnh hỗ trợ), năm nguồn và tám SVG cùng nội dung thiết kế.
