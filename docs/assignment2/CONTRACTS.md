@@ -1,6 +1,6 @@
 # Contract kế thừa Sprint 3
 
-Ngày cập nhật: 06/11/2026. Chi tiết hiện thực tham chiếu bộ thiết kế Sprint 3; nội dung dưới dùng thống nhất cho các tài liệu, không tạo thêm FR/UC.
+Ngày cập nhật: 10/11/2026. Kế thừa thiết kế từ A1; source, cấu hình và triển khai A2 ở repo riêng theo [nguồn kế thừa](SOURCE_PROVENANCE.md). Chi tiết hiện thực tham chiếu bộ thiết kế Sprint 3; nội dung dưới dùng thống nhất cho các tài liệu, không tạo thêm FR/UC.
 
 - Chỉ năm API nghiệp vụ đơn/thanh toán: `POST /orders`, `GET /orders/:id`, `GET /orders/me`, `POST /payments`, `POST /orders/:id/cancel`. API catalog/auth kế thừa vẫn dùng; không tạo API báo giá hoặc đọc payment riêng.
 - `GET /orders/:id` trả `latestPayment` gồm id, version, orderId, method, amount, status, failureCode, createdAt, resolvedAt, refundedAmount, refundedAt hoặc null, chọn createdAt giảm dần rồi id giảm dần. Latest không chứng minh đó là attempt của key đang phục hồi. Mất response phải replay `POST /payments` với đúng owner/key/body đã lưu, rồi đọc Order hiện tại; không gán paymentId/kết quả từ một attempt khác.
@@ -19,7 +19,7 @@ Mock outcome do backend cấu hình SUCCEEDED/FAILED, mặc định success; c�
 
 ## Nền Sprint 2 đã chốt — không thiết kế lại khi thêm payment
 
-Mốc kế thừa là main `a1a0e4ae92de681deac538685e24407b3190866b` sau PR #24/#26/#28/#27, hồ sơ `docs/SPRINT2_CLOSEOUT.md`. PO đã chấp nhận phạm vi Sprint 2 đã kiểm tra; các giới hạn bằng chứng vẫn giữ. Không suy ra mọi AC S2 hoặc AC A2 đã PASS. Sprint 3 đã đồng bộ nền này; A2 dùng cùng mốc, không dùng tài liệu hoặc ảnh cũ làm nguồn hiện hành.
+Mốc kế thừa là main `a1a0e4ae92de681deac538685e24407b3190866b` sau [PR A1 #24](https://github.com/giabaot400-boop/BrewLite/pull/24) / [PR A1 #26](https://github.com/giabaot400-boop/BrewLite/pull/26) / [PR A1 #28](https://github.com/giabaot400-boop/BrewLite/pull/28) / [PR A1 #27](https://github.com/giabaot400-boop/BrewLite/pull/27), hồ sơ `docs/SPRINT2_CLOSEOUT.md`. PO đã chấp nhận phạm vi Sprint 2 đã kiểm tra; các giới hạn bằng chứng vẫn giữ. Không suy ra mọi AC S2 hoặc AC A2 đã PASS. Sprint 3 đã đồng bộ nền này; A2 dùng cùng mốc, không dùng tài liệu hoặc ảnh cũ làm nguồn hiện hành.
 
 ### Phiên và logout A9
 
@@ -29,7 +29,7 @@ Logout/me không trả Set-Cookie xóa cookie cố định. Sau 204, client ki�
 
 ### Tạo đơn, retry và tương thích v1
 
-- Giữ `assertSucceededRequest` của PR #28 trước COMMIT: đọc lại dữ liệu Order/OrderRequest đã lưu, đối chiếu owner/key/hash/orderId; sai throw để rollback cả Order/snapshot/ledger và kho mới. C/E helper nhận cùng TransactionClient từ D, không tự commit hoặc retry lồng.
+- Giữ `assertSucceededRequest` của [PR A1 #28](https://github.com/giabaot400-boop/BrewLite/pull/28) trước COMMIT: đọc lại dữ liệu Order/OrderRequest đã lưu, đối chiếu owner/key/hash/orderId; sai throw để rollback cả Order/snapshot/ledger và kho mới. C/E helper nhận cùng TransactionClient từ D, không tự commit hoặc retry lồng.
 - `pg_try_advisory_xact_lock=false` khi tạo v1/v2 trả `409 ORDER_REQUEST_IN_PROGRESS`, không đưa lỗi key bận đó vào retry kho. Chỉ CAS/serialization/deadlock/unique đúng constraint whitelist mới vào tối đa ba lượt toàn operation, snapshot mới; hết lượt giữ key/body và trả lỗi đúng contract. OUT_OF_STOCK chỉ sau đọc xác nhận thiếu.
 - Giữ `413 PAYLOAD_TOO_LARGE`. V1 PRICE_CHANGED giữ details chính xác `{items,currentTotal}`, mỗi item có productId,size,toppingIds,qty,expectedUnitPrice,currentUnitPrice,currentLineTotal; giữ remap fieldErrors theo index request. Không thay bằng schema v2 hoặc đổi payload pending cũ.
 - V1 VALIDATION_ERROR được nhận diện hợp lệ theo classifier nền kết thúc pending để khách sửa, kể cả lỗi trước transaction chưa có ledger. Response lạ/sai schema vẫn UNKNOWN; v2 chỉ nhận rejection schema đã định nghĩa. Không coi mọi 4xx là đã lưu REJECTED.
@@ -63,4 +63,4 @@ FR-13 và state machine chín cạnh thuộc phạm vi bắt buộc. Ba bước 
 
 ## Quan hệ A1 và A2
 
-A2 tiếp tục sử dụng đề tài BrewLite của A1. Nhóm chọn dùng chung repository/code và đối chiếu các chính sách S3 để tránh hai thiết kế mâu thuẫn; đề không yêu cầu phải hoàn tất A1 mới bắt đầu A2, cũng không tự biến mọi lựa chọn chi tiết của A1 thành yêu cầu bắt buộc A2. Chuẩn bị A1/A2 song song theo phân công; A2 chỉ nghiệm thu Task sau khi đủ tạo phẩm bắt buộc Task trước trên repo, theo thứ tự Task 1→5 và lịch sử thật. Hai Sprint A2 là các mốc Task 4/5, không đổi nhãn ba Sprint A1 để thay nghiệm thu. Giữ giới hạn tái sử dụng code/evidence theo đúng phiên bản, môi trường và AC; không tạo lịch sử ngược.
+A2 tiếp tục đề tài BrewLite nhưng có repository và bộ source riêng theo yêu cầu giảng viên do PO thông báo ngày 10/11/2026. A1 tiếp tục ở `BrewLite`; A2 ở `BrewLite-Assignment2`. Kế thừa code/thiết kế có ghi nguồn và kiểm chứng tương thích, không tự đồng bộ hoặc đưa mọi chi tiết A1 thành yêu cầu bắt buộc A2. Hai phần có thể chuẩn bị song song; A2 nghiệm thu Task 1→5 theo tạo phẩm và lịch sử thật trên repo A2. Hai Sprint A2 là các mốc Task 4/5, không đổi nhãn ba Sprint A1 để thay nghiệm thu. Giữ giới hạn tái sử dụng evidence theo đúng phiên bản, môi trường và AC; xem [nguồn kế thừa](SOURCE_PROVENANCE.md).

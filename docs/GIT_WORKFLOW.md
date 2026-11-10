@@ -1,74 +1,54 @@
-# Làm việc với Git
+# Làm việc với Git — Assignment 2
 
-> Repository chung đã được thiết lập tại
-> https://github.com/giabaot400-boop/BrewLite.
-> Mục “Đưa bộ khung lên repo chung” ghi lại hướng dẫn khởi tạo ban đầu,
-> chỉ áp dụng khi tạo repository mới. Các quy tắc nhánh và review bên dưới
-> tiếp tục được áp dụng.
+Repository A2: https://github.com/giabaot400-boop/BrewLite-Assignment2.
+Source A1 ở [BrewLite](https://github.com/giabaot400-boop/BrewLite), có lịch sử
+và PR riêng. Xem [nguồn kế thừa](assignment2/SOURCE_PROVENANCE.md).
 
-## Đưa bộ khung lên repo chung
+## Kiểm tra đúng repo trước khi làm
 
-Repository chung: https://github.com/giabaot400-boop/BrewLite.
-Nhánh mặc định là main. Các bước bên dưới lưu hướng dẫn khởi tạo ban đầu,
-chỉ áp dụng khi tạo repository mới.
-
-Người phụ trách tạo một GitHub repository trống, chưa thêm README hay gitignore.
-Sau đó mở terminal trong thư mục `brewlite`:
-
-```sh
-git remote add origin <URL_REPO_CHUNG>
-git push -u origin main
-git push -u origin feature/menu
+```powershell
+Set-Location D:\cnpm\brewlite-a2
+git remote -v
+git status --short --branch
 ```
 
-Thay cả `<URL_REPO_CHUNG>` bằng URL thật, không giữ dấu ngoặc nhọn.
-Trên GitHub, đặt default branch là `main`. Có thể bật yêu cầu một người review
-trước khi merge nếu gói tài khoản/repo hỗ trợ.
+`origin` phải trỏ tới `BrewLite-Assignment2.git`. Giữ source A1 ở thư mục khác.
+Tên package npm kế thừa giống nhau không có nghĩa hai bản tự đồng bộ.
 
-## Thành viên A tiếp tục phần Menu
+## Nhánh và PR
 
-```sh
-git switch feature/menu
-```
+Khi repo A2 đã có main trên GitHub, bắt đầu công việc mới từ main đã cập nhật:
 
-Mỗi thành viên cấu hình thông tin tác giả trên máy trước khi tạo commit mới:
-
-```sh
-git config user.name "Ho ten thanh vien"
-git config user.email "Email GitHub cua thanh vien"
-```
-
-Chỉ chỉnh cấu hình tại repo này, không cần `--global`.
-
-## B C D E bắt đầu phần việc
-
-Mỗi người clone repo chung, tách nhánh từ `main` đã cập nhật:
-
-```sh
+```powershell
 git switch main
-git pull --ff-only
-git switch -c feature/products-api
+git pull --ff-only origin main
+git switch -c feature/ten-cong-viec
 ```
 
-Tên nhánh theo task, ví dụ `feature/shared-ui`, `feature/products-api`,
-`test/products-api`, `chore/database`. Không phải ai cũng dùng cùng một tên nhánh.
+Commit phần việc, chạy kiểm tra phù hợp rồi push nhánh và mở PR tại repo A2.
+Mô tả vấn đề, thay đổi, cách kiểm tra và giới hạn. Một thành viên khác review
+trước merge; không chuyển approval A1 thành approval A2.
 
-## Gộp code
+Khi cần cập nhật main, giữ working tree sạch hoặc lưu phần đang làm trước:
 
-Push nhánh, mở PR với base `main`, ghi việc đã làm và cách kiểm tra. Người khác
-review, chạy phần liên quan rồi mới merge. `feature/menu` ban đầu chỉ là tiến độ
-đầu tiên của A, chưa phải toàn bộ Sprint 1 đã Done.
-
-Khi `main` có thay đổi cần dùng, commit hoặc stash phần đang làm trước, rồi:
-
-```sh
-git fetch origin
+```powershell
+git -c gc.auto=0 fetch origin
 git merge origin/main
 ```
 
-Chạy lệnh merge trên nhánh phần việc của mình. Nếu có conflict, đối chiếu với
-người sửa cùng file; không chọn ghi đè toàn bộ file chỉ để hết báo lỗi.
+Nếu conflict, đối chiếu nội dung với người sửa cùng file; không ghi đè cả file
+chỉ để hết báo lỗi. Không force-push main hoặc tạo lại lịch sử để thay nghiệm thu.
 
-A và B chốt trước props và file cùng dùng. A phụ trách `features/products`,
-B tiếp tục `components/layout` và UI chung. C/E phụ trách `backend`; thay đổi
-contract cần báo A và D.
+## Nhận bản sửa từ A1
+
+A1 tiếp tục Sprint 3 ở repo riêng. Khi A2 cần một thay đổi, người tích hợp xác
+định commit và phụ thuộc, đưa sang nhánh A2, ghi URL/SHA nguồn trong PR rồi kiểm
+tra ở môi trường A2. Không merge mù toàn bộ nhánh A1 hoặc giả định PR đang mở
+đã có trong source A2. Reviewer đối chiếu contract, schema/migration và UI/BFF.
+
+## Cấu hình và bằng chứng
+
+`.env`, `.env.test`, JWT secret và database local không được chuyển qua Git.
+Dùng mẫu của A2 và tạo database riêng. Không commit node_modules, .next, dist
+hoặc Prisma Client đã sinh. Log/test ghi đúng repo, SHA, môi trường và kết quả;
+reuse bằng chứng A1 phải nêu rõ giới hạn thay vì đổi nhãn thành PASS A2.

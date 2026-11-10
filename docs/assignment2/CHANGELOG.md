@@ -1,6 +1,6 @@
 # Ghi chú thiết kế Assignment 2
 
-Cập nhật ngày 06/11/2026. Các thay đổi trên repository được truy vết bằng commit và pull request; không dùng lịch sử các gói soạn thảo bên ngoài Git làm lịch sử phát hành của repo.
+Cập nhật ngày 10/11/2026. Từ yêu cầu giảng viên do PO thông báo, A1/A2 dùng hai repo và hai source riêng. Xem [nguồn kế thừa](SOURCE_PROVENANCE.md); phương án dùng chung repo trước đây được thay bằng tổ chức này, giữ nguyên nghiệp vụ/AC. Các thay đổi trên repository được truy vết bằng commit và pull request; không dùng lịch sử các gói soạn thảo bên ngoài Git làm lịch sử phát hành của repo.
 
 - Task 1.3 chọn duy nhất UC-09 Thanh toán không tiền mặt. Các bước M-01…M-05 thuộc UC-09; các bước C- thuộc ngữ cảnh tạo đơn/hủy/hết hạn, không phải trọng tâm thứ hai.
 - Sequence chính có khung tạo Order/giữ Product trong transaction và optimistic locking trước ranh giới UC-09. Tạo đơn và thanh toán vẫn là hai lượt xác nhận/transaction riêng; retry payment không tạo đơn mới.

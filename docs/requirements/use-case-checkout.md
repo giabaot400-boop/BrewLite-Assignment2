@@ -4,7 +4,7 @@
 |---|---|
 | Tạo phẩm | Task 1.3 — Đặc tả một use case trọng tâm |
 | Ngày cập nhật | 09/11/2026 |
-| Trạng thái | Đã merge tài liệu qua PR #29; còn điểm mở, chưa xác nhận code/test hoặc nghiệm thu |
+| Trạng thái | Đã merge tài liệu qua [PR A1 #29](https://github.com/giabaot400-boop/BrewLite/pull/29); còn điểm mở, chưa xác nhận code/test hoặc nghiệm thu |
 | Use case trọng tâm duy nhất | UC-09 — Thanh toán không tiền mặt |
 | Actor chính | Khách hàng |
 | Thành phần nội bộ | Next.js UI/BFF, NestJS API, PostgreSQL, PaymentService mock nội bộ NestJS |
@@ -115,6 +115,6 @@ FR-07/08/15 và phần reserve FR-14 thuộc ngữ cảnh tạo đơn, xem [C-01
 
 - [x] Chỉ một trọng tâm UC-09; actor/trigger, tiền/hậu điều kiện, luồng chính/thay thế/ngoại lệ và FR/AC.
 - [x] Sơ đồ Task 1.3 phân biệt UC-09 với ngữ cảnh; sequence payment là hình chính có đủ năm lifeline.
-- [x] Đặc tả và sơ đồ đã có trên repo, được review và merge qua PR #29.
+- [x] Đặc tả và sơ đồ đã có trên repo, được review và merge qua [PR A1 #29](https://github.com/giabaot400-boop/BrewLite/pull/29).
 - [ ] Chốt các điểm còn mở BR-01…06/O-01…05 theo phản hồi và quyết định được ghi nhận; việc merge chưa thay xác nhận chính sách hoặc nghiệm thu.
 - [ ] Kiểm chứng code/schema và AC; tài liệu không thay nghiệm thu hoặc test.

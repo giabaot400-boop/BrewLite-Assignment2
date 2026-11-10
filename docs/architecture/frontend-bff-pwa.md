@@ -1,19 +1,22 @@
 # Kiến trúc frontend, BFF và PWA
 
 Ngày cập nhật: 10/11/2026. Đây là phần đóng góp của A cho Task 3.1 Assignment 2,
-đã được đưa vào main qua PR #31. PWA được triển khai qua PR #33; chưa xác nhận
+đã được đưa vào main A1 qua [PR A1 #31](https://github.com/giabaot400-boop/BrewLite/pull/31). PWA được triển khai qua [PR A1 #33](https://github.com/giabaot400-boop/BrewLite/pull/33); chưa xác nhận
 hoàn tất kiến trúc tổng thể/ADR, Task 3 hoặc production HTTPS.
 
-Nền tài liệu và layout: main `82c7675` sau khi merge PR #29 và #30.
-PR #30 chốt tại `694b49f`, đã chuyển `frontend` → `apps/web`, `backend` → `apps/api`.
+Repo A2 có source riêng theo [nguồn kế thừa](../assignment2/SOURCE_PROVENANCE.md).
+Các kết quả kiểm tra dưới đây thuộc lượt PWA tại A1 trước khi tách, chưa là lượt chạy A2.
+
+Nền tài liệu và layout tại A1: main `82c7675` sau khi merge [PR A1 #29](https://github.com/giabaot400-boop/BrewLite/pull/29) và #30.
+[PR A1 #30](https://github.com/giabaot400-boop/BrewLite/pull/30) chốt tại `694b49f`, đã chuyển `frontend` → `apps/web`, `backend` → `apps/api`.
 Các đường dẫn `apps/*` dưới đây là đường dẫn hiện hành; hồ sơ Sprint 1–2 giữ
-đường dẫn lịch sử. Cập nhật trạng thái PWA đối chiếu main `84374c8` sau PR #33;
+đường dẫn lịch sử. Cập nhật trạng thái PWA đối chiếu main `84374c8` sau [PR A1 #33](https://github.com/giabaot400-boop/BrewLite/pull/33);
 giữ `82c7675` làm mốc layout, không dùng nó làm HEAD hiện tại. Kết quả và giới hạn
 kiểm tra được ghi trong [hướng dẫn PWA](../assignment2/PWA.md).
 
 ## 1. Ranh giới thành phần
 
-| Thành phần | Trách nhiệm | Code đối chiếu trong PR #30 |
+| Thành phần | Trách nhiệm | Code đối chiếu trong [PR A1 #30](https://github.com/giabaot400-boop/BrewLite/pull/30) |
 |---|---|---|
 | Next.js server | Layout, chi tiết sản phẩm, Route Handlers BFF; giữ thao tác đọc/ghi cookie phiên ở server | `apps/web/src/app/layout.tsx`, `app/products/[id]/page.tsx`, `app/api/` |
 | Client Components | Tương tác menu, size/topping, form, trạng thái phiên và giỏ; giá chỉ là xem trước | `apps/web/src/features/products/components/`, `features/auth/`, `features/cart/` |
@@ -54,17 +57,17 @@ Không âm thầm đổi hành vi dọn giỏ Sprint 2 trong PR PWA.
 
 ## 3. PWA tối thiểu đã triển khai
 
-PR #33 triển khai manifest của Next.js và service worker nhỏ theo phương án này,
+[PR A1 #33](https://github.com/giabaot400-boop/BrewLite/pull/33) triển khai manifest của Next.js và service worker nhỏ theo phương án này,
 không bổ sung thư viện PWA. Phạm vi phục vụ [NFR-07](../requirements/srs.md#nfr-07-pwa),
 không thêm push notification, background sync hoặc chức năng nghiệp vụ offline.
 
 | Hạng mục | Phương án đã triển khai | Trạng thái |
 |---|---|---|
-| Manifest | `apps/web/src/app/manifest.ts`: tên BrewLite, icon 192/512, start URL `/`, scope `/`, display standalone | Đã merge PR #33 |
-| Icon | PNG 192/512 trong `apps/web/public/icons/`; không chứa thông tin người dùng | Đã merge PR #33 |
-| Đăng ký worker | `PwaSupport` đăng ký cùng origin, scope `/`; bật cho bản production hỗ trợ secure context | Đã merge PR #33 |
-| Worker | `apps/web/public/sw.js`; cache có tên/phiên bản riêng của BrewLite | Đã merge PR #33 |
-| Trang offline | `apps/web/public/offline.html`, nội dung chung, không dựng thông tin phiên/đơn | Đã merge PR #33 |
+| Manifest | `apps/web/src/app/manifest.ts`: tên BrewLite, icon 192/512, start URL `/`, scope `/`, display standalone | Đã merge [PR A1 #33](https://github.com/giabaot400-boop/BrewLite/pull/33) |
+| Icon | PNG 192/512 trong `apps/web/public/icons/`; không chứa thông tin người dùng | Đã merge [PR A1 #33](https://github.com/giabaot400-boop/BrewLite/pull/33) |
+| Đăng ký worker | `PwaSupport` đăng ký cùng origin, scope `/`; bật cho bản production hỗ trợ secure context | Đã merge [PR A1 #33](https://github.com/giabaot400-boop/BrewLite/pull/33) |
+| Worker | `apps/web/public/sw.js`; cache có tên/phiên bản riêng của BrewLite | Đã merge [PR A1 #33](https://github.com/giabaot400-boop/BrewLite/pull/33) |
+| Trang offline | `apps/web/public/offline.html`, nội dung chung, không dựng thông tin phiên/đơn | Đã merge [PR A1 #33](https://github.com/giabaot400-boop/BrewLite/pull/33) |
 
 **Chính sách cache đã triển khai:** allowlist chỉ gồm trang offline và icon công khai.
 Navigation GET thử mạng trước; chỉ dùng trang offline khi fetch gặp lỗi mạng.

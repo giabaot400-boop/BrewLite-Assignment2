@@ -5,7 +5,7 @@
 | Thông tin | Giá trị |
 |---|---|
 | Ngày cập nhật | 10/11/2026 |
-| Trạng thái | Đã có trên main qua PR #29; đang hiệu đính truy vết, chưa xác nhận code/test đạt |
+| Trạng thái | Kế thừa từ main A1 qua [PR A1 #29](https://github.com/giabaot400-boop/BrewLite/pull/29); đang hiệu đính truy vết, chưa xác nhận code/test đạt |
 | Căn cứ | [Bối cảnh và phạm vi](../requirements/context-and-scope.md), [SRS](../requirements/srs.md), [Task 1.3 — UC-09](../requirements/use-case-checkout.md) |
 | UC trọng tâm Task 1.3 | Chỉ UC-09 Thanh toán không tiền mặt; activity vẫn bao quát UC-08 và toàn luồng end-to-end |
 | Nguồn | [activity-checkout.puml](activity-checkout.puml), chứa hai khối sơ đồ nối tiếp |
@@ -13,7 +13,9 @@
 
 ## Nền sử dụng và trạng thái
 
-Tài liệu gốc được đưa lên repo qua PR #29 đã merge; lượt cập nhật này đồng bộ câu chữ và truy vết với Task 1 ở PR #42. Thiết kế kế thừa **Sprint 3** và nền Sprint 2 main `a1a0e4ae92de681deac538685e24407b3190866b`. PO đã chọn phương án Sprint 3 làm cơ sở thực hiện; chưa thay xác nhận review của từng thành viên hoặc minh chứng kiểm thử Assignment 2. Giữ nguyên 17 FR, 12 NFR, 59 AC, 14 mã UC và 10 lớp domain.
+Tài liệu được đưa sang repo A2 theo [mốc kế thừa](../assignment2/SOURCE_PROVENANCE.md); các PR nguồn dưới đây thuộc A1, chưa thay review hoặc nghiệm thu A2.
+
+Tài liệu gốc được đưa lên repo qua [PR A1 #29](https://github.com/giabaot400-boop/BrewLite/pull/29) đã merge; lượt cập nhật này đồng bộ câu chữ và truy vết với Task 1 ở [PR A1 #42](https://github.com/giabaot400-boop/BrewLite/pull/42). Thiết kế kế thừa **Sprint 3** và nền Sprint 2 main `a1a0e4ae92de681deac538685e24407b3190866b`. PO đã chọn phương án Sprint 3 làm cơ sở thực hiện; chưa thay xác nhận review của từng thành viên hoặc minh chứng kiểm thử Assignment 2. Giữ nguyên 17 FR, 12 NFR, 59 AC, 14 mã UC và 10 lớp domain.
 
 Chi tiết kế thừa nằm tại [contract dùng chung](../assignment2/CONTRACTS.md). Hạn cả hai assignment là **15/11/2026 theo thông tin PO cung cấp**; giờ nộp LMS cần PO xác nhận. Xem [kế hoạch giao nhóm](../assignment2/TEAM_PLAN.md); lịch là mục tiêu đề xuất, chưa ghi nhận các bạn đã nhận việc.
 
@@ -81,8 +83,8 @@ Các BR trong SRS vẫn chờ review. Thiết kế quy định startup catch-up/
 - [x] Có ba swimlane, điểm đầu/cuối, decision/merge và ba trường hợp bắt buộc của Task 2.1.
 - [x] Có liên kết bước/nhánh Task 1.3, FR và AC; không thêm mã UC hoặc chức năng ngoài phạm vi.
 - [ ] Nhóm review BR/điểm mở, đối chiếu code/schema và kiểm chứng bằng test khi hiện thực.
-- [x] Tài liệu Task 1 và activity gốc đã được merge qua PR #29; hiệu đính Task 1 ở PR #42 và lượt đồng bộ này cần được review riêng.
-- [x] Có [Task 2.2 sequence](sequence-checkout.md) và [Task 2.3 class](class-domain.md) đã được đưa vào main qua PR #29.
+- [x] Tài liệu Task 1 và activity gốc đã được merge qua [PR A1 #29](https://github.com/giabaot400-boop/BrewLite/pull/29); hiệu đính Task 1 ở [PR A1 #42](https://github.com/giabaot400-boop/BrewLite/pull/42) và lượt đồng bộ này cần được review riêng.
+- [x] Có [Task 2.2 sequence](sequence-checkout.md) và [Task 2.3 class](class-domain.md) đã được đưa vào main A1 qua [PR A1 #29](https://github.com/giabaot400-boop/BrewLite/pull/29).
 - [ ] Nhóm review/chốt đủ Task 2; hai hình activity riêng lẻ chưa tự hoàn thành toàn bộ Task 2.
 
 Kiểm tra tài liệu chỉ xác nhận nội dung, nguồn/hình và tham chiếu tài liệu, không xác nhận các AC đã chạy đạt. Kế thừa luồng activity Sprint 3 hiện hành; không sửa hồ sơ Sprint 2, migration hoặc code.

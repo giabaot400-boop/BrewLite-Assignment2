@@ -4,7 +4,7 @@
 |---|---|
 | Tạo phẩm | Task 1.2 — Yêu cầu chức năng và phi chức năng |
 | Ngày cập nhật | 09/11/2026 |
-| Trạng thái | Đã merge tài liệu qua PR #29; còn điểm mở, chưa xác nhận nghiệm thu Task 1 |
+| Trạng thái | Đã merge tài liệu qua [PR A1 #29](https://github.com/giabaot400-boop/BrewLite/pull/29); còn điểm mở, chưa xác nhận nghiệm thu Task 1 |
 | Nền phạm vi | [context-and-scope.md](context-and-scope.md) |
 | Master use case | [Nguồn PlantUML](../diagrams/master-use-case.puml) và [hình SVG](../diagrams/master-use-case.svg) |
 | Đường dẫn trên repository | `docs/requirements/srs.md` |
@@ -335,7 +335,7 @@ UC-04 truy vết phần giá xem trước của FR-02. Kiểm tra giá chính th
 - UC-10 là mục tiêu đọc độc lập; không dùng extend chỉ để nói xem xác nhận xảy ra sau thanh toán.
 - Đăng nhập là tiền điều kiện của thao tác bảo vệ, không include thao tác login cho mỗi lần đặt. Hủy/retry/expiry là luồng thay thế và quy tắc trong các UC liên quan.
 
-Đặc tả [Task 1.3 — UC-09 Thanh toán không tiền mặt](use-case-checkout.md) chỉ chọn UC-09 làm trọng tâm. UC-08 tạo đơn là đầu vào; các chi tiết tạo đơn/hủy/expiry được giữ trong [ngữ cảnh hỗ trợ](checkout-supporting-flows.md). Giữ master 14 mã UC, không thêm hoặc gộp mã. Đặc tả đã có trigger, tiền/hậu điều kiện, luồng chính/thay thế/ngoại lệ, diagram phạm vi và liên kết FR/AC. Tài liệu đã được merge qua PR #29; các điểm mở tại mục 7 vẫn cần được chốt theo quy trình nhóm trước khi ghi nghiệm thu.
+Đặc tả [Task 1.3 — UC-09 Thanh toán không tiền mặt](use-case-checkout.md) chỉ chọn UC-09 làm trọng tâm. UC-08 tạo đơn là đầu vào; các chi tiết tạo đơn/hủy/expiry được giữ trong [ngữ cảnh hỗ trợ](checkout-supporting-flows.md). Giữ master 14 mã UC, không thêm hoặc gộp mã. Đặc tả đã có trigger, tiền/hậu điều kiện, luồng chính/thay thế/ngoại lệ, diagram phạm vi và liên kết FR/AC. Tài liệu đã được merge qua [PR A1 #29](https://github.com/giabaot400-boop/BrewLite/pull/29); các điểm mở tại mục 7 vẫn cần được chốt theo quy trình nhóm trước khi ghi nghiệm thu.
 
 NFR áp dụng xuyên suốt, không nhất thiết tạo UC riêng. NFR-01/05/06/07/12 liên quan tương tác người dùng; NFR-02/03/04/11 bảo vệ các luồng dữ liệu; NFR-08/09/10 gắn kiến trúc, repository, kiểm thử và bàn giao.
 
@@ -359,7 +359,7 @@ Những điểm mở không phải lý do tự phát sinh chức năng ngoài OU
 - [x] Có phân biệt chính sách demo, tiêu chí đề xuất, kết quả chưa kiểm chứng và phạm vi không làm.
 - [ ] Nhóm review/chốt phạm vi, chính sách, ưu tiên và điểm mở ảnh hưởng baseline.
 - [x] Có tài liệu Task 1.3 và sơ đồ phạm vi liên kết với SRS.
-- [x] Các tạo phẩm Task 1 đã có trên repo, được review và merge qua PR #29.
+- [x] Các tạo phẩm Task 1 đã có trên repo, được review và merge qua [PR A1 #29](https://github.com/giabaot400-boop/BrewLite/pull/29).
 - [ ] Xác nhận nghiệm thu Task 1 sau khi chốt các điểm mở ảnh hưởng baseline; không suy ra kết quả code/test từ việc merge tài liệu.
 
 Đây là tài liệu Task 1.2 đã merge, còn điểm mở cần chốt; chưa tuyên bố Task 1 được nghiệm thu. Chưa sửa code, cấu trúc repo, migration, tài liệu lịch sử hoặc kết quả test từ việc soạn SRS.

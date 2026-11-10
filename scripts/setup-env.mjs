@@ -1,4 +1,5 @@
-import { copyFileSync, existsSync, readdirSync, renameSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, renameSync, writeFileSync } from "node:fs";
+import { randomBytes } from "node:crypto";
 import { fileURLToPath } from "node:url";
 
 const entries = [
@@ -34,7 +35,12 @@ for (const [source, target] of entries) {
     console.log(`Giữ cấu hình đang có: ${target}`);
     continue;
   }
-  copyFileSync(fileURLToPath(new URL(source, import.meta.url)), destination);
+  let content = readFileSync(fileURLToPath(new URL(source, import.meta.url)), "utf8");
+  if (target === "../apps/api/.env") {
+    content = content.replace(/^AUTH_JWT_SECRET=GENERATE_ON_SETUP\r?$/m,
+      () => `AUTH_JWT_SECRET=${randomBytes(32).toString("hex")}`);
+  }
+  writeFileSync(destination, content, { encoding: "utf8", flag: "wx" });
   console.log(`Đã tạo: ${target}`);
 }
 

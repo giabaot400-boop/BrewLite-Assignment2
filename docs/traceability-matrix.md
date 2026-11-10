@@ -4,7 +4,9 @@
 
 Cập nhật 10/11/2026 · Thiết kế kế thừa Sprint 3 / nền S2 a1a0e4a. Đây là mapping thiết kế và đích tích hợp, **chưa phải kết quả kiểm thử**. Tài liệu mã nguồn/test/commit cụ thể chưa được rà trong lượt này nên để CHỜ; API ghi ở cột dưới là contract mục tiêu hoặc nền kế thừa, không chứng minh route S3 đã có trên main.
 
-Truy vết được đồng bộ với hiệu đính Task 1 ở PR #42; giữ nguyên 59 mã AC và nội dung tiêu chí trong SRS. CHỜ ở cột code/test nghĩa là chưa hoàn tất đối chiếu và gắn bằng chứng theo AC trong ma trận này, không khẳng định tính năng chưa có code hoặc chưa từng được kiểm thử.
+Truy vết được đồng bộ với hiệu đính Task 1 ở [PR A1 #42](https://github.com/giabaot400-boop/BrewLite/pull/42); giữ nguyên 59 mã AC và nội dung tiêu chí trong SRS. CHỜ ở cột code/test nghĩa là chưa hoàn tất đối chiếu và gắn bằng chứng theo AC trong ma trận này, không khẳng định tính năng chưa có code hoặc chưa từng được kiểm thử.
+
+Repo A2 dùng source và cấu hình riêng; các mốc kế thừa được ghi tại [SOURCE_PROVENANCE](assignment2/SOURCE_PROVENANCE.md). Review hoặc kết quả A1 chưa tự hoàn tất cột evidence A2.
 
 Nguồn: [SRS](requirements/srs.md), [use case](requirements/use-case-checkout.md), [activity](diagrams/activity-checkout.md), [sequence](diagrams/sequence-checkout.md), [class](diagrams/class-domain.md), [contract](assignment2/CONTRACTS.md). Mỗi nhóm liệt kê toàn bộ AC đã định danh trong SRS; khi có evidence, lead điền path/PR/SHA/command/expected-actual thay CHỜ và tách dòng theo AC nếu kết quả khác nhau.
 

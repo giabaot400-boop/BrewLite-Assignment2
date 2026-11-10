@@ -1,18 +1,31 @@
-# Tài liệu BrewLite
+# Tài liệu BrewLite — Assignment 2
 
-## Thiết kế đang dùng
+Repository hiện hành: https://github.com/giabaot400-boop/BrewLite-Assignment2.
+A1 và A2 có hai bộ source riêng theo yêu cầu giảng viên do PO thông báo ngày
+10/11/2026. Xem [nguồn kế thừa và quy tắc đồng bộ](assignment2/SOURCE_PROVENANCE.md).
 
-- [Sprint 3](sprint3/README.md): phạm vi, contract, phân công và kế hoạch kiểm thử Task 8–10 của Assignment 1.
-- [Assignment 2 Task 1–2](assignment2/README.md): phạm vi, SRS, use case, UML và ma trận truy vết.
-- [Kiến trúc frontend/BFF/PWA](architecture/frontend-bff-pwa.md): phần đóng góp của A cho Task 3.1; phương án kiến trúc đã có qua PR #31 và PWA đã triển khai qua PR #33; xem [phạm vi kiểm tra PWA](assignment2/PWA.md).
-- [Quy trình Git](GIT_WORKFLOW.md): nhánh riêng, PR và review trước merge.
+## Tạo phẩm A2
 
-Nền kế thừa là Sprint 2 tại a1a0e4ae92de681deac538685e24407b3190866b. Các hồ sơ Sprint 1–2 và sơ đồ lịch sử giữ nguyên; tài liệu Sprint 3 và Assignment 2 là thiết kế/kế hoạch, không xác nhận code Sprint 3 hoặc mọi AC đã đạt.
+- [Task 1–2](assignment2/README.md): bối cảnh, SRS, UC-09, UML và truy vết.
+- [Task 3.1 — đóng góp frontend/BFF/PWA](architecture/frontend-bff-pwa.md): chưa thay kiến trúc tổng thể/ADR hoặc Task 3.2 deployment.
+- [Kế hoạch Task 1–5](assignment2/TEAM_PLAN.md): đầu ra, lead/reviewer và cổng nghiệm thu.
+- [PWA](assignment2/PWA.md): code kế thừa, cách kiểm tra và giới hạn bằng chứng local.
+- [Ma trận truy vết](traceability-matrix.md): code/test chưa đối chiếu đủ bằng chứng vẫn ghi CHỜ.
+- [Quy trình Git A2](GIT_WORKFLOW.md) và [README chạy source A2](../README.md).
 
-Repo giữ nguồn Markdown, PlantUML và SVG để review trực tiếp. Việc dùng chung code A1/A2 là phương án nhóm chọn; A2 nghiệm thu Task 1→5 theo tạo phẩm và lịch sử thật. Hai ứng dụng dùng đường dẫn `apps/web` và `apps/api` theo PR #30; xem [README chạy dự án](../README.md) để thiết lập và chuyển cấu hình local. Đổi layout không tự xác nhận hoàn tất kiến trúc, CI/CD hoặc nghiệm thu Task 4. Đường dẫn trong hồ sơ Sprint 1–2 được giữ theo thời điểm ghi nhận.
+## Tài liệu tham khảo từ A1
 
-## Phân biệt các bộ sơ đồ
+Các hồ sơ `SPRINT1_*`, `SPRINT2_*`, `SPRINT3_B_UI.md`, `Testing/`,
+`sprint3/`, sơ đồ `diagrams/sprint1/` và `diagrams/sprint3/` được giữ từ
+source kế thừa để tra chính sách và lịch sử. Chúng chưa là bằng chứng chạy
+trên repo A2 hoặc nghiệm thu Sprint/Task A2. Không sửa nội dung lịch sử để
+đổi tên thành báo cáo A2. Mục lục [sơ đồ Sprint 1](diagrams/README.md) cũng
+thuộc hồ sơ A1, không phải danh mục Task 2 hiện hành.
 
-- [Sơ đồ Sprint 1](diagrams/README.md) là hồ sơ lịch sử: master có 13 UC ở thời điểm Sprint 1.
-- [Master Assignment 2](diagrams/master-use-case.puml) và [master Sprint 3](diagrams/sprint3/master-use-case.puml) cùng giữ **14 UC = UC-01 đến UC-13 và S2-UC-LOGOUT**. UC đăng xuất kế thừa Sprint 2 dùng mã riêng, không đổi thành UC-14.
-- Danh mục Sprint 1 không phải mục lục của các sơ đồ hiện hành. Nguồn/hình Assignment 2 nằm tại các liên kết trong [bảng tạo phẩm](assignment2/README.md); nguồn/hình Sprint 3 được liệt kê trong [danh mục Sprint 3](diagrams/sprint3/README.md).
+Master A2 giữ **14 UC = UC-01 đến UC-13 và S2-UC-LOGOUT**; Task 1.3 chỉ đặc tả
+UC-09. Activity/sequence tạo đơn, hủy và hết hạn là ngữ cảnh hỗ trợ. Nguồn và
+hình hiện hành được liệt kê trong [bảng tạo phẩm](assignment2/README.md).
+
+Mã nguồn A2 ở `apps/web` và `apps/api`; tài liệu hiện hành tham chiếu đường dẫn
+này. Đường dẫn cũ trong hồ sơ A1 giữ ý nghĩa tại thời điểm ghi nhận. Những PR
+kế thừa được dẫn về repo A1; PR mới của A2 có lịch sử review riêng.

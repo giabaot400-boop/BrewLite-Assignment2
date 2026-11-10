@@ -1,0 +1,53 @@
+# Nguồn kế thừa và ranh giới hai repository
+
+Cập nhật ngày 10/11/2026. Theo yêu cầu giảng viên do PO thông báo, Assignment 1
+và Assignment 2 có hai repository và hai bộ source riêng. Đây là thay đổi cách
+tổ chức bàn giao, không thêm chức năng hoặc đổi chính sách checkout.
+
+| Phạm vi | Repository | Thư mục local ví dụ |
+|---|---|---|
+| A1 — ba Sprint BrewLite | [BrewLite](https://github.com/giabaot400-boop/BrewLite) | `D:\cnpm\brewlite` |
+| A2 — Task 1–5 | [BrewLite-Assignment2](https://github.com/giabaot400-boop/BrewLite-Assignment2) | `D:\cnpm\brewlite-a2` |
+
+Mỗi repo chứa đầy đủ `apps/web`, `apps/api`, workspace/lockfile, tài liệu và mẫu
+cấu hình để cài/chạy độc lập. A2 không dùng symlink, submodule hoặc đường dẫn
+chạy code từ thư mục A1. Dependency và file cấu hình được tạo riêng trên máy;
+không đưa secret vào Git. Mặc định A2 dùng database `brewlite_a2`, cookie phiên
+`brewlite_a2_session` và một profile browser riêng cho giỏ/pending.
+
+## Mốc đưa sang A2
+
+| Nguồn | Nội dung và giới hạn |
+|---|---|
+| A1 main [`69b8011`](https://github.com/giabaot400-boop/BrewLite/commit/69b801165fc0b199ac70fdc3afa75932a82601c9) | Bản source ban đầu; đã có hiệu đính Task 1 qua [PR A1 #42](https://github.com/giabaot400-boop/BrewLite/pull/42) |
+| A1 [`c7554b2`](https://github.com/giabaot400-boop/BrewLite/commit/c7554b297a6a1a05d2aa5c0463f0e0e5b1a85038), [PR A1 #47](https://github.com/giabaot400-boop/BrewLite/pull/47) | Mười file Task 2/matrix/trạng thái; PO đã cherry-pick thành commit local A2 `732ca5a`, chưa chuyển review của PR A1 thành review A2 |
+| PR A1 [#29](https://github.com/giabaot400-boop/BrewLite/pull/29), [#30](https://github.com/giabaot400-boop/BrewLite/pull/30), [#31](https://github.com/giabaot400-boop/BrewLite/pull/31), [#33](https://github.com/giabaot400-boop/BrewLite/pull/33) | Lịch sử tài liệu Task 1–2, layout apps, kiến trúc frontend và PWA trước khi tách repo |
+| Nền S2 `a1a0e4a` | Mốc nghiệp vụ/kiểm thử tham khảo; không phải HEAD A2 và không tự chứng minh AC A2 đạt |
+
+Git giữ lịch sử kế thừa; các commit mới ghi công việc A2 từ lúc tách. PR mang
+số của A1 được dẫn đúng URL nguồn, không tạo lại PR hoặc biên bản để giả đã review
+trong A2. Nghiệm thu Task 1→5 và hai Sprint A2 theo tạo phẩm/lịch sử thật.
+
+## Trạng thái chức năng và bằng chứng
+
+Bản nền kế thừa có menu, auth, giỏ, tạo đơn PENDING, giao diện đọc đơn và PWA.
+Sự có mặt của giao diện/BFF không chứng minh backend reader, checkout V2,
+payment, stock/loyalty hoặc CI/CD/production đã tích hợp đủ. Các nhánh Sprint 3
+đang phát triển tại A1 chưa tự xuất hiện ở A2; cần chọn commit và rà phụ thuộc.
+
+Các báo cáo S1/S2/S3 A1 và kết quả PWA trước khi tách được giữ để đối chiếu nguồn.
+Chúng không được đổi nhãn thành kết quả A2. Mỗi lượt kiểm tra mới ghi repo/SHA,
+môi trường, lệnh, expected/actual và giới hạn trong evidence/ma trận tương ứng.
+Việc tách giữ nguyên 17 FR, 12 NFR, 59 AC, 14 UC và thiết kế nghiệp vụ hiện tại.
+
+## Những thay đổi tiếp theo
+
+1. Người phụ trách A1 hoàn thiện/review phần việc tại A1 theo phân công.
+2. Lead A2 chọn commit cần kế thừa, kiểm tra dependency, contract và migration;
+   đưa sang nhánh A2 và ghi SHA nguồn/đích trong PR. Review và kiểm thử tại A2.
+3. CI/CD, deployment, secret, database và release A2 thuộc repo A2; deployment
+   diagram và cấu hình phải trỏ đúng source này. Không dùng một URL deploy A1
+   làm bằng chứng production A2 nếu chưa có bản A2 được xác định/triển khai.
+
+Các thư mục hồ sơ A1 còn trong bản kế thừa được phân loại tại [mục lục docs](../README.md).
+Không sửa migration cũ, reset database A1 hoặc xóa lịch sử Git chỉ vì tách repo.

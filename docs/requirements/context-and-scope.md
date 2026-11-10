@@ -4,8 +4,8 @@
 |---|---|
 | Tạo phẩm | Task 1.1 — Bối cảnh, stakeholder và phạm vi |
 | Đường dẫn trên repository | `docs/requirements/context-and-scope.md` |
-| Ngày cập nhật | 09/11/2026 |
-| Trạng thái | Đã merge tài liệu qua PR #29; còn điểm mở, chưa xác nhận nghiệm thu Task 1 |
+| Ngày cập nhật | 10/11/2026 |
+| Trạng thái | Đã merge tài liệu qua [PR A1 #29](https://github.com/giabaot400-boop/BrewLite/pull/29); còn điểm mở, chưa xác nhận nghiệm thu Task 1 |
 | Phạm vi của tệp | Bối cảnh và ranh giới sản phẩm; làm đầu vào cho SRS và đặc tả use case |
 
 BrewLite giúp khách hàng chọn đồ uống, đặt đơn, thanh toán không tiền mặt mô phỏng và theo dõi đơn để nhận đồ tại quầy. Assignment 2 tiếp tục phát triển cùng sản phẩm của Assignment 1, đồng thời yêu cầu quản lý tài liệu, mô hình, kiến trúc, kiểm thử, CI/CD và bàn giao một phiên bản production truy cập được.
@@ -20,7 +20,7 @@ Chi tiết kế thừa nằm tại [contract dùng chung](../assignment2/CONTRAC
 
 ### Quan hệ Assignment 1 và Assignment 2
 
-A2 tiếp tục sử dụng đề tài BrewLite của A1. Nhóm chọn dùng chung repository/code và đối chiếu các chính sách S3 để tránh hai thiết kế mâu thuẫn; đề không yêu cầu phải hoàn tất A1 mới bắt đầu A2, cũng không tự biến mọi lựa chọn chi tiết của A1 thành yêu cầu bắt buộc A2. Chuẩn bị A1/A2 song song theo phân công; A2 chỉ nghiệm thu Task sau khi đủ tạo phẩm bắt buộc Task trước trên repo, theo thứ tự Task 1→5 và lịch sử thật. Hai Sprint A2 là các mốc Task 4/5, không đổi nhãn ba Sprint A1 để thay nghiệm thu. Giữ giới hạn tái sử dụng code/evidence theo đúng phiên bản, môi trường và AC; không tạo lịch sử ngược.
+A2 tiếp tục đề tài BrewLite nhưng có repository và bộ source riêng theo yêu cầu giảng viên do PO thông báo ngày 10/11/2026. A1 tiếp tục ở `BrewLite`; A2 ở `BrewLite-Assignment2`. Kế thừa code/thiết kế có ghi nguồn và kiểm chứng tương thích, không tự đồng bộ hoặc đưa mọi chi tiết A1 thành yêu cầu bắt buộc A2. Hai phần có thể chuẩn bị song song; A2 nghiệm thu Task 1→5 theo tạo phẩm và lịch sử thật trên repo A2. Hai Sprint A2 là các mốc Task 4/5, không đổi nhãn ba Sprint A1 để thay nghiệm thu. Giữ giới hạn tái sử dụng evidence theo đúng phiên bản, môi trường và AC; xem [nguồn kế thừa](../assignment2/SOURCE_PROVENANCE.md).
 
 ## 1. Bối cảnh nghiệp vụ và vấn đề cần giải quyết
 
@@ -137,7 +137,7 @@ Mã AS-xx nhận diện giả định; CON-xx ở mục 8 nhận diện ràng bu
 | AS-01 | MVP mô phỏng một cửa hàng, nhận đồ tại quầy; danh mục và tồn kho dùng dữ liệu mẫu có kiểm soát | Nhóm review với phạm vi đề; nếu có nhiều chi nhánh/giao hàng phải đánh giá thay đổi |
 | AS-02 | Người dùng có kết nối mạng khi đặt và thanh toán; trình duyệt có thể mất phản hồi hoặc tải lại | Có ca lỗi mạng và phục hồi; không coi timeout là thanh toán thất bại chắc chắn |
 | AS-03 | Payment Service mô phỏng thành công/thất bại, không gọi nhà cung cấp tiền thật | Đối chiếu thiết kế và demo; nếu chuyển sang dịch vụ ngoài phải thiết kế lại ranh giới và recovery |
-| AS-04 | Nhóm tiếp tục dùng repository BrewLite, dữ liệu và chức năng đã xây trong Assignment 1 | Kiểm tra tương thích trước tích hợp; không xây một bộ auth/schema song song hoặc xóa lịch sử để làm lại bài |
+| AS-04 | A2 kế thừa code/thiết kế BrewLite có ghi nguồn, rồi tiếp tục phát triển và kiểm chứng trong repo riêng | Đối chiếu commit và phụ thuộc trước khi đưa sang A2; dùng cấu hình/database riêng, không xóa lịch sử hoặc tự coi dữ liệu A1 là dữ liệu A2 |
 | AS-05 | PO đã chọn chính sách Sprint 3 làm cơ sở giao việc; chưa có xác nhận review của toàn nhóm cho SRS A2 | Các bạn kiểm tra phần phụ trách theo bản giao này; phản hồi cụ thể bằng mã FR/AC/contract, lưu kết quả review trên repo |
 | AS-06 | Bối cảnh và kỳ vọng hiện dựa trên đề/tài liệu nội bộ, chưa phải kết quả khảo sát cửa hàng thực tế | Nếu có phỏng vấn hoặc phản hồi mới, ghi nguồn, ngày và tác động đến phạm vi |
 
@@ -153,6 +153,7 @@ Mã AS-xx nhận diện giả định; CON-xx ở mục 8 nhận diện ràng bu
 | CON-06 | Kế thừa mục tiêu API dưới 500 ms với dữ liệu mẫu từ Assignment 1; môi trường, phép đo và ngưỡng của từng NFR phải được đặc tả tiếp | Chưa có kết quả đo Assignment 2. Timeout UI/BFF là giới hạn dừng chờ, không thay bằng chứng đạt hiệu năng |
 | CON-07 | Có CI quality gate, kiểm thử, production HTTPS, database production không public trực tiếp và khả năng tái tạo/rollback theo đề | Assignment 2 Task 4–5; không nghiệm thu production chỉ từ Compose local hoặc deployment diagram |
 | CON-08 | Dùng năm vị trí A–E hiện có; hạn cả hai assignment 15/11/2026 do PO cung cấp, chưa xác nhận giờ LMS | Kế hoạch A2 đi song song phần A1, có cổng nghiệm thu Task 1→5; không sao chép tên ba Sprint A1 thành hai Sprint A2. Mục tiêu đóng gói ngày 14/11 |
+| CON-09 | A1 và A2 có hai repository, hai bộ source đầy đủ và cấu hình/bàn giao riêng | Yêu cầu giảng viên do PO thông báo 10/11/2026; xem [nguồn kế thừa](../assignment2/SOURCE_PROVENANCE.md). Clone/chạy A2 không phụ thuộc thư mục source A1 |
 
 ## 9. Rủi ro ban đầu
 
@@ -186,10 +187,10 @@ Không bổ sung chức năng chỉ để trả lời các câu hỏi trên; n�
 - [x] Có ranh giới hệ thống, bảng in-scope và out-of-scope.
 - [x] Có bảng giả định, ràng buộc và rủi ro ban đầu.
 - [x] Có nguồn kế thừa và phân biệt chính sách đang đề xuất với yêu cầu đã được chốt.
-- [x] Tài liệu đã được review và merge qua PR #29; lịch sử và phản hồi được giữ trên PR.
+- [x] Tài liệu đã được review và merge qua [PR A1 #29](https://github.com/giabaot400-boop/BrewLite/pull/29); lịch sử và phản hồi được giữ trên PR.
 - [ ] Chốt các điểm còn mở tại mục 10; không coi việc merge là toàn nhóm đã phê duyệt từng chính sách.
 
-Các tạo phẩm Task 1 và mô hình Task 2 đã được đưa vào repository qua PR #29; xem [mục lục Assignment 2](../assignment2/README.md). Chỉ nghiệm thu toàn bộ Task 1 khi đủ các tạo phẩm bắt buộc và lịch sử trên repo. Task 2 phải truy vết từ baseline yêu cầu đó; không coi bộ sơ đồ Assignment 1 là tự động hoàn thành Task 2.
+Các tạo phẩm Task 1 và mô hình Task 2 đã được đưa vào repository qua [PR A1 #29](https://github.com/giabaot400-boop/BrewLite/pull/29); xem [mục lục Assignment 2](../assignment2/README.md). Chỉ nghiệm thu toàn bộ Task 1 khi đủ các tạo phẩm bắt buộc và lịch sử trên repo. Task 2 phải truy vết từ baseline yêu cầu đó; không coi bộ sơ đồ Assignment 1 là tự động hoàn thành Task 2.
 
 ## 12. Nguồn tham chiếu
 
