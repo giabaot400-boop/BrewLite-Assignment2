@@ -14,6 +14,7 @@ local và giới hạn bằng chứng; các PR A1 được dẫn đúng repo ngu
 | Task 3 | [Kiến trúc frontend/BFF/PWA](architecture/frontend-bff-pwa.md); phần tổng thể/module/ADR và deployment còn phải hoàn thiện |
 | Kế hoạch Task 1–5 | [Phân công/cổng nghiệm thu](assignment2/TEAM_PLAN.md), [contract A2](assignment2/CONTRACTS.md) |
 | PWA | [Hướng dẫn và kết quả theo môi trường](assignment2/PWA.md) |
+| CI và DoD | [CI](assignment2/CI.md), [Cấu trúc repo/backlog/DoD](assignment2/TASK4_REPO_BACKLOG_DOD.md) |
 | Truy vết | [Ma trận FR/NFR→thiết kế→code/test](traceability-matrix.md) |
 | Kỹ thuật và chạy source | [API sản phẩm](guides/API_CONTRACT.md), [UI dùng chung](guides/UI_SHARED_COMPONENTS.md), [Git A2](guides/GIT_WORKFLOW.md), [README gốc](../README.md) |
 

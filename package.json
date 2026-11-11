@@ -12,6 +12,7 @@
     "build": "npm run build --workspaces",
     "lint": "npm run lint --workspace apps/web",
     "typecheck": "npm run typecheck --workspaces",
+    "test": "npm run test --workspaces",
     "db:generate": "npm run db:generate --workspace apps/api",
     "db:validate": "npm run db:validate --workspace apps/api",
     "db:migrate": "npm run db:migrate --workspace apps/api --",
