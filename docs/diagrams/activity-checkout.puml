@@ -1,203 +1,139 @@
-@startuml activity-checkout-order
-!pragma useVerticalIf on
-title BrewLite — Task 2.1 — Activity 1/2\nChọn món, xác nhận giá và tạo đơn — 06/11/2026
+@startuml activity-checkout
+title BrewLite — Task 2.1: Activity diagram — Đặt hàng và thanh toán (end-to-end)
 skinparam defaultFontName DejaVu Sans
-skinparam defaultFontSize 14
+skinparam defaultFontSize 13
 skinparam shadowing false
 skinparam backgroundColor #FFFFFF
 skinparam ArrowColor #5B4636
-skinparam activityBackgroundColor #F6EEE4
-skinparam activityBorderColor #80644F
-skinparam activityDiamondBackgroundColor #FFF6DA
-skinparam noteBackgroundColor #FFF6DA
-skinparam noteBorderColor #B89551
-|Khách hàng|
-start
-:Xem menu / chi tiết; chọn món, size, topping;\nthêm giỏ và chọn tiếp tục đặt;
-|Next.js UI / BFF|
-:Khôi phục giỏ, phiên và yêu cầu đang chờ;
-if (Đã xác thực đúng chủ?) then (Chưa)
-  :Mời đăng nhập; giữ yêu cầu theo chủ;\nkhông tự POST sau đăng nhập;
-  |Khách hàng|
-  :Đăng nhập; chủ động quay lại luồng\nkhi phiên đã được xác nhận;
-  stop
-else (Có)
-endif
-|Next.js UI / BFF|
-if (Storage / khóa đủ điều kiện an toàn?) then (Không)
-  :Báo lỗi; giữ bytes cũ, không gửi đơn mới;
-  stop
-else (Có)
-endif
-if (Giỏ đang gắn một đơn checkout?) then (Có)
-  :Chuyển điểm P sang Activity 2/2;\nđọc Order hiện tại, không tạo đơn khác;
-  stop
-else (Không)
-endif
-if (Có pending tạo đơn chưa rõ đúng chủ?) then (Có)
-  |Khách hàng|
-  :Chủ động chọn Thử lại yêu cầu đang chờ;
-  |Next.js UI / BFF|
-  :Dùng nguyên owner / key / body v1 hoặc v2;\nkhông tính preview mới để sửa payload;
-else (Không)
-  |Khách hàng|
-  :Chọn xem lại đơn, tùy chọn dùng mã giảm giá;
-  |Next.js UI / BFF|
-  :Tính preview từ giá giỏ / cấu hình DEMO10;\nghi rõ dự kiến, chưa xác nhận hiệu lực mã;
-  |Khách hàng|
-  :Xem preview; chủ động chọn Tạo và xem đơn;
-  |Next.js UI / BFF|
-  :Dưới Web Lock kiểm tra owner / revision / nội dung;\nlưu pending v2 / key / body bất biến;
-endif
-|Next.js UI / BFF|
-if (Pending đã lưu hợp lệ và còn đúng chủ?) then (Không)
-  :Báo chưa thể gửi an toàn; giữ dữ liệu;
-  stop
-else (Có)
-endif
-:Nhả Web Lock; BFF đối chiếu expected owner\nbằng cùng token chuyển tiếp; POST key/body đã lưu;
-|NestJS / PostgreSQL|
-:Xác thực / validate đúng phiên bản;\ntrong transaction phân xử key, tra ledger trước giá / mã / kho;
-if (Advisory tạo đơn đang bận?) then (Có)
-  :409 ORDER_REQUEST_IN_PROGRESS; giữ key/body;\nkhông retry nội bộ chỉ vì khóa bận;
-elseif (Key đã có kết quả?) then (Có)
-  :Cùng nội dung: replay;\nkhác nội dung: conflict, không tạo thêm;
-elseif (Kiểm tra món / giá / mã thấy không hợp lệ?) then (Có)
-  :Từ chối nghiệp vụ; không tạo đơn;\nchỉ ghi REJECTED khi đúng contract;
-elseif (Gộp qty theo Product, precheck thấy thiếu hàng?) then (Có)
-  :Báo OUT_OF_STOCK; chỉ commit REJECTED\nkhi không còn giữ kho một phần;
-else (Đủ điều kiện)
-  :CAS Product theo ID, giữ toàn bộ nguồn;\nxung đột rollback cả tx, snapshot mới, tối đa 3 lượt tổng;
-  if (Giữ thành công, không còn lỗi hệ thống?) then (Không)
-    :Rollback transaction; xử lý conflict hệ thống\ntheo contract, chưa kết luận OUT_OF_STOCK;
-  else (Có)
-    :Cùng transaction: Order PENDING, snapshots,\nreservation, deadline và ledger SUCCEEDED;\nassert owner/key/hash/orderId trước commit; sai rollback cả kho;
-  endif
-endif
-:Kết quả bền chỉ trả sau commit;\nlỗi hệ thống rollback, không ghi dở dang;
-|Next.js UI / BFF|
-if (Tạo đơn / replay thành công, đúng contract và identity?) then (Có)
-  :Ghi nhận orderId / binding khi còn khớp;\ngiữ giỏ, chưa dọn;
-  :Chuyển điểm P sang Activity 2/2;\nGET Order, hiện subtotal/discount/total chính thức\ntrước khách xác nhận thanh toán;
-elseif (Từ chối hợp lệ đúng phiên bản, khớp pending?) then (Có)
-  :Kết thúc pending đúng identity; giữ lựa chọn;\nchờ khách xem lại / xác nhận lần mới;
-else (Chưa xác nhận)
-  :Giữ owner / key / body để xác minh hoặc thử lại;\nkhông tự đổi key, không suy rằng chưa có đơn;
-endif
-stop
-legend bottom
-  Điểm P: tiếp tục Activity 2/2 với orderId đã gắn checkout.
-  Dừng ở hình này kết thúc lượt thao tác; không tự CANCELLED hoặc xóa giỏ.
-  Khách có thể quay lại chủ động; đăng nhập không tự gửi POST.
-  Cạnh retry hợp nhất trước POST; giữ nguyên identity yêu cầu cũ.
-  Preview là dự kiến; backend kiểm tra giá/mã/kho khi tạo đơn, không API quote.
-  Xung đột hệ thống chưa kết luận thiếu hàng: rollback / lỗi theo contract.
-  4xx / conflict / response sai không mặc nhiên là REJECTED đã lưu.
-  Actor / UI / backend là swimlane trách nhiệm, không thêm dịch vụ mới.
-  Thiết kế mục tiêu theo Task 1.3; theo Sprint 3 ; A2 cần review/commit.
-endlegend
-@enduml
+skinparam ActivityBackgroundColor #F9F2E9
+skinparam ActivityBorderColor #80644F
+skinparam ActivityDiamondBackgroundColor #FFF3D6
+skinparam ActivityDiamondBorderColor #80644F
+skinparam swimlaneTitleFontStyle bold
+skinparam swimlaneWidth same
 
-@startuml activity-checkout-payment
-!pragma useVerticalIf on
-title BrewLite — Task 2.1 — Activity 2/2\nThanh toán mock, phục hồi và xác nhận — 06/11/2026
-skinparam defaultFontName DejaVu Sans
-skinparam defaultFontSize 14
-skinparam shadowing false
-skinparam backgroundColor #FFFFFF
-skinparam ArrowColor #5B4636
-skinparam activityBackgroundColor #F6EEE4
-skinparam activityBorderColor #80644F
-skinparam activityDiamondBackgroundColor #FFF6DA
-skinparam noteBackgroundColor #FFF6DA
-skinparam noteBorderColor #B89551
 |Khách hàng|
 start
-:Tiếp tục từ điểm P; hoặc mở lại đơn từ lịch sử;
+:Chọn món, size, topping\nvà thêm vào giỏ;
+
 |Next.js UI / BFF|
-:GET Order hiện tại và phục hồi yêu cầu đúng chủ;
-if (Đọc hợp lệ, đúng chủ và phiên?) then (Không)
-  :Hiện lỗi / mời đăng nhập; ẩn dữ liệu cũ;\ngiữ binding / recovery, không POST hoặc dọn giỏ;
+:Hiển thị giỏ hàng\nvà tổng tiền dự kiến;
+
+|Khách hàng|
+:Nhấn "Đặt hàng";
+
+|Next.js UI / BFF|
+if (Đã đăng nhập?) then (chưa)
+  :Giữ nguyên giỏ,\nchuyển tới trang đăng nhập;
+  |Khách hàng|
+  :Đăng nhập / đăng ký;
+  note right
+    Đăng nhập xong **không** tự gửi đơn;
+    khách quay lại giỏ và nhấn "Đặt hàng"
+  end note
   stop
-else (Có)
+else (rồi)
 endif
-if (Có payment recovery chưa rõ đúng chủ?) then (Có)
-  |Khách hàng|
-  :Chủ động chọn Thử lại cùng yêu cầu;
+
+:Lưu yêu cầu tạo đơn\n(khóa idempotency + nội dung);
+:Gửi POST /orders kèm JWT\n(BFF kiểm tra Origin và phiên);
+
+|NestJS API|
+if (JWT hợp lệ và dữ liệu\nđúng định dạng?) then (không)
+  :Trả 401 / 400;
   |Next.js UI / BFF|
-  :Giữ nguyên owner / key / body payment;\nkhông đổi phương thức hoặc tạo key mới;
-else (Không)
-  |Next.js UI / BFF|
-  if (Order hiện tại cho phép payment mới?) then (Không)
-    :Hiện trạng thái hiện tại;\nđã trả: dọn đúng binding;\nCANCELLED: mở khóa phần giỏ còn khớp;\ncòn lại giữ, không tự release;
-    stop
-  else (Có)
-  endif
-  |Khách hàng|
-  :Chọn WALLET / CARD; chủ động xác nhận;
-  |Next.js UI / BFF|
-  :Lưu bền recovery owner / key / body;\nkey tách namespace tạo đơn;
-  if (Đã lưu hợp lệ và còn đúng chủ?) then (Không)
-    :Báo chưa thể gửi an toàn; không POST;
-    stop
-  else (Có)
-  endif
+  :Báo lỗi, giữ giỏ;
+  stop
+else (có)
 endif
+
+|PostgreSQL|
+:Mở transaction;
+:Đọc giá hiện hành và tồn kho\ntừng sản phẩm;
+
+|NestJS API|
+if (Còn đủ hàng\nvà giá khớp?) then (không)
+  |PostgreSQL|
+  :Rollback;
+  |Next.js UI / BFF|
+  :Báo "hết hàng" hoặc "giá thay đổi";
+  |Khách hàng|
+  :Cập nhật giỏ rồi đặt lại\n(hoặc rời đi);
+  stop
+else (có)
+endif
+
+|PostgreSQL|
+:Tạo Order PENDING, OrderItem;
+:Giữ kho 15 phút (StockReservation)\nvà commit;
+
 |Next.js UI / BFF|
-:BFF đối chiếu expected owner bằng cùng token;\nPOST payment với đúng key / body;
-|NestJS / PostgreSQL|
-:Xác thực / validate; trong một transaction\nkiểm tra quyền, phân xử key và hàng Order;
-if (Key đã commit?) then (Có)
-  :Cùng body: replay kết quả cuối;\nkhác body: conflict, không gọi mock lại;
-else (Không)
-  :Kiểm tra Order / deadline / reservation hiện tại\nsau lấy lock; amount lấy từ snapshot đơn;
-  if (Lần mới còn hợp lệ trước deadline?) then (Không)
-    :Từ chối lần mới; không tạo attempt hoặc charge;\nexpiry backend xử lý đơn đủ điều kiện;
-  else (Có)
-    :Nếu retry mới từ PAYMENT_FAILED, đi qua PENDING logic;\nkhông commit trung gian;\nMock cục bộ lấy cấu hình backend;\nkhông I/O / tiền thật;
-    if (Kết quả mock?) then (SUCCEEDED)
-      :Cùng transaction ghi attempt SUCCEEDED,\nOrder PAID, consume kho và ghi điểm;
-    else (FAILED)
-      :Cùng transaction ghi attempt FAILED,\nOrder PAYMENT_FAILED; không cộng điểm / trừ stock thực;\ngiữ reservation đến hạn theo policy;
+:Đọc lại đơn,\nhiển thị tổng tiền chính thức;
+
+|Khách hàng|
+repeat
+  :Chọn Ví hoặc Thẻ mô phỏng\nvà xác nhận thanh toán;
+
+  |Next.js UI / BFF|
+  :Lưu owner, khóa và nội dung thanh toán\n(bất biến cho lần thử này);
+  repeat
+    :Gửi POST /payments (Bearer token)\nkèm đúng khóa và nội dung đã lưu;
+
+    |NestJS API|
+    :Xác thực JWT, kiểm tra chủ đơn;
+    if (Khóa này đã có attempt\nđã commit?) then (rồi)
+      :Replay attempt đã lưu\n(không gọi mock, không lặp tác động kho/điểm);
+    else (chưa: request trước chưa tới\nserver hoặc đã rollback)
+      |PostgreSQL|
+      :Khóa dòng Order, kiểm tra trạng thái,\nhạn thanh toán và dữ liệu giữ kho;
+      |NestJS API|
+      if (Đơn còn thanh toán được?) then (không)
+        :Từ chối: hết hạn, đã hủy, đã trả\nhoặc đơn legacy thiếu dữ liệu;
+        |Next.js UI / BFF|
+        :Đọc lại đơn và thông báo\ntrạng thái hiện tại;
+        stop
+      else (còn)
+      endif
+      :PaymentService (mock) quyết định\nkết quả thanh toán;
+      |PostgreSQL|
+      if (Thanh toán thành công?) then (thành công)
+        :Ghi Payment SUCCEEDED, Order PAID,\ntrừ kho thật, cộng điểm thưởng;
+      else (thất bại)
+        :Ghi Payment FAILED,\nOrder PAYMENT_FAILED, giữ kho đến hạn;
+      endif
+      note right
+        Thử lại từ PAYMENT_FAILED (khóa mới):
+        qua PENDING rồi ra kết quả cuối
+        trong **cùng một** transaction
+      end note
+      :Commit transaction;
     endif
+
+    |Next.js UI / BFF|
+    if (Nhận được phản hồi?) then (có)
+      :Đọc lại đơn hiện tại;
+    else (không: mất mạng, timeout)
+      :Chưa rõ kết quả: giữ nguyên owner,\nkhóa và nội dung; chưa kết luận FAILED\nvà chưa cho khóa mới;
+    endif
+  repeat while (Chưa rõ kết quả và\nkhách chủ động gửi lại?) is (có: cùng khóa,\ncùng nội dung) not (không)
+
+  if (Đã có kết quả xác nhận?) then (chưa)
+    :Giữ recovery chưa rõ cho lần mở sau;
+    stop
+  else (rồi)
   endif
-endif
-:Chỉ trả sau commit; lỗi hệ thống rollback;\nkhông commit PROCESSING / UNKNOWN trong MVP;
-|Next.js UI / BFF|
-if (Response hợp lệ và khớp identity?) then (Không)
-  :Giữ key / body / giỏ; hiện lỗi hoặc chưa rõ;\nkhách có thể xác minh / retry nguyên yêu cầu;
-  stop
-else (Có)
-endif
-:Đọc lại Order hiện tại;\nkhông ghi đè chủ / version mới bằng response cũ;
-if (OrderDetail hợp lệ, đúng chủ và phiên?) then (Không)
-  :Giữ giỏ / binding / recovery;\nkhông suy trạng thái từ attempt lịch sử;
-  stop
-else (Có)
-endif
-:LatestPayment chỉ gần nhất, không thay replay key cũ;\nchỉ chốt recovery khi kết quả cuối khớp identity\nvà đã đối chiếu Order hiện tại;
-if (Order PAID / PREPARING / READY / COMPLETED?) then (Có)
-  :Dọn chỉ khi owner / order / revision / snapshot khớp;\nhiện xác nhận và đường xem lịch sử;
-elseif (Order CANCELLED?) then (Có)
-  :Hiện đã hủy, mở khóa phần giỏ còn khớp;\nkhông chèn lại giỏ đã dọn;
-else (Chưa trả)
-  :Giữ giỏ và binding; hiện kết quả hiện tại;
+
   |Khách hàng|
-  :Có thể chủ động chọn lần thanh toán mới\nchỉ sau FAILED cuối và canPay còn true;\nhoặc yêu cầu hủy theo chính sách;
-endif
+  if (Đơn đã thanh toán?) then (rồi)
+    :Xem thông báo thành công\nvà mã đơn;
+    stop
+  else (chưa)
+    :Xem thông báo thất bại;
+  endif
+repeat while (FAILED đã xác nhận, không còn\nrecovery chưa rõ, đơn còn hạn\nvà khách muốn thử lại?) is (có: khóa mới) not (không)
+
 |Next.js UI / BFF|
-:Kết thúc lượt; khi mở lại phải đọc Order hiện tại;
+:Giữ giỏ hàng,\nđơn chờ hết hạn;
+|Khách hàng|
 stop
-legend bottom
-  Hai key cùng đơn không được tạo hai success; replay không áp lại kho / điểm.
-  FAILED đã xác nhận khác timeout / mất response; chưa rõ giữ key và body.
-  Lần mới sau FAILED dùng key mới trên cùng orderId, không gia hạn giữ hàng.
-  Deadline kiểm tra sau lock; request đến UI trước hạn chưa đủ điều kiện.
-  Payment đã hợp lệ trước hạn có thể commit sau hạn; GET chỉ đọc.
-  Hủy / expiry: C-A08/C-X01, phân xử nguyên tử với payment và PREPARING.
-  Legacy PROCESSING/UNKNOWN chặn lần mới / release chưa xác minh.
-  Mock PaymentService thuộc NestJS, không có actor gateway bên ngoài.
-  UI 15 giây / BFF 10 giây là giới hạn chờ, không chứng minh FAILED.
-  Đang review; không là bằng chứng code / test đã đạt.
-endlegend
 @enduml
