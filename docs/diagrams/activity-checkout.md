@@ -17,9 +17,11 @@
 | Decision/merge nhánh thành công và thất bại | Kiểm tra JWT/DTO, đủ hàng/giá khớp, khóa đã xử lý, còn thanh toán được, thanh toán thành công, thử lại |
 | Chưa đăng nhập | Giữ giỏ, chuyển đăng nhập, **không** tự gửi đơn sau khi đăng nhập |
 | Hết hàng | Rollback, báo hết hàng/giá thay đổi, khách cập nhật giỏ |
-| Thanh toán thất bại | Payment FAILED, Order PAYMENT_FAILED, giữ kho đến hạn, khách có thể thử lại bằng khóa mới |
+| Thanh toán thất bại | Payment FAILED, Order PAYMENT_FAILED, giữ kho đến hạn |
+| Chưa rõ kết quả (timeout, mất phản hồi) | Không kết luận FAILED chỉ vì Order chưa PAID; giữ nguyên owner/khóa/nội dung, khách chủ động gửi lại **cùng khóa** (vòng lặp trong); chưa xác nhận thì giữ recovery, không cho khóa mới |
+| Thử lại sau FAILED | Chỉ khi FAILED đã xác nhận, không còn recovery chưa rõ và đơn còn hạn; dùng khóa mới trên cùng Order, đi PAYMENT_FAILED → PENDING → kết quả cuối trong một transaction |
 
-PaymentService là bước nội bộ NestJS (mock), nên nằm trong lane NestJS API. Ngoài ra hình thể hiện replay theo khóa idempotency và nhánh mất phản hồi.
+PaymentService là bước nội bộ NestJS (mock), nên nằm trong lane NestJS API. Khóa đã có attempt commit thì replay, không lặp tác động kho/điểm; khóa chưa có attempt (request trước chưa tới server hoặc đã rollback) được xử lý như lần đầu. BFF chuyển token sang NestJS dưới dạng Bearer.
 
 ## Giới hạn
 

@@ -75,40 +75,54 @@ repeat
   :Chọn Ví hoặc Thẻ mô phỏng\nvà xác nhận thanh toán;
 
   |Next.js UI / BFF|
-  :Lưu khóa thanh toán,\ngửi POST /payments;
+  :Lưu owner, khóa và nội dung thanh toán\n(bất biến cho lần thử này);
+  repeat
+    :Gửi POST /payments (Bearer token)\nkèm đúng khóa và nội dung đã lưu;
 
-  |NestJS API|
-  :Xác thực JWT, kiểm tra chủ đơn;
-  if (Khóa này đã xử lý xong?) then (rồi)
-    :Trả lại kết quả của lần đã lưu\n(không xử lý lại);
-  else (chưa)
-    |PostgreSQL|
-    :Khóa dòng Order, kiểm tra\ntrạng thái và hạn thanh toán;
     |NestJS API|
-    if (Đơn còn thanh toán được?) then (không)
-      :Từ chối: hết hạn, đã hủy hoặc đã trả;
-      |Next.js UI / BFF|
-      :Đọc lại đơn và thông báo\ntrạng thái hiện tại;
-      stop
-    else (còn)
+    :Xác thực JWT, kiểm tra chủ đơn;
+    if (Khóa này đã có attempt\nđã commit?) then (rồi)
+      :Replay attempt đã lưu\n(không gọi mock, không lặp tác động kho/điểm);
+    else (chưa: request trước chưa tới\nserver hoặc đã rollback)
+      |PostgreSQL|
+      :Khóa dòng Order, kiểm tra trạng thái,\nhạn thanh toán và dữ liệu giữ kho;
+      |NestJS API|
+      if (Đơn còn thanh toán được?) then (không)
+        :Từ chối: hết hạn, đã hủy, đã trả\nhoặc đơn legacy thiếu dữ liệu;
+        |Next.js UI / BFF|
+        :Đọc lại đơn và thông báo\ntrạng thái hiện tại;
+        stop
+      else (còn)
+      endif
+      :PaymentService (mock) quyết định\nkết quả thanh toán;
+      |PostgreSQL|
+      if (Thanh toán thành công?) then (thành công)
+        :Ghi Payment SUCCEEDED, Order PAID,\ntrừ kho thật, cộng điểm thưởng;
+      else (thất bại)
+        :Ghi Payment FAILED,\nOrder PAYMENT_FAILED, giữ kho đến hạn;
+      endif
+      note right
+        Thử lại từ PAYMENT_FAILED (khóa mới):
+        qua PENDING rồi ra kết quả cuối
+        trong **cùng một** transaction
+      end note
+      :Commit transaction;
     endif
-    :PaymentService (mock) quyết định\nkết quả thanh toán;
-    |PostgreSQL|
-    if (Thanh toán thành công?) then (thành công)
-      :Ghi Payment SUCCEEDED, Order PAID,\ntrừ kho thật, cộng điểm thưởng;
-    else (thất bại)
-      :Ghi Payment FAILED,\nOrder PAYMENT_FAILED, giữ kho đến hạn;
+
+    |Next.js UI / BFF|
+    if (Nhận được phản hồi?) then (có)
+      :Đọc lại đơn hiện tại;
+    else (không: mất mạng, timeout)
+      :Chưa rõ kết quả: giữ nguyên owner,\nkhóa và nội dung; chưa kết luận FAILED\nvà chưa cho khóa mới;
     endif
-    :Commit transaction;
+  repeat while (Chưa rõ kết quả và\nkhách chủ động gửi lại?) is (có: cùng khóa,\ncùng nội dung) not (không)
+
+  if (Đã có kết quả xác nhận?) then (chưa)
+    :Giữ recovery chưa rõ cho lần mở sau;
+    stop
+  else (rồi)
   endif
 
-  |Next.js UI / BFF|
-  if (Nhận được phản hồi?) then (không: mất mạng, timeout)
-    :Giữ nguyên khóa và nội dung;\nkhách chủ động gửi lại sau\nhoặc đọc lại trạng thái đơn;
-    note right: Gửi lại cùng khóa nên\nkhông bị thanh toán hai lần
-  else (có)
-  endif
-  :Đọc lại đơn hiện tại;
   |Khách hàng|
   if (Đơn đã thanh toán?) then (rồi)
     :Xem thông báo thành công\nvà mã đơn;
@@ -116,7 +130,7 @@ repeat
   else (chưa)
     :Xem thông báo thất bại;
   endif
-repeat while (Thử thanh toán lại?) is (có, khóa mới) not (không)
+repeat while (FAILED đã xác nhận, không còn\nrecovery chưa rõ, đơn còn hạn\nvà khách muốn thử lại?) is (có: khóa mới) not (không)
 
 |Next.js UI / BFF|
 :Giữ giỏ hàng,\nđơn chờ hết hạn;

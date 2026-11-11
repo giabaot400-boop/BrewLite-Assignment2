@@ -18,11 +18,13 @@
 | Kiểm tra JWT và validate dữ liệu | Bước 4 (tạo đơn) và bước 25 (thanh toán), nhánh lỗi 401/400/404 |
 | Transaction khi tạo đơn và cập nhật tồn kho | BEGIN, optimistic locking `stockVersion`, tạo Order + giữ kho, COMMIT hoặc ROLLBACK |
 | Nhánh alt thanh toán thành công/thất bại | SUCCEEDED (PAID, trừ kho, cộng điểm) và FAILED (PAYMENT_FAILED, giữ kho đến hạn), cùng một transaction |
-| Idempotency khi client gửi lại | Khóa đã xử lý trả lại kết quả gốc, không gọi Payment Service, không trừ kho/cộng điểm lần nữa; nhánh opt mất phản hồi |
+| Idempotency khi client gửi lại | Nhánh opt mất phản hồi: khách chủ động gửi lại đúng owner/khóa/nội dung. Nếu request trước chưa tới server hoặc đã rollback thì xử lý như lần đầu; nếu đã commit thì replay attempt đã lưu, không gọi Payment Service, không lặp kho/điểm |
+| Ranh giới UC-08/UC-09 | Khung tạo đơn chỉ chạy khi chưa có Order; đã có Order thì dùng lại orderId. Nhánh lỗi tạo đơn dừng luồng bằng `break`, không sang GET/payment |
+| Retry sau FAILED | Ghi chú: PAYMENT_FAILED → PENDING → kết quả cuối trong cùng transaction, không commit PENDING trung gian |
 | Thông báo kết quả cuối cùng | Đọc lại Order rồi thông báo thành công, thất bại hoặc đã hủy |
 
-Thanh toán thất bại là kết quả nghiệp vụ trả HTTP 200, không phải lỗi transport. Khóa dòng Order trước khi kiểm tra hạn thanh toán theo đồng hồ Database.
+BFF đọc cookie phiên và gửi sang NestJS dưới dạng `Authorization: Bearer`. Thanh toán thất bại là kết quả nghiệp vụ trả HTTP 200, không phải lỗi transport. Đơn legacy thiếu policy/reservation bị từ chối `LEGACY_ORDER_REQUIRES_REVIEW`. Khóa dòng Order trước khi kiểm tra hạn thanh toán theo đồng hồ Database.
 
 ## Giới hạn
 
-Hình là thiết kế để review, không chứng minh code đã chạy hay AC đã đạt. Hủy đơn và hết hạn tự động tranh chấp với thanh toán được mô tả ở [ngữ cảnh hỗ trợ](../requirements/checkout-supporting-flows.md).
+Hình là thiết kế để review, không chứng minh code đã chạy hay AC đã đạt. Hủy đơn và hết hạn tự động không có sequence riêng; chúng được mô tả ở [ngữ cảnh hỗ trợ](../requirements/checkout-supporting-flows.md) (C-A08, C-X01).

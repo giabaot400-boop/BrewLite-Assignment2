@@ -44,7 +44,7 @@ class Order {
   subtotal: Integer
   discountTotal: Integer
   total: Integer
-  paymentDeadline: DateTime
+  paymentDeadline: DateTime [0..1]
   paidAt: DateTime [0..1]
   cancelReason: String [0..1]
   version: Integer
@@ -153,6 +153,7 @@ note bottom of Order
   Order có nhiều Payment FAILED nhưng tối đa một SUCCEEDED.
   Payment.amount = Order.total; Payment và LoyaltyTransaction cùng chủ với Order.
   OrderItem / OrderItemTopping là bản chụp tên và giá lúc đặt.
+  paymentDeadline rỗng với đơn legacy (policy cũ, chưa có hạn thanh toán và giữ kho).
   Giữ kho chỉ áp dụng cho Product, không áp dụng cho Topping.
 end note
 @enduml
