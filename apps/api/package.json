@@ -8,6 +8,7 @@
     "start": "node dist/main.js",
     "build": "prisma generate && nest build",
     "typecheck": "prisma generate && tsc --noEmit --project tsconfig.json",
+    "test": "tsx --test \"src/**/*.test.ts\" \"src/**/*.spec.ts\"",
     "db:generate": "prisma generate",
     "db:validate": "prisma validate",
     "db:migrate": "prisma migrate dev",
