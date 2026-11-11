@@ -15,7 +15,7 @@
 |---|---|
 | Lifeline Customer → Next.js UI → NestJS API → Database → Payment Service | Đủ năm lifeline; Payment Service là mock nội bộ NestJS |
 | Request/response và thứ tự gọi API | `POST /orders`, `GET /orders/:id`, `POST /payments`, `GET /orders/:id` |
-| Kiểm tra JWT và validate dữ liệu | Bước 4 (tạo đơn) và bước 25 (thanh toán), nhánh lỗi 401/400/404 |
+| Kiểm tra JWT và validate dữ liệu | Có kiểm tra JWT và validate DTO trước khi xử lý tạo đơn/thanh toán; nhánh lỗi 401/400/404 |
 | Transaction khi tạo đơn và cập nhật tồn kho | BEGIN, optimistic locking `stockVersion`, tạo Order + giữ kho, COMMIT hoặc ROLLBACK |
 | Nhánh alt thanh toán thành công/thất bại | SUCCEEDED (PAID, trừ kho, cộng điểm) và FAILED (PAYMENT_FAILED, giữ kho đến hạn), cùng một transaction |
 | Idempotency khi client gửi lại | Nhánh opt mất phản hồi: khách chủ động gửi lại đúng owner/khóa/nội dung. Nếu request trước chưa tới server hoặc đã rollback thì xử lý như lần đầu; nếu đã commit thì replay attempt đã lưu, không gọi Payment Service, không lặp kho/điểm |
