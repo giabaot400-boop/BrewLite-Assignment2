@@ -19,6 +19,7 @@
 | Transaction khi tạo đơn và cập nhật tồn kho | BEGIN, optimistic locking `stockVersion`, tạo Order + giữ kho, COMMIT hoặc ROLLBACK |
 | Nhánh alt thanh toán thành công/thất bại | SUCCEEDED (PAID, trừ kho, cộng điểm) và FAILED (PAYMENT_FAILED, giữ kho đến hạn), cùng một transaction |
 | Idempotency khi client gửi lại | Nhánh opt mất phản hồi: khách chủ động gửi lại đúng owner/khóa/nội dung. Nếu request trước chưa tới server hoặc đã rollback thì xử lý như lần đầu; nếu đã commit thì replay attempt đã lưu, không gọi Payment Service, không lặp kho/điểm |
+| Idempotency khi tạo đơn | Tra khóa trước khi kiểm giá/kho: khóa đã có và nội dung khớp thì replay đơn cũ (C-A07), không tính lại giá, không giữ kho, không tạo đơn lần nữa; khóa đã có nhưng nội dung khác trả 409 và dừng; khóa mới mới chạy kiểm giá/kho và tạo đơn (AC-FR-08-1/2) |
 | Ranh giới UC-08/UC-09 | Khung tạo đơn chỉ chạy khi chưa có Order; đã có Order thì dùng lại orderId. Nhánh lỗi tạo đơn dừng luồng bằng `break`, không sang GET/payment |
 | Retry sau FAILED | Ghi chú: PAYMENT_FAILED → PENDING → kết quả cuối trong cùng transaction, không commit PENDING trung gian |
 | Thông báo kết quả cuối cùng | Đọc lại Order rồi thông báo thành công, thất bại hoặc đã hủy |

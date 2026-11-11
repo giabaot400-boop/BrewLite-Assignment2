@@ -33,20 +33,31 @@ alt Chưa có Order (đặt đơn mới)
     break Dừng luồng: chưa có Order, không sang GET/payment
     end
   end
-  API -> DB : BEGIN (RepeatableRead)
-  API -> DB : Tra khóa idempotency, đọc giá và tồn kho Product
-  DB --> API : Dữ liệu hiện hành
-  alt Hết hàng hoặc giá thay đổi
-    API -> DB : ROLLBACK
-    API --> UI : 409 OUT_OF_STOCK / CHECKOUT_CHANGED
-    UI --> C : Báo hết hàng hoặc giá mới, chờ khách cập nhật giỏ
-    break Dừng luồng: chưa có Order, không sang GET/payment
+  API -> DB : BEGIN (RepeatableRead), tra khóa idempotency (người dùng, khóa)
+  DB --> API : Kết quả tra khóa
+  alt Khóa đã có kết quả và nội dung khớp (đã commit nhưng mất phản hồi, gửi lại)
+    API --> UI : 200 replay đơn cũ (C-A07)
+    note right of API : Không tính lại giá, không giữ kho,\nkhông tạo đơn lần nữa
+  else Khóa đã có nhưng nội dung khác
+    API --> UI : 409 IDEMPOTENCY_CONFLICT
+    UI --> C : Báo xung đột, không đổi khóa để né
+    break Dừng luồng: không sang GET/payment
     end
+  else Khóa mới
+    API -> DB : Đọc giá và tồn kho Product
+    DB --> API : Dữ liệu hiện hành
+    alt Hết hàng hoặc giá thay đổi
+      API -> DB : ROLLBACK
+      API --> UI : 409 OUT_OF_STOCK / CHECKOUT_CHANGED
+      UI --> C : Báo hết hàng hoặc giá mới, chờ khách cập nhật giỏ
+      break Dừng luồng: chưa có Order, không sang GET/payment
+      end
+    end
+    API -> DB : Cập nhật tồn kho (optimistic locking: stockVersion)
+    API -> DB : Tạo Order PENDING, OrderItem, StockReservation 15 phút
+    API -> DB : COMMIT
+    API --> UI : 201 {id, status: PENDING, total}
   end
-  API -> DB : Cập nhật tồn kho (optimistic locking: stockVersion)
-  API -> DB : Tạo Order PENDING, OrderItem, StockReservation 15 phút
-  API -> DB : COMMIT
-  API --> UI : 201 {id, status: PENDING, total}
 else Đã có Order (mở lại từ lịch sử hoặc thử thanh toán lại)
   note over UI, API : Dùng lại orderId hiện có, không gọi POST /orders
 end
