@@ -18,8 +18,10 @@ Bất kỳ bước nào lỗi thì các bước sau không chạy và check `ver
 
 ## Chặn merge (cổng G4)
 
-Workflow chỉ *báo* đỏ/xanh. Để *chặn* merge, admin repo phải bật (đã quan sát rule này hoạt động trên PR #5, xem bảng bằng chứng):
-Settings → Branches → rule cho `main` → **Require status checks to pass before merging** → chọn check `verify`; bật **Require a pull request before merging** và **Require branches to be up to date**.
+Workflow chỉ *báo* đỏ/xanh. Để *chặn* merge, admin repo phải bật branch protection cho `main` (Settings → Branches → rule cho `main`).
+
+- Cấu hình đã quan sát trên PR #5 (xem bảng bằng chứng): check `verify` ở trạng thái **Required** và cần ít nhất 1 approving review (hai mục: **Require status checks to pass before merging** với `verify`, và **Require a pull request before merging** kèm approval).
+- Chưa xác nhận: tùy chọn **Require branches to be up to date before merging**. Đây là khuyến nghị, không phải cấu hình đã quan sát; không được hiểu rằng toàn bộ danh sách tùy chọn trên đã được kiểm chứng.
 
 ## Phạm vi và giới hạn
 
@@ -38,6 +40,6 @@ Ghi chú và giới hạn của bằng chứng:
 
 - Hộp merge của PR #5 ghi lý do chặn là "At least 1 approving review is required" **đồng thời** với `verify` Required đang đỏ. Chưa thử một PR đã có approve để chứng minh riêng check đỏ chặn một mình.
 - Nguyên nhân thất bại được xác nhận từ log (ảnh chụp log, tìm `format-price`): đúng ca test web bị sửa cố ý. Trong run đó phần test API chạy 62/62 pass.
-- PR #5 là PR thử nghiệm, đã/sẽ đóng không merge; không có code lỗi nào vào `main`.
+- PR #5 là PR thử nghiệm, đã đóng, không merge; không có code lỗi nào vào `main`.
 - Branch protection quan sát được trên PR #5: check `verify` là Required và cần ít nhất 1 review approve. Các tùy chọn khác của rule (ví dụ bắt buộc nhánh up to date) chưa được xác nhận.
 - Các run PR #2, #3, #4 và push `main` sau PR #2 cũng hiển thị xanh trong tab Actions (chưa lưu URL riêng).
