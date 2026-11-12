@@ -168,6 +168,17 @@ Cần kiểm tra trước deploy:
 
 Không đổi Dockerfile/local scripts chỉ để giả định production đã chạy.
 Mọi thay đổi PORT/listen phải có PR, review và test tương ứng.
+Điều kiện cấu hình cần kiểm chứng:
+- API đọc PORT; cấu hình Railway phải khớp port ứng dụng.
+- Web dùng next start --port 3000, chưa đọc PORT động.
+  Đặt PORT=3000 và target port 3000; thay lệnh khởi động cần PR riêng.
+- NEXT_PUBLIC_* được nhúng vào image lúc build.
+  CI phải truyền NEXT_PUBLIC_PRODUCTS_SOURCE và NEXT_PUBLIC_AUTH_SOURCE
+  theo cấu hình release; không đặt secret hoặc hostname private ở đây.
+- Web runtime cần BACKEND_INTERNAL_URL private thực tế, APP_ORIGIN
+  đúng HTTPS origin, NODE_ENV=production và cookie A2 riêng.
+- API runtime cần DATABASE_URL private, FRONTEND_ORIGIN đúng Web origin,
+  AUTH_JWT_SECRET đủ mạnh và PORT.
 
 ### 5.3 Tài khoản và quyền
 
@@ -180,33 +191,41 @@ Mọi thay đổi PORT/listen phải có PR, review và test tương ứng.
   project/environment khi nền tảng hỗ trợ.
 - Gói Hobby/Pro và quyền cộng tác thực tế phải được kiểm tra
   trước khi nhóm duyệt; chưa có xác nhận tài khoản hiện hành.
+Quyền registry đề xuất:
+- Job push GHCR dùng GITHUB_TOKEN với permissions packages: write.
+- Package gắn với repo BrewLite-Assignment2.
+- Railway pull private image dùng credential chỉ có read:packages.
+- Chỉ chuyển package sang public nếu nhóm đồng ý.
+- Phải kiểm chứng pull private image và deploy đúng digest trước nghiệm thu.
 
 ### 5.4 Quality gate, registry và phát hành — đề xuất
 
 - Source và SHA phát hành phải thuộc repo BrewLite-Assignment2.
 - CI Task 4 hiện có job verify: npm ci --ignore-scripts,
-  Prisma generate, lint, typecheck, unit test, test cấu hình local và build.
-- CI hiện dùng dữ liệu fixture, không kết nối backend hoặc PostgreSQL thật.
-- PostgreSQL integration/E2E là kiểm thử riêng cần bổ sung cho Task 5;
-  chưa nằm trong gate verify hiện tại.
-- Job build/push image chỉ được chạy sau verify PASS trên cùng SHA.
-- Required checks chặn merge khi thất bại.
-- Sau gate PASS, build Web/API image, tag bằng SHA và lưu digest.
-- Đề xuất push image lên GHCR, chờ B xác nhận.
-- Chỉ triển khai image digest đã được duyệt lên Railway.
-- Chạy migration an toàn, health/smoke và lưu kết quả.
+  Prisma generate, lint riêng apps/web, typecheck web/API,
+  unit test, test cấu hình local và build web/API.
+- API chưa có ESLint trong gate hiện tại.
+- CI dùng dữ liệu fixture, không kết nối backend hoặc PostgreSQL thật.
+- PostgreSQL integration/E2E chưa nằm trong gate verify hiện tại.
 
-Điều kiện phải kiểm chứng trước khi chốt:
-- CI có quyền push đúng image A2.
-- Railway được xác thực để pull private image GHCR.
-- Deploy và rollback truy xuất đúng digest.
+Các điều kiện cần triển khai và kiểm chứng:
+- Cần bật branch protection yêu cầu check verify trước merge.
+  Chưa xác nhận đã bật hoặc kiểm chứng chặn merge; trạng thái CHỜ.
+- Đề xuất job build/push image chỉ chạy sau verify PASS trên cùng SHA.
+  CI hiện tại chưa có job build/push image hoặc cơ chế CD này.
+- Build Web/API image, tag theo SHA và lưu digest.
+- B đã xác nhận hướng GHCR → Railway với các điều kiện cấu hình;
+  chưa xác nhận pipeline triển khai thực tế.
+- CI có quyền push package A2; Railway pull được private image.
+- Chỉ deploy và rollback bằng image digest đã được duyệt.
+- Chạy migration an toàn và health/smoke sau deploy.
+- Kiểm chứng gate thất bại thực sự chặn deployment.
 - Secret registry/CD không xuất hiện trong Git hoặc log.
-- Một lượt gate thất bại thực sự chặn deployment.
 
 Không đồng thời bật GitHub source autodeploy hoặc đường deploy khác
 bỏ qua quality gate và phê duyệt của pipeline này.
 
-Chưa xác nhận GHCR, CI/CD hoặc Railway production A2 đã chạy.
+Chưa xác nhận GHCR hoặc Railway production A2 đã chạy.
 
 ### 5.5 Migration, seed, health và rollback
 
@@ -229,6 +248,12 @@ Chưa xác nhận GHCR, CI/CD hoặc Railway production A2 đã chạy.
   và chấp nhận mất các ghi sau thời điểm backup.
 - Volume không thay thế backup; phải kiểm thử restore.
 - Ghi thời điểm backup, thời gian giữ và nơi lưu trước nghiệm thu.
+- Prisma là devDependency; image dùng cho migration phải giữ Prisma CLI,
+  prisma.config.ts, dotenv và prisma/migrations, cùng generated client.
+- Không loại devDependencies khỏi image migration rồi giả định migrate deploy
+  vẫn hoạt động. Có thể dùng stage migration riêng từ cùng SHA.
+- Chỉ API chạy pre-deploy migration, với DATABASE_URL được cấp lúc chạy.
+- Build image không kết nối production DB.
 
 ### 5.6 Dự toán sơ bộ — kiểm tra ngày 10/11/2026
 
