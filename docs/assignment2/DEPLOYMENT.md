@@ -184,7 +184,12 @@ Mọi thay đổi PORT/listen phải có PR, review và test tương ứng.
 ### 5.4 Quality gate, registry và phát hành — đề xuất
 
 - Source và SHA phát hành phải thuộc repo BrewLite-Assignment2.
-- PR/release chạy install, lint, typecheck, unit/integration test và build.
+- CI Task 4 hiện có job verify: npm ci --ignore-scripts,
+  Prisma generate, lint, typecheck, unit test, test cấu hình local và build.
+- CI hiện dùng dữ liệu fixture, không kết nối backend hoặc PostgreSQL thật.
+- PostgreSQL integration/E2E là kiểm thử riêng cần bổ sung cho Task 5;
+  chưa nằm trong gate verify hiện tại.
+- Job build/push image chỉ được chạy sau verify PASS trên cùng SHA.
 - Required checks chặn merge khi thất bại.
 - Sau gate PASS, build Web/API image, tag bằng SHA và lưu digest.
 - Đề xuất push image lên GHCR, chờ B xác nhận.

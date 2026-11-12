@@ -14,7 +14,7 @@ cloud "GitHub — A2 source and CI" {
   artifact "BrewLite-Assignment2\nApproved A2 commit SHA" as repo
 
   node "GitHub Actions runner" {
-    artifact "Quality gate\nInstall / Lint / Typecheck\nUnit / Integration / Build" as gate
+    artifact "Quality gate\nInstall / Lint / Typecheck\nUnit / Setup tests / Build" as gate
     artifact "Build Web/API images\nTag by approved A2 SHA" as build
     artifact "Release approval\nDeploy / Smoke / Rollback" as cd
   }
