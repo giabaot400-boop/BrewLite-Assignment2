@@ -18,7 +18,7 @@ Bất kỳ bước nào lỗi thì các bước sau không chạy và check `ver
 
 ## Chặn merge (cổng G4)
 
-Workflow chỉ *báo* đỏ/xanh. Để *chặn* merge, admin repo phải bật:
+Workflow chỉ *báo* đỏ/xanh. Để *chặn* merge, admin repo phải bật (đã quan sát rule này hoạt động trên PR #5, xem bảng bằng chứng):
 Settings → Branches → rule cho `main` → **Require status checks to pass before merging** → chọn check `verify`; bật **Require a pull request before merging** và **Require branches to be up to date**.
 
 ## Phạm vi và giới hạn
@@ -27,11 +27,17 @@ Settings → Branches → rule cho `main` → **Require status checks to pass be
 - `apps/api` chưa có ESLint nên lint chỉ phủ web (backlog).
 - Test sản phẩm/menu: `apps/web/src/features/products/*.test.mjs`, `apps/api/src/products/products-prisma.service.spec.ts`.
 
-## Bằng chứng CI (điền sau khi chạy trên GitHub)
+## Bằng chứng CI (ghi ngày 12/11/2026)
 
 | Trường hợp | PR / commit SHA | URL run | Kết quả mong đợi | Kết quả thực tế |
 |---|---|---|---|---|
-| Thành công | _chưa có_ | _chưa có_ | `verify` xanh, merge được | _chưa chạy_ |
-| Thất bại có chủ đích (vd. sửa 1 test sai trên nhánh thử, không merge) | _chưa có_ | _chưa có_ | `verify` đỏ, nút merge bị chặn | _chưa chạy_ |
+| Thành công | Push vào `main` sau merge PR #4, commit `db2afc7c20dafb09d1d2c43cff9c0e3364a573cc` | [run 43013162855](https://github.com/giabaot400-boop/BrewLite-Assignment2/actions/runs/43013162855) | `verify` xanh | `verify` thành công, tổng 1m 3s (job 59s); Node v24.22.2, npm 11.19.1; run có 1 annotation cảnh báo, nội dung chưa được xem |
+| Thất bại có chủ đích | PR #5 `[TEST] CI đỏ có chủ đích, KHÔNG MERGE`, nhánh `test/ci-red-demo`, commit `285c25bf62ae3b31cf184dd0189cd1379bab5cda` (đổi 1 dòng, +1/−1, trong `apps/web/src/features/products/format-price.test.mjs`) | [run 43159409852](https://github.com/giabaot400-boop/BrewLite-Assignment2/actions/runs/43159409852), [job 130986791687](https://github.com/giabaot400-boop/BrewLite-Assignment2/actions/runs/43159409852/job/130986791687) | `verify` đỏ, merge bị chặn | Bước **Unit test (web và api)** lỗi: test web 427, pass 426, **fail 1** tại `src/features/products/format-price.test.mjs:7`, ca "giá VND hiển thị theo vi-VN, không phần thập phân": `ERR_ASSERTION`, expected `/^35\.000 ₫$/`, actual `'36.000 ₫'`; sau đó `Process completed with exit code 1`; hai bước sau (**Test script cấu hình local**, **Build**) không chạy (0s). Hộp merge của PR hiển thị `CI / verify (pull_request)` ở trạng thái **Required** và đang failing, nút **Merge pull request** bị khóa |
 
-Không ghi PASS cho dòng nào chưa có URL run thật.
+Ghi chú và giới hạn của bằng chứng:
+
+- Hộp merge của PR #5 ghi lý do chặn là "At least 1 approving review is required" **đồng thời** với `verify` Required đang đỏ. Chưa thử một PR đã có approve để chứng minh riêng check đỏ chặn một mình.
+- Nguyên nhân thất bại được xác nhận từ log (ảnh chụp log, tìm `format-price`): đúng ca test web bị sửa cố ý. Trong run đó phần test API chạy 62/62 pass.
+- PR #5 là PR thử nghiệm, đã/sẽ đóng không merge; không có code lỗi nào vào `main`.
+- Branch protection quan sát được trên PR #5: check `verify` là Required và cần ít nhất 1 review approve. Các tùy chọn khác của rule (ví dụ bắt buộc nhánh up to date) chưa được xác nhận.
+- Các run PR #2, #3, #4 và push `main` sau PR #2 cũng hiển thị xanh trong tab Actions (chưa lưu URL riêng).
