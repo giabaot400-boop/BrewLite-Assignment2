@@ -15,12 +15,12 @@
 
 | ID | Việc | Trạng thái |
 |---|---|---|
-| T4-1 | Workflow CI install→lint→typecheck→test→build ([CI.md](CI.md)) | Đã viết, chưa chạy trên GitHub |
+| T4-1 | Workflow CI install→lint→typecheck→test→build ([CI.md](CI.md)) | Xong; đã chạy xanh trên `main` (run 43013162855) |
 | T4-2 | Script `npm test` gốc + api | Xong (kiểm local) |
 | T4-3 | Test sản phẩm/menu (web + api) | Xong (kiểm local) |
 | T4-4 | Mẫu PR có DoD | Xong |
-| T4-5 | Bật branch protection yêu cầu check `verify` | Chờ admin repo |
-| T4-6 | Chạy CI xanh + CI đỏ có chủ đích, ghi URL vào CI.md | Chờ GitHub |
+| T4-5 | Bật branch protection yêu cầu check `verify` | Đã bật (quan sát trên PR #5: `verify` Required, cần 1 approving review); các tùy chọn khác chưa xác nhận |
+| T4-6 | Chạy CI xanh + CI đỏ có chủ đích, ghi URL vào CI.md | Xong; run xanh 43013162855, run đỏ 43159409852 (PR #5, không merge); nguyên nhân lỗi xác nhận từ log (`format-price.test.mjs:7`) |
 | T4-7 | ESLint cho `apps/api` | Backlog |
 | T4-8 | Chạy test tích hợp API với PostgreSQL trong CI | Backlog |
 
