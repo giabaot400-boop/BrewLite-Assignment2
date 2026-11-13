@@ -124,7 +124,13 @@ curl.exe -i http://localhost:3100/api/products
 
 - API tests: 62/62 PASS.
 
-- Các test trên không thay cho kiểm thử auth/checkout thực tế qua Compose.
+- Ngoài unit test, đã kiểm tra thủ công đăng nhập và tạo đơn PENDING
+  qua UI/BFF/API trong Compose; chưa kiểm thử thanh toán.
+- Đăng nhập qua giao diện Compose A2 thành công.
+- Tạo đơn từ giỏ qua UI/BFF/API: PENDING, total 57000.
+- Mã đơn kiểm chứng: c95ceabb-e1ac-4dbd-ba98-9bf122a9c885.
+- Database brewlite_a2 xác nhận ledger SUCCEEDED, hash khớp Order.
+- Giỏ được xóa sau khi tạo đơn thành công.
 
 ## Kiểm tra trong image
 
@@ -150,7 +156,7 @@ Lệnh down giữ named volume. Không dùng down -v với dữ liệu cần gi�
 
 ## Giới hạn
 
-- Chưa kiểm thử auth/đặt đơn/thanh toán end-to-end trong Compose.
+- Chưa xác nhận thanh toán hoặc toàn bộ checkout end-to-end.
 
 - Chưa kiểm thử trên máy thành viên khác.
 
