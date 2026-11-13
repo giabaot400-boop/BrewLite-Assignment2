@@ -131,7 +131,9 @@ curl.exe -i http://localhost:3100/api/products
 - Mã đơn kiểm chứng: c95ceabb-e1ac-4dbd-ba98-9bf122a9c885.
 - Database brewlite_a2 xác nhận ledger SUCCEEDED, hash khớp Order.
 - Giỏ được xóa sau khi tạo đơn thành công.
-
+- Đã tái hiện EACCES khi user node ghi .next/cache.
+- Dockerfile cấp quyền riêng cho thư mục cache; vẫn chạy USER node.
+- Sau rebuild/recreate, Web Healthy; user 1000 ghi và xóa file cache thành công.
 ## Kiểm tra trong image
 
 ```powershell
