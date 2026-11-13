@@ -51,7 +51,6 @@ services:
       args:
         NEXT_PUBLIC_PRODUCTS_SOURCE: api
         NEXT_PUBLIC_AUTH_SOURCE: http
-        NEXT_PUBLIC_API_URL: /api
     environment:
       NODE_ENV: production
       TZ: UTC

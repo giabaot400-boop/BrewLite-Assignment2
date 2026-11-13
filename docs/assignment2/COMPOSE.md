@@ -165,3 +165,10 @@ Lệnh down giữ named volume. Không dùng down -v với dữ liệu cần gi�
 - Chưa push registry, deploy Railway hoặc xác nhận production HTTPS.
 
 - Image hiện giữ devDependencies; chưa tối ưu dung lượng.
+
+- Web hiện dùng next start --port 3000, chưa đọc PORT động.
+  Railway phải đặt PORT=3000 và target port 3000 nếu giữ cách chạy này.
+- getProduct hiện phục vụ trang chi tiết trên server.
+  Chưa có route BFF /api/products/:id cho browser.
+  Nếu chuyển chi tiết sang client, cần bổ sung route tương ứng.
+- Build arg NEXT_PUBLIC_API_URL đã bỏ vì mã Product API không còn đọc.
