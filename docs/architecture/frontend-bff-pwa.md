@@ -31,8 +31,7 @@ Next.js BFF dùng Node.js runtime theo code hiện có, bao gồm helper binding
 
 ## 2. Luồng đang có và phần kế thừa Sprint 3
 
-**Danh mục:** browser tải menu từ NestJS qua `NEXT_PUBLIC_API_URL`; Next.js server
-cũng dùng cấu hình đó để tải chi tiết. Product request dùng `cache: no-store`.
+**Danh mục:** browser tải menu qua BFF `/api/products` cùng origin; Next.js server tải chi tiết qua `BACKEND_INTERNAL_URL` (fallback `BACKEND_URL`/localhost). Product request dùng `cache: no-store`. Chi tiết hiện chạy phía server; chưa có BFF `/api/products/:id` cho client.
 Fixture là lựa chọn phát triển riêng, không thay bằng chứng tích hợp API/PostgreSQL.
 
 **Phiên:** browser gọi BFF cùng origin. JWT được lưu bằng cookie HttpOnly,
@@ -92,9 +91,8 @@ hoàn tất AC trên production HTTPS. Nếu mở rộng cache sau này, cần r
 
 | Cấu hình | Nơi dùng | Điều kiện |
 |---|---|---|
-| `NEXT_PUBLIC_API_URL` | Browser và Next.js khi đọc Product API | URL public cho catalog, HTTPS khi production; không chứa secret |
 | `NEXT_PUBLIC_PRODUCTS_SOURCE` | Product API client | Dùng `api` trong lượt chứng minh tích hợp thật |
-| `BACKEND_INTERNAL_URL` | BFF phía server | URL NestJS tin cậy; code còn hỗ trợ `BACKEND_URL`/mặc định local. Production phải đặt rõ, không dùng biến public để chứa secret |
+| `BACKEND_INTERNAL_URL` | BFF và trang chi tiết phía server | URL NestJS tin cậy; code còn hỗ trợ `BACKEND_URL`/mặc định local. Production phải đặt rõ, không dùng biến public để chứa secret |
 | `APP_ORIGIN` | Kiểm tra nguồn POST BFF | Origin UI chính xác, gồm scheme/host/port, không thêm đường dẫn |
 | `FRONTEND_ORIGIN` | CORS tại NestJS | Khớp origin UI cho lượt gọi catalog từ browser |
 | Database/JWT secret | Chỉ NestJS/server hoặc secret của nền tảng | Không đưa vào manifest, worker, bundle public hoặc log |

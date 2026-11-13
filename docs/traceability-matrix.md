@@ -1,5 +1,7 @@
 # BrewLite — Ma trận truy vết Assignment 2
 
+**Bổ sung bản tích hợp checkout:** code/test được tiếp nhận từ A1 trên nền A2 `3be4a11`; xem [liên kết code/test và giới hạn kiểm tra](assignment2/CHECKOUT_INTEGRATION.md). Bảng CHỜ bên dưới giữ snapshot đối chiếu theo AC, không có nghĩa workflow vẫn chưa có code; chưa chuyển tự động các AC sang PASS từ lượt tích hợp.
+
 **Quy ước:** M-01…M-05 và A-/E- là nhánh của [UC-09](requirements/use-case-checkout.md); các mã C- thuộc [ngữ cảnh hỗ trợ](requirements/checkout-supporting-flows.md). Tạo đơn và hủy/expiry không là đặc tả trọng tâm thứ hai.
 
 Cập nhật 10/11/2026 · Thiết kế kế thừa Sprint 3 / nền S2 a1a0e4a. Đây là mapping thiết kế và đích tích hợp, **chưa phải kết quả kiểm thử**. Tài liệu mã nguồn/test/commit cụ thể chưa được rà trong lượt này nên để CHỜ; API ghi ở cột dưới là contract mục tiêu hoặc nền kế thừa, không chứng minh route S3 đã có trên main.

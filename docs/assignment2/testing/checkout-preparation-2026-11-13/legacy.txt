@@ -1,0 +1,9 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @brewlite/backend@0.1.0 test:legacy
+> node prisma/check-legacy-preservation.mjs
+
+(node:28) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+PASS LEGACY: exact migration SQL preserves original rows/hash/response; compiled replay and read-only policy verified.
+LEGACY_DB_RESULT={"schema":"a2_legacy_340491c6138e49f7adb14cefc40827e4","scope":"exact S1/S2/S3 migration SQL in a fresh isolated schema; legacy replay with compiled services","passed":true,"cleanup":true,"database":{"name":"brewlite_a2_test","version":"17.11"},"migrations":[{"name":"20261024160346_init_products","sha256":"536a24ff5fbbcf34654bd971fbae2086c2f3674de5b31c5b334a28bccbea20c6"},{"name":"20261030152601_sprint2_auth_orders","sha256":"b55c6e6b97339d7c7016ac96dd69f7cd92b0586cbaf1889b02582ea8545b949d"},{"name":"20261109010714_sprint3_payment_stock","sha256":"6d3e037165234c05f4a152ff2612bd7dc6951e45a917ecc722de02c49350e9c9"}],"beforeDigest":"3f2187de0d2155fc4c6df90624bc2869942fce26ac7a6bbfaab3e22a44cf973c","rowCounts":{"products":1,"toppings":0,"product_toppings":0,"users":1,"auth_sessions":0,"orders":2,"order_items":2,"order_item_toppings":0,"order_requests":2},"afterDigest":"3f2187de0d2155fc4c6df90624bc2869942fce26ac7a6bbfaab3e22a44cf973c","assertions":{"migrationPreservesOriginalColumns":true,"legacyPolicy1NoHold":true,"successReplay200":true,"rejectedReplay400":true,"reorderedFieldErrorRemapped":true,"v1v2Conflict":true,"legacyPayCancelBlocked":true,"legacyExpiryIgnored":true}}
