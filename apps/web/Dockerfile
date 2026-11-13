@@ -26,7 +26,8 @@ ENV TZ=UTC
 ENV PORT=3000
 
 EXPOSE 3000
-
+RUN mkdir -p /app/apps/web/.next/cache \
+    && chown -R node:node /app/apps/web/.next/cache
 USER node
 
 CMD ["npm", "run", "start", "--workspace", "apps/web"]
