@@ -1,0 +1,86 @@
+
+name: Docker Publish GHCR
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    name: Build and Push Web/API
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Build API
+      - name: API metadata
+        id: meta-api
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/giabaot400-boop/brewlite-a2-api
+          tags: |
+            type=raw,value=latest
+            type=sha,format=long,prefix=sha-
+
+      - name: Build and Push API
+        id: build-api
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: apps/api/Dockerfile
+          push: true
+          tags: ${{ steps.meta-api.outputs.tags }}
+          labels: ${{ steps.meta-api.outputs.labels }}
+
+      # Build Web
+      - name: Web metadata
+        id: meta-web
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/giabaot400-boop/brewlite-a2-web
+          tags: |
+            type=raw,value=latest
+            type=sha,format=long,prefix=sha-
+
+      - name: Build and Push Web
+        id: build-web
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: apps/web/Dockerfile
+          push: true
+          tags: ${{ steps.meta-web.outputs.tags }}
+          labels: ${{ steps.meta-web.outputs.labels }}
+          build-args: |
+            NEXT_PUBLIC_PRODUCTS_SOURCE=api
+            NEXT_PUBLIC_AUTH_SOURCE=http
+
+      # Save image digests
+      - name: Record image digests
+        run: |
+          echo "## GHCR Image Digests" >> "$GITHUB_STEP_SUMMARY"
+          echo "Source SHA: \`${GITHUB_SHA}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "### API" >> "$GITHUB_STEP_SUMMARY"
+          echo "Image: ghcr.io/giabaot400-boop/brewlite-a2-api" >> "$GITHUB_STEP_SUMMARY"
+          echo "Digest: \`${{ steps.build-api.outputs.digest }}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "### Web" >> "$GITHUB_STEP_SUMMARY"
+          echo "Image: ghcr.io/giabaot400-boop/brewlite-a2-web" >> "$GITHUB_STEP_SUMMARY"
+          echo "Digest: \`${{ steps.build-web.outputs.digest }}\`" >> "$GITHUB_STEP_SUMMARY"
