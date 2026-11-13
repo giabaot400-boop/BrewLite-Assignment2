@@ -12,15 +12,33 @@ const detail = (overrides = {}) => ({ ...summary(), description: "Cà phê đậ
 
 // Mỗi test tự đặt và khôi phục biến môi trường/fetch để không ảnh hưởng test khác.
 async function withEnv(env, fetchImpl, run) {
-  const saved = { source: process.env.NEXT_PUBLIC_PRODUCTS_SOURCE, url: process.env.NEXT_PUBLIC_API_URL, fetch: globalThis.fetch };
-  const set = (key, value) => (value === undefined ? delete process.env[key] : (process.env[key] = value));
+  const keys = [
+    "NEXT_PUBLIC_PRODUCTS_SOURCE",
+    "NEXT_PUBLIC_API_URL",
+    "BACKEND_INTERNAL_URL",
+    "BACKEND_URL",
+  ];
+  const saved = Object.fromEntries(
+    keys.map(key => [key, process.env[key]]),
+  );
+  const savedFetch = globalThis.fetch;
+  const set = (key, value) => {
+    if (value === undefined) delete process.env[key];
+    else process.env[key] = value;
+  };
+
   set("NEXT_PUBLIC_PRODUCTS_SOURCE", env.source);
   set("NEXT_PUBLIC_API_URL", env.url);
+  set("BACKEND_INTERNAL_URL", env.internal ?? env.url);
+  set("BACKEND_URL", env.backend);
+
   if (fetchImpl) globalThis.fetch = fetchImpl;
-  try { return await run(); } finally {
-    set("NEXT_PUBLIC_PRODUCTS_SOURCE", saved.source);
-    set("NEXT_PUBLIC_API_URL", saved.url);
-    globalThis.fetch = saved.fetch;
+
+  try {
+    return await run();
+  } finally {
+    for (const key of keys) set(key, saved[key]);
+    globalThis.fetch = savedFetch;
   }
 }
 const json = (body, status = 200) => async () => new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
@@ -57,12 +75,63 @@ test("api: gọi đúng URL, bỏ dấu / cuối, no-store, mã hóa id", async 
   assert.ok(calls.every(c => c[1] === "no-store"));
 });
 
-test("api: thiếu NEXT_PUBLIC_API_URL là lỗi rõ ràng, không gọi mạng", async () => {
-  let called = 0;
-  await withEnv({ source: "api" }, async () => { called++; return new Response("[]"); }, async () => {
-    await assert.rejects(getProducts(), /NEXT_PUBLIC_API_URL/);
+test("api: server dùng localhost mặc định khi chưa cấu hình backend", async () => {
+  const calls = [];
+
+  await withEnv({ source: "api" }, async (url) => {
+    calls.push(url);
+    return new Response("[]");
+  }, async () => {
+    assert.deepEqual(await getProducts(), []);
   });
-  assert.equal(called, 0);
+
+  assert.deepEqual(calls, ["http://localhost:3001/products"]);
+});
+
+test("api: server ưu tiên hostname private hơn BACKEND_URL", async () => {
+  const calls = [];
+
+  await withEnv({
+    source: "api",
+    internal: "http://backend:3001/",
+    backend: "http://other:3001",
+    url: "https://public.example",
+  }, async (url) => {
+    calls.push(url);
+    return new Response("[]");
+  }, async () => {
+    await getProducts();
+  });
+
+  assert.deepEqual(calls, ["http://backend:3001/products"]);
+});
+
+test("api: browser gọi BFF, không gọi hostname private", async () => {
+  const previous = Object.getOwnPropertyDescriptor(globalThis, "window");
+  const calls = [];
+
+  Object.defineProperty(globalThis, "window", {
+    configurable: true,
+    value: {},
+  });
+
+  try {
+    await withEnv({
+      source: "api",
+      internal: "http://backend:3001",
+      url: "https://public.example",
+    }, async (url) => {
+      calls.push(url);
+      return new Response("[]");
+    }, async () => {
+      await getProducts();
+    });
+
+    assert.deepEqual(calls, ["/api/products"]);
+  } finally {
+    if (previous) Object.defineProperty(globalThis, "window", previous);
+    else delete globalThis.window;
+  }
 });
 
 test("api: HTTP lỗi giữ nguyên status", async () => {
