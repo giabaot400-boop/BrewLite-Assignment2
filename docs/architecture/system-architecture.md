@@ -10,7 +10,9 @@
 
 Tài liệu mô tả kiến trúc tổng thể của hệ thống BrewLite Assignment 2, bao gồm cách tổ chức các thành phần, phân chia trách nhiệm, quan hệ phụ thuộc, chiến lược dữ liệu và các quyết định thiết kế.
 
-Tài liệu được xây dựng dựa trên source của repository `BrewLite-Assignment2`, nhánh `main` tại commit `3be4a11`.
+Tài liệu kiến trúc ban đầu được xây dựng dựa trên source của repository `BrewLite-Assignment2` tại commit `3be4a11`. Đây là mốc nền ban đầu của tài liệu, không phải mốc đại diện cho toàn bộ chức năng Checkout V2.
+
+Phần kiến trúc Checkout V2 được cập nhật và đối chiếu với source tích hợp tại commit `4c177bf` trên `origin/main`, sau khi PR #11 được merge. Các mô tả về Order, payment, stock, points và migration được phân biệt theo hai mốc nguồn này.
 
 Phần kiến trúc Frontend/BFF/PWA kế thừa tài liệu `docs/architecture/frontend-bff-pwa.md` do thành viên A đóng góp. Phần Docker Compose và Product BFF đối chiếu với PR A2 #7 của thành viên E.
 
@@ -27,14 +29,24 @@ Phần kiến trúc Frontend/BFF/PWA kế thừa tài liệu `docs/architecture/
 
 ### 1.2. Kiến trúc phân lớp
 
-BrewLite A2 được tổ chức thành bốn tầng logic chính:
+BrewLite Assignment 2 được tổ chức thành bốn tầng logic chính:
 
-1. **Presentation Layer:** Next.js và Client Components cung cấp giao diện sản phẩm, giỏ hàng, xác thực và đặt hàng.
-2. **BFF Layer:** Next.js Route Handlers làm trung gian cho các yêu cầu cần xử lý phía server, bao gồm Auth, Orders và Product BFF.
-3. **Business Layer:** NestJS Controllers, Services, Guards và DTO xử lý API, xác thực, kiểm tra dữ liệu và nghiệp vụ.
-4. **Persistence Layer:** Prisma cung cấp khả năng truy cập PostgreSQL để lưu trữ dữ liệu bền vững.
+1. **Presentation Layer:** Next.js Pages và Client Components cung cấp giao diện sản phẩm, giỏ hàng, xác thực và đặt hàng.
+2. **BFF Layer:** Next.js Route Handlers đóng vai trò Backend for Frontend (BFF), tiếp nhận và xử lý các yêu cầu phía server của ứng dụng web, bao gồm Auth, Orders và Product BFF.
+3. **Business Layer:** NestJS Controllers, Services, Guards và DTO đảm nhiệm API, xác thực, kiểm tra dữ liệu và xử lý nghiệp vụ.
+4. **Persistence Layer:** Prisma cung cấp lớp truy cập dữ liệu PostgreSQL để lưu trữ thông tin bền vững.
 
-Trong cấu hình Docker Compose local, trình duyệt truy cập Next.js tại `http://localhost:3100`. Frontend kết nối đến backend qua `http://backend:3001`, còn backend kết nối PostgreSQL qua `db:5432`.
+Presentation Layer và BFF Layer cùng nằm trong một ứng dụng Next.js, không phải hai service triển khai riêng biệt. Bốn tầng trên là cách phân chia trách nhiệm logic, không đồng nghĩa với bốn container hoặc bốn service độc lập.
+
+Trong cấu hình Docker Compose local, hệ thống được triển khai trên ba service chính:
+
+- **Frontend:** Next.js, bao gồm Presentation Layer và BFF Layer.
+- **Backend:** NestJS, thực hiện Business Layer và sử dụng Prisma để truy cập dữ liệu.
+- **Database:** PostgreSQL, lưu trữ dữ liệu bền vững.
+
+Prisma chạy trong tiến trình backend NestJS, không phải service triển khai riêng.
+
+Trình duyệt truy cập Next.js tại `http://localhost:3100`. Frontend kết nối backend qua `http://backend:3001`, còn backend kết nối PostgreSQL qua `db:5432`.
 
 ### 1.3. Giới hạn xác nhận
 
@@ -68,13 +80,14 @@ Sơ đồ mô tả các quan hệ import module được xác nhận từ source
 
 ### 2.2. Trách nhiệm của từng module
 
-| Module         | Trách nhiệm                                          | Thành phần                                |
-| -------------- | ---------------------------------------------------- | ----------------------------------------- |
-| AppModule      | Module gốc, tổ chức các module chính và health check | HealthController                          |
-| ProductsModule | Cung cấp chức năng API sản phẩm                      | ProductsController, ProductsPrismaService |
-| OrdersModule   | Cung cấp chức năng API đơn hàng                      | OrdersController, OrdersService           |
-| AuthModule     | Cung cấp chức năng xác thực và bảo vệ API            | AuthController, AuthService, AuthGuard    |
-| PrismaModule   | Cung cấp PrismaService cho các module khác           | PrismaService                             |
+| Module         | Trách nhiệm                                                                                        | Thành phần                                                                                                                                                     |
+| -------------- | -------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| AppModule      | Module gốc, tổ chức các module chính và health check                                               | HealthController                                                                                                                                               |
+| ProductsModule | Cung cấp API sản phẩm                                                                              | ProductsController, ProductsPrismaService                                                                                                                      |
+| OrdersModule   | Quản lý đơn hàng, đọc dữ liệu, workflow, expiry, thanh toán giả lập và các thao tác payment/cancel | OrdersController, PaymentsController, OrderActionsController, OrdersService, OrdersReaderService, OrderWorkflowService, MockPaymentService, OrderExpiryService |
+| AuthModule     | Xác thực và bảo vệ API                                                                             | AuthController, AuthService, AuthGuard                                                                                                                         |
+| PrismaModule   | Cung cấp PrismaService cho các module khác                                                         | PrismaService                                                                                                                                                  |
+|                |
 
 ### 2.3. Quan hệ phụ thuộc
 
@@ -165,21 +178,21 @@ flowchart TD
 
 Prisma schema của BrewLite Assignment 2 được mở rộng từ 9 model của Sprint 2 lên 13 model sau Checkout V2.
 
-| Nhóm | Model | Vai trò |
-| --- | --- | --- |
-| Catalog | Product | Sản phẩm, tồn kho và phiên bản tồn kho |
-| Catalog | Topping | Thông tin topping |
-| Catalog | ProductTopping | Quan hệ sản phẩm và topping |
-| Authentication | User | Tài khoản và điểm thưởng |
-| Authentication | AuthSession | Phiên đăng nhập |
-| Orders | Order | Đơn hàng, trạng thái và thông tin checkout |
-| Orders | OrderItem | Chi tiết món trong đơn |
-| Orders | OrderItemTopping | Topping của từng món |
-| Orders | OrderRequest | Ghi nhận yêu cầu tạo đơn và idempotency |
-| Checkout | PaymentAttempt | Ghi nhận các lần thanh toán |
-| Checkout | StockReservation | Quản lý giữ, tiêu thụ, giải phóng và hoàn hàng |
-| Loyalty | LoyaltyEntry | Ghi nhận cộng điểm và thu hồi điểm |
-| Promotion | Promotion | Cấu hình chương trình khuyến mãi |
+| Nhóm           | Model            | Vai trò                                        |
+| -------------- | ---------------- | ---------------------------------------------- |
+| Catalog        | Product          | Sản phẩm, tồn kho và phiên bản tồn kho         |
+| Catalog        | Topping          | Thông tin topping                              |
+| Catalog        | ProductTopping   | Quan hệ sản phẩm và topping                    |
+| Authentication | User             | Tài khoản và điểm thưởng                       |
+| Authentication | AuthSession      | Phiên đăng nhập                                |
+| Orders         | Order            | Đơn hàng, trạng thái và thông tin checkout     |
+| Orders         | OrderItem        | Chi tiết món trong đơn                         |
+| Orders         | OrderItemTopping | Topping của từng món                           |
+| Orders         | OrderRequest     | Ghi nhận yêu cầu tạo đơn và idempotency        |
+| Checkout       | PaymentAttempt   | Ghi nhận các lần thanh toán                    |
+| Checkout       | StockReservation | Quản lý giữ, tiêu thụ, giải phóng và hoàn hàng |
+| Loyalty        | LoyaltyEntry     | Ghi nhận cộng điểm và thu hồi điểm             |
+| Promotion      | Promotion        | Cấu hình chương trình khuyến mãi               |
 
 **Trạng thái đơn hàng**
 
@@ -234,12 +247,15 @@ Migration này mở rộng schema hiện có thay vì yêu cầu xóa và tạo 
 
 Các script backend liên quan:
 
-| Script        | Mục đích                  |
-| ------------- | ------------------------- |
-| `db:generate` | Generate Prisma Client    |
-| `db:validate` | Kiểm tra Prisma schema    |
-| `db:migrate`  | Chạy `prisma migrate dev` |
-| `db:seed`     | Chạy `prisma db seed`     |
+| Script        | Lệnh thực thi           | Mục đích                                             |
+| ------------- | ----------------------- | ---------------------------------------------------- |
+| `db:generate` | `prisma generate`       | Sinh Prisma Client                                   |
+| `db:validate` | `prisma validate`       | Kiểm tra Prisma schema                               |
+| `db:migrate`  | `prisma migrate dev`    | Tạo và áp dụng migration trong môi trường phát triển |
+| `db:deploy`   | `prisma migrate deploy` | Áp dụng migration đã có trong môi trường triển khai  |
+| `db:seed`     | `prisma db seed`        | Thực thi catalog seed theo cấu hình Prisma           |
+
+Các script trên được khai báo trong `apps/api/package.json`. Riêng `db:seed` sử dụng entrypoint `tsx prisma/seed.ts` được cấu hình tại `apps/api/prisma.config.ts`.
 
 Đề xuất quy trình quản lý schema:
 
@@ -249,17 +265,57 @@ Các script backend liên quan:
 4. Kiểm tra migration trên database A2 riêng biệt.
 5. Khi triển khai production, sử dụng quy trình áp dụng migration đã được kiểm duyệt, thay vì tạo migration mới trực tiếp trên production.
 
-Lệnh `prisma migrate deploy` là phương án triển khai migration production được đề xuất; chưa được xác nhận là script đã tích hợp trong pipeline A2.
+Script `db:deploy` đã được khai báo trong backend để áp dụng các migration hiện có bằng `prisma migrate deploy`. Việc script tồn tại không đồng nghĩa với việc đã xác nhận toàn bộ quy trình migration production hoặc cơ chế rollback tự động.
+
+Trước khi áp dụng migration trên môi trường chứa dữ liệu cần bảo toàn, cần kiểm tra kết quả migration, khả năng tương thích dữ liệu và phương án backup/restore.
 
 Không chạy `prisma migrate reset` hoặc các thao tác xóa dữ liệu trên database đang chứa dữ liệu cần bảo toàn.
 
 ### 3.4. Chiến lược Seed
 
-Repository có file `apps/api/prisma/seed.ts` và script `db:seed`.
+BrewLite Assignment 2 phân biệt hai loại seed: catalog seed và demo seed. Hai loại này phục vụ mục đích khác nhau và không được xem là tương đương.
 
-Seed được sử dụng để chuẩn bị dữ liệu phục vụ phát triển, kiểm thử hoặc demo, tùy theo implementation.
+**Catalog Seed**
 
-Nội dung và tính lặp lại an toàn của seed cần được kiểm tra trực tiếp trước khi đưa ra kết luận về dữ liệu được tạo.
+File `apps/api/prisma/seed.ts` là entrypoint được cấu hình trong `apps/api/prisma.config.ts`:
+
+`migrations: { path: 'prisma/migrations', seed: 'tsx prisma/seed.ts' }`
+
+Khi chạy `db:seed`, Prisma thực thi catalog seed để tạo hoặc cập nhật:
+
+- Bốn sản phẩm: Cà phê sữa (35.000đ), Americano (40.000đ), Cappuccino (45.000đ), Trà đào (39.000đ).
+- Hai topping: Kem (7.000đ) và Trân châu (5.000đ).
+- Quan hệ giữa sản phẩm Cà phê sữa với hai topping trên.
+
+Catalog seed sử dụng Prisma transaction và các thao tác `upsert` để tạo hoặc cập nhật bản ghi theo khóa định danh. Việc chạy lại không mặc định xóa dữ liệu sản phẩm và topping hiện có.
+
+**Demo Seed**
+
+File `apps/api/prisma/seed-demo.ts` phục vụ việc chuẩn bị dữ liệu demo Checkout V2 và không phải entrypoint mặc định của `db:seed`.
+
+Script yêu cầu `DATABASE_URL` và gọi `assertA2DemoTarget` để kiểm tra môi trường demo trước khi thực hiện thay đổi dữ liệu.
+
+Demo seed yêu cầu bốn sản phẩm catalog đã tồn tại. Script thực hiện `upsert` mã khuyến mãi `DEMO10`, giảm 10% cho đơn hàng có subtotal tối thiểu 50.000đ, giới hạn giảm tối đa 20.000đ. Thời gian hiệu lực cố định từ 01/11/2026 đến 01/12/2026 UTC.
+
+Khi `INIT_DEMO_STOCK=true`, script chỉ khởi tạo tồn kho nếu:
+
+1. Chưa có bản ghi Order.
+2. Chưa có bản ghi StockReservation.
+3. Bốn sản phẩm demo đều có `stock = 0`, `reservedStock = 0` và `stockVersion = 0`.
+
+Nếu đáp ứng điều kiện, mỗi sản phẩm demo được cập nhật `stock = 10` và tăng `stockVersion` thêm 1.
+
+Nếu không đáp ứng điều kiện, script từ chối khởi tạo tồn kho để tránh thay đổi fixture đã được sử dụng.
+
+Việc cập nhật được thực hiện trong Prisma transaction với isolation level `Serializable`.
+
+Khi không bật `INIT_DEMO_STOCK`, script vẫn có thể upsert khuyến mãi `DEMO10` mà không chủ động thay đổi stock, reservations hoặc points.
+
+**Giới hạn**
+
+Catalog seed và demo seed là các cơ chế chuẩn bị dữ liệu. Việc chạy thành công không chứng minh khả năng thanh toán production, rollback migration, backup/restore hoặc bảo toàn dữ liệu sau redeploy.
+
+Demo seed cần được sử dụng trên môi trường kiểm thử phù hợp, không chạy tùy tiện trên database đang chứa dữ liệu cần bảo toàn.
 
 ### 3.5. Chiến lược Mock và Test Data
 
@@ -344,6 +400,7 @@ Các ADR đang chờ review không được xem là đã phê duyệt.
 2. [ADR-002 — PostgreSQL và Prisma](adr/ADR-002-postgresql-prisma.md)
 3. [ADR-003 — Tách môi trường và dữ liệu A2 khỏi A1](adr/ADR-003-a2-environment-isolation.md)
 4. [ADR-004 — Kết hợp Mock Test và Integration Test](adr/ADR-004-testing-strategy.md)
+5. [ADR-005 — Mock Payment và tính nhất quán Checkout V2](adr/ADR-005-checkout-consistency-mock-payment.md)
 
 ### 4.4. Rủi ro và nội dung cần xác nhận
 
@@ -367,3 +424,15 @@ Thành viên E review tài liệu theo các tiêu chí:
 - Không nhầm lẫn kết quả A1 với bằng chứng hoàn thành A2.
 
 Tài liệu chỉ được chuyển từ Draft sang Reviewed sau khi có phản hồi review và xử lý các vấn đề cần sửa.
+Trong `OrdersModule`, các thành phần được phân chia trách nhiệm:
+
+- `OrdersController`: tiếp nhận các request API đơn hàng.
+- `PaymentsController`: tiếp nhận các request liên quan đến thanh toán.
+- `OrderActionsController`: tiếp nhận các thao tác nghiệp vụ đối với đơn hàng, bao gồm luồng cancel.
+- `OrdersService`: xử lý nghiệp vụ đơn hàng.
+- `OrdersReaderService`: đảm nhiệm chức năng đọc dữ liệu đơn hàng.
+- `OrderWorkflowService`: xử lý workflow và các chuyển trạng thái đơn hàng.
+- `MockPaymentService`: giả lập kết quả thanh toán phục vụ phát triển và kiểm thử.
+- `OrderExpiryService`: xử lý nghiệp vụ liên quan đến đơn hàng hết hạn.
+
+Các thành phần trên được đăng ký trong `controllers` hoặc `providers` của `OrdersModule`. Module import `PrismaModule` và `AuthModule` để sử dụng các dependency liên quan.
