@@ -2,12 +2,26 @@
 
 Ngày lập: 10/11/2026.
 Lead: E. Reviewer: C.
-Trạng thái: DRAFT — local đã kiểm chứng; Railway production là phương án đề xuất, chờ duyệt tài khoản/ngân sách và kiểm chứng triển khai.
-Nền triển khai local: commit 0846f3a, PR #40.
-Nguồn kế thừa: [PR A1 #44](https://github.com/giabaot400-boop/BrewLite/pull/44),
-commit 1952ea6. Bằng chứng Compose/local bên dưới thuộc A1,
-không phải kết quả chạy source A2.
-Nền A2 đối chiếu: d0a92b9; chưa có Dockerfile/Compose.
+
+Trạng thái: Đã triển khai Railway và kiểm chứng thủ công luồng tạo đơn
+PENDING trên HTTPS. Các phần thanh toán, rollback và backup/restore
+chưa được kiểm chứng trên production.
+
+Nguồn thiết kế kế thừa:
+[PR A1 #44](https://github.com/giabaot400-boop/BrewLite/pull/44),
+commit 1952ea6. Bằng chứng A1 chỉ có giá trị tham khảo,
+không thay thế bằng chứng chạy source A2.
+
+Bằng chứng local A2: [COMPOSE.md](COMPOSE.md).
+
+Bằng chứng Railway A2:
+[PR #15](https://github.com/giabaot400-boop/BrewLite-Assignment2/pull/15),
+commit báo cáo 7009009.
+
+Image production được build từ source SHA
+0bea2e2015c54cf23cb1d3b9f32bc146d2891136;
+không đồng nghĩa với HEAD mới nhất trên main đã được triển khai.
+
 
 
 ## 1. Deployment local tham khảo — đã chạy tại A1
@@ -94,15 +108,19 @@ Giới hạn:
 - Chưa kiểm thử backup/restore hoặc rollback deployment.
 - Healthcheck không thay bằng chứng nghiệp vụ/E2E.
 
-## 5. Production Railway — phương án đề xuất
+## 5. Production Railway — cấu hình đã triển khai và phần còn thiếu
 
-Nhóm ưu tiên Railway cho Web Next.js, API NestJS và PostgreSQL 17.
-Compose giữ cho local. Chưa tạo hoặc xác nhận deployment Railway,
-chưa bật trả phí; cần nhóm duyệt tài khoản và ngân sách.
+Ngày 14/11/2026, E triển khai Web Next.js, API NestJS và PostgreSQL 17
+trên Railway. Web/API sử dụng image GHCR theo digest,
+được build từ source SHA 0bea2e2015c54cf23cb1d3b9f32bc146d2891136.
+
+Đã kiểm chứng migration, seed catalog, đăng nhập và tạo đơn PENDING
+qua HTTPS. Chi tiết tại PR A2 #15.
+Compose giữ cho local; ngân sách và chi phí thực tế cần xác nhận riêng.
 
 ### 5.1 UML deployment production
 Nguồn UML: [deployment-production.puml](deployment-production.puml).
-![UML deployment Railway đề xuất](deployment-production.svg)
+![UML deployment Railway đã kiểm chứng theo phạm vi PR 15](deployment-production.svg)
 Sơ đồ Mermaid bên dưới là bản tóm tắt luồng triển khai.
 
 ```mermaid
@@ -131,54 +149,69 @@ flowchart LR
   Db --- Volume
 
   GitHub --> CI
-  CI -.->|"Gate PASS + release được duyệt"| Web
-  CI -.->|"Cùng SHA được duyệt"| Api
+    Registry["GHCR public<br/>Web/API image theo digest"]
+  Operator["E — triển khai Railway thủ công"]
+  CI -->|"verify PASS rồi publish-ghcr"| Registry
+  Registry -.->|"Image pull"| Web
+  Registry -.->|"Image pull"| Api
+  CI -.->|"Kết quả CI và digest"| Operator
+  Operator -.->|"Cấu hình digest / deploy"| Web
+  Operator -.->|"Cấu hình digest / deploy"| Api
   Migration -.->|"migrate deploy"| Db
 ```
 
-Sơ đồ là thiết kế mục tiêu, chưa phải bằng chứng hạ tầng đã chạy.
+Sơ đồ mô tả đường triển khai thủ công đã chạy với image từ source SHA
+0bea2e2. Bằng chứng nghiệp vụ giới hạn ở luồng tạo đơn PENDING;
+không xác nhận thanh toán, rollback hoặc backup/restore.
 Không tạo thêm service payment gateway hoặc queue.
 Migration là bước chạy tạm thời, không phải service thứ tư thường trực.
 Mock payment vẫn ở trong backend theo thiết kế nghiệp vụ.
 
-### 5.2 Cấu hình service
+### 5.2 Cấu hình service đã triển khai
 
-| Service | Cấu hình đề xuất |
+Web/API dùng image GHCR theo digest từ source SHA 0bea2e2.
+Railway pull image đã build; không build trực tiếp từ repository.
+
+| Thành phần | Cấu hình thực tế |
 |---|---|
-| Web | Build context ở gốc repo; RAILWAY_DOCKERFILE_PATH=apps/web/Dockerfile |
-| API | Build context ở gốc repo; RAILWAY_DOCKERFILE_PATH=apps/api/Dockerfile |
-| PostgreSQL | Ghim image PostgreSQL 17 và lưu image/digest triển khai thực tế |
-| DB volume | Mount đúng thư mục dữ liệu image PostgreSQL 17; không dùng ephemeral disk làm dữ liệu bền |
-| Public networking | Chỉ Web có domain HTTPS Railway |
-| Private networking | Web → API → DB trong cùng project/environment |
-| Replica ban đầu | Một replica mỗi service; chưa tuyên bố high availability |
+| Web | Service BrewLite, image brewlite-a2-web từ GHCR, port 3000 |
+| API | Service BrewLite-Assignment2, image brewlite-a2-api từ GHCR, port 3001 |
+| Database | Service postgres, image postgres:17-bookworm; log xác nhận 17.12 |
+| Database name | brewlite_a2 |
+| Volume | postgres-volume-gGFY, mount /var/lib/postgresql/data |
+| PGDATA | /var/lib/postgresql/data/pgdata |
+| Public HTTPS | https://brewlite-production.up.railway.app, target port 3000 |
+| API private | brewlite-assignment2.railway.internal:3001 |
+| DB private | postgres-99de976c.railway.internal:5432 |
+| Healthcheck | Web `/`, API `/health` |
+| Replica | Một replica mỗi service; chưa xác nhận high availability |
 
-Cần kiểm tra trước deploy:
-- Web hiện chạy port 3000; cấu hình PORT/target port phải khớp.
-- API đọc PORT; xác nhận listen hỗ trợ private networking Railway.
-- BACKEND_INTERNAL_URL của Web trỏ hostname private thực tế của API.
-- DATABASE_URL của API dùng hostname private thực tế của PostgreSQL.
-- Không dùng tên service Compose như backend/db nếu Railway không cấp tên đó.
-- APP_ORIGIN và FRONTEND_ORIGIN khớp chính xác HTTPS origin của Web.
-- Cookie production, Origin allowlist và BFF owner/session guard
-  phải được kiểm thử lại qua HTTPS.
-- UTC cho backend/seed và kiểm thử round-trip thời gian.
-- Private network chỉ dùng ở runtime, không gọi DB khi build image.
-- Không đưa secret vào NEXT_PUBLIC_*, Git, image hoặc log.
+Biến môi trường runtime:
 
-Không đổi Dockerfile/local scripts chỉ để giả định production đã chạy.
-Mọi thay đổi PORT/listen phải có PR, review và test tương ứng.
-Điều kiện cấu hình cần kiểm chứng:
-- API đọc PORT; cấu hình Railway phải khớp port ứng dụng.
-- Web dùng next start --port 3000, chưa đọc PORT động.
-  Đặt PORT=3000 và target port 3000; thay lệnh khởi động cần PR riêng.
-- NEXT_PUBLIC_* được nhúng vào image lúc build.
-  CI phải truyền NEXT_PUBLIC_PRODUCTS_SOURCE và NEXT_PUBLIC_AUTH_SOURCE
-  theo cấu hình release; không đặt secret hoặc hostname private ở đây.
-- Web runtime cần BACKEND_INTERNAL_URL private thực tế, APP_ORIGIN
-  đúng HTTPS origin, NODE_ENV=production và cookie A2 riêng.
-- API runtime cần DATABASE_URL private, FRONTEND_ORIGIN đúng Web origin,
-  AUTH_JWT_SECRET đủ mạnh và PORT.
+- Web: NODE_ENV=production, TZ=UTC, PORT=3000.
+- BACKEND_INTERNAL_URL=http://brewlite-assignment2.railway.internal:3001.
+- APP_ORIGIN=https://brewlite-production.up.railway.app.
+- AUTH_COOKIE_NAME=brewlite_a2_session.
+- API: NODE_ENV=production, TZ=UTC, PORT=3001.
+- FRONTEND_ORIGIN=https://brewlite-production.up.railway.app.
+- DATABASE_URL dùng database brewlite_a2 và hostname private của postgres.
+- AUTH_JWT_SECRET và mật khẩu database được lưu trong Railway variables;
+  không ghi giá trị vào tài liệu.
+
+Đã kiểm chứng kết nối Web → API → PostgreSQL qua luồng tạo đơn.
+API và PostgreSQL không được cấu hình public domain/TCP proxy.
+
+Giới hạn và yêu cầu cấu hình:
+
+- Web image chạy next start --port 3000; target port giữ 3000.
+- NEXT_PUBLIC_* là cấu hình build-time; thay runtime không thay bundle đã build.
+- Không đưa secret hoặc hostname private vào NEXT_PUBLIC_*.
+- Đăng nhập và tạo đơn qua HTTPS đã chạy; chưa kiểm chứng đầy đủ
+  các trường hợp cookie, CSRF và ownership trên production.
+- TZ=UTC đã cấu hình; chưa có kiểm thử riêng round-trip thời gian.
+- Database image hiện ghim major 17 bằng tag; chưa ghi digest database.
+- Service Postgres 18 ban đầu và volume riêng vẫn còn,
+  cần xác nhận không sử dụng trước khi dọn.
 
 ### 5.3 Tài khoản và quyền
 
@@ -191,69 +224,94 @@ Mọi thay đổi PORT/listen phải có PR, review và test tương ứng.
   project/environment khi nền tảng hỗ trợ.
 - Gói Hobby/Pro và quyền cộng tác thực tế phải được kiểm tra
   trước khi nhóm duyệt; chưa có xác nhận tài khoản hiện hành.
-Quyền registry đề xuất:
-- Job push GHCR dùng GITHUB_TOKEN với permissions packages: write.
-- Package gắn với repo BrewLite-Assignment2.
-- Railway pull private image dùng credential chỉ có read:packages.
-- Chỉ chuyển package sang public nếu nhóm đồng ý.
-- Phải kiểm chứng pull private image và deploy đúng digest trước nghiệm thu.
+Quyền registry:
+- CI #32 đã publish thành công hai package GHCR của repo A2.
+- Hai package đang public; Railway đã pull và chạy image theo digest.
+- Lần triển khai này không kiểm chứng pull private image.
+- Nếu chuyển package sang private, cần cấu hình credential chỉ có
+  quyền read:packages và kiểm chứng lại trước phát hành.
+- Job publish cần quyền packages:write; credential không được ghi
+  vào Git, image hoặc log.
+### 5.4 Quality gate, registry và phát hành
 
-### 5.4 Quality gate, registry và phát hành — đề xuất
+Đã kiểm chứng cho bản production:
+- Source SHA: 0bea2e2015c54cf23cb1d3b9f32bc146d2891136.
+- CI #32 trên main: verify và publish-ghcr đều PASS.
+- Link: https://github.com/giabaot400-boop/BrewLite-Assignment2/actions/runs/43546562005
+- Web/API image được publish lên GHCR, có tag theo SHA và digest.
+- Hai package đang public; lần triển khai này không dùng credential
+  để pull private image.
+- Railway Web/API dùng image theo digest của bản phát hành trên.
+- Đã ngắt nguồn GitHub của hai service; không dùng GitHub source autodeploy.
+- Cấu hình và deploy Railway được thực hiện thủ công sau khi CI PASS.
+- Chưa có bằng chứng pipeline tự động deploy Railway.
 
-- Source và SHA phát hành phải thuộc repo BrewLite-Assignment2.
-- CI Task 4 hiện có job verify: npm ci --ignore-scripts,
-  Prisma generate, lint riêng apps/web, typecheck web/API,
-  unit test, test cấu hình local và build web/API.
-- API chưa có ESLint trong gate hiện tại.
-- CI dùng dữ liệu fixture, không kết nối backend hoặc PostgreSQL thật.
-- PostgreSQL integration/E2E chưa nằm trong gate verify hiện tại.
+Phạm vi verify được đối chiếu:
+- Cài đặt theo lockfile, sinh Prisma Client.
+- Lint apps/web; typecheck và unit test web/API.
+- Test cấu hình local và build web/API.
+- PostgreSQL integration/E2E không được suy ra từ kết quả verify này.
 
-Các điều kiện cần triển khai và kiểm chứng:
-- Cần bật branch protection yêu cầu check verify trước merge.
-  Chưa xác nhận đã bật hoặc kiểm chứng chặn merge; trạng thái CHỜ.
-- Đề xuất job build/push image chỉ chạy sau verify PASS trên cùng SHA.
-  CI hiện tại chưa có job build/push image hoặc cơ chế CD này.
-- Build Web/API image, tag theo SHA và lưu digest.
-- B đã xác nhận hướng GHCR → Railway với các điều kiện cấu hình;
-  chưa xác nhận pipeline triển khai thực tế.
-- CI có quyền push package A2; Railway pull được private image.
-- Chỉ deploy và rollback bằng image digest đã được duyệt.
-- Chạy migration an toàn và health/smoke sau deploy.
-- Kiểm chứng gate thất bại thực sự chặn deployment.
-- Secret registry/CD không xuất hiện trong Git hoặc log.
+Giới hạn:
+- CI PASS của một lượt chạy chưa chứng minh gate thất bại sẽ chặn
+  mọi đường deploy thủ công trên Railway.
+- Branch protection và bằng chứng chặn merge xem tài liệu CI.md;
+  không suy ra trạng thái chỉ từ việc verify PASS.
+- Chỉ phát hành image đã được duyệt và ghi lại digest.
+- Không đưa secret vào Git, image hoặc log.
 
-Không đồng thời bật GitHub source autodeploy hoặc đường deploy khác
-bỏ qua quality gate và phê duyệt của pipeline này.
+Bằng chứng triển khai và smoke:
+[PR A2 #15](https://github.com/giabaot400-boop/BrewLite-Assignment2/pull/15).
 
-Chưa xác nhận GHCR hoặc Railway production A2 đã chạy.
+Main hiện tại có thể mới hơn source SHA của image đang chạy.
+Kết quả kiểm chứng bản production trên không tự áp dụng cho các commit mới.
 
 ### 5.5 Migration, seed, health và rollback
 
-- API pre-deploy dự kiến:
-  npm exec --workspace apps/api -- prisma migrate deploy
-- Lệnh cần kiểm chứng trong image A2. Nền A2 d0a92b9 chưa có
-  script db:deploy hoặc Dockerfile.
-- Xác nhận pre-deploy truy cập được private DB trong môi trường thật.
-- Chỉ API chạy migration, không để Web và API cùng migrate.
-- Sao lưu trước thay đổi schema; kiểm tra migration trên bản sao/test DB.
-- Không chạy demo seed hoặc INIT_DEMO_STOCK tự động mỗi lần deploy.
-- Seed production cần quy trình riêng được nhóm duyệt;
-  guard hiện tại chỉ cho database demo, không nới guard để chạy tùy tiện.
-- API deployment health: /health; Web deployment health: /.
-- Healthcheck khởi động không thay giám sát liên tục hoặc kiểm thử nghiệp vụ.
-- Smoke: HTTPS menu/Product BFF, register/login/me/logout,
-  Order và payment trên bản tích hợp đã được nhóm chốt.
-- Rollback ứng dụng về deployment/SHA trước chỉ khi tương thích schema.
-- Không tự hoàn tác migration; restore dữ liệu cần người duyệt
-  và chấp nhận mất các ghi sau thời điểm backup.
-- Volume không thay thế backup; phải kiểm thử restore.
-- Ghi thời điểm backup, thời gian giữ và nơi lưu trước nghiệm thu.
-- Prisma là devDependency; image dùng cho migration phải giữ Prisma CLI,
-  prisma.config.ts, dotenv và prisma/migrations, cùng generated client.
-- Không loại devDependencies khỏi image migration rồi giả định migrate deploy
-  vẫn hoạt động. Có thể dùng stage migration riêng từ cùng SHA.
-- Chỉ API chạy pre-deploy migration, với DATABASE_URL được cấp lúc chạy.
-- Build image không kết nối production DB.
+Đã chạy trên Railway với image từ source SHA 0bea2e2:
+
+- API pre-deploy:
+  `npm exec --workspace apps/api -- prisma migrate deploy`
+- Kết nối thành công tới database brewlite_a2 qua mạng private.
+- Áp dụng thành công 2 migration:
+  - 20261024160346_init_products
+  - 20261030152601_sprint2_auth_orders
+- Khi redeploy API, pre-deploy báo:
+  `No pending migrations to apply`.
+- Chỉ API chạy migration; Web không chạy migration.
+- Seed catalog được chạy thủ công trong container API:
+  `npm run db:seed --workspace apps/api`.
+- Seed thành công 4 sản phẩm và 2 topping mẫu.
+- Seed không nằm trong pre-deploy và không chạy lại khi redeploy API.
+- API healthcheck `/health`; Web healthcheck `/`.
+- Web/API đạt trạng thái Active/Online.
+- HTTPS Product BFF trả 200 và đủ 4 sản phẩm.
+- Đăng nhập và tạo đơn PENDING 57.000đ qua giao diện thành công.
+- Database xác nhận ledger SUCCEEDED và request hash khớp Order.
+- Catalog và đơn hàng còn nguyên sau redeploy API.
+
+Giới hạn kiểm chứng:
+
+- Đây là smoke thủ công cho luồng tạo đơn của bản production trên.
+- Chưa kiểm chứng thanh toán, hoàn tiền, loyalty, cancel hoặc expiry.
+- Redeploy API không thay thế kiểm tra restart/redeploy PostgreSQL.
+- Healthcheck khởi động không thay thế giám sát liên tục.
+- Chưa thực hiện rollback ứng dụng hoặc backup/restore database.
+
+Yêu cầu vận hành tiếp theo:
+
+- Sao lưu trước thay đổi schema; thử migration trên database test/bản sao.
+- Rollback ứng dụng bằng digest đã duyệt, chỉ khi tương thích schema.
+- Không tự hoàn tác migration hoặc restore đè production.
+- Restore cần người duyệt và xác định dữ liệu có thể mất sau thời điểm backup.
+- Volume không thay thế backup; cần kiểm thử restore trên database riêng.
+- Image chạy migration phải có Prisma CLI, prisma.config.ts,
+  dotenv và prisma/migrations.
+- Cấp DATABASE_URL lúc chạy; không kết nối production DB trong bước build.
+- Không tự chạy seed-demo hoặc INIT_DEMO_STOCK trên production.
+
+Bằng chứng chi tiết:
+[PR A2 #15](https://github.com/giabaot400-boop/BrewLite-Assignment2/pull/15).
 
 ### 5.6 Dự toán sơ bộ — kiểm tra ngày 10/11/2026
 
@@ -289,28 +347,34 @@ Cơ sở ước tính từ tài liệu Railway:
 
 ### 5.7 Trạng thái cần review
 
-Đã chạy tại A1: Compose local và bằng chứng ở mục 4.
-Các kết quả này không chứng minh Docker/Compose hoặc production A2 đã chạy.
-Đề xuất: toàn bộ topology/config/pipeline Railway trong mục 5.
+Đã chạy thực tế tại A2:
+- Docker/Compose local: xem COMPOSE.md.
+- CI #32: verify và publish-ghcr PASS cho source SHA 0bea2e2.
+- Railway Web/API triển khai thủ công bằng image GHCR theo digest.
+- Web có HTTPS: https://brewlite-production.up.railway.app
+- API dùng mạng private.
+- PostgreSQL 17.12 dùng volume riêng và kết nối private.
+- Migration và seed catalog thành công.
+- Smoke thủ công: đăng nhập, chọn món, giỏ hàng và tạo đơn PENDING.
+- Đơn 57.000đ có ledger SUCCEEDED và request hash khớp trong database.
+- Catalog và đơn hàng còn nguyên sau redeploy API.
 
-Chưa xác nhận:
-- Tài khoản, quyền, gói trả phí và ngân sách được duyệt.
-- Railway services/domain/volume và private connectivity.
-- Quality gate, migration, backup/restore và rollback thực tế.
-- Smoke/E2E trên HTTPS và chi phí đo được.
-- Chưa hoàn thành production hoặc nghiệm thu Task 3.2.
+Bằng chứng:
+[PR A2 #15](https://github.com/giabaot400-boop/BrewLite-Assignment2/pull/15).
 
-Nguồn tham khảo chính thức:
-- https://docs.railway.com/pricing
-- https://docs.railway.com/pricing/understanding-your-bill
-- https://railway.com/pricing
-- https://docs.railway.com/networking/private-networking/how-it-works
-- https://docs.railway.com/networking/public-networking
-- https://docs.railway.com/deployments/pre-deploy-command
-- https://docs.railway.com/deployments/healthchecks
-- https://docs.railway.com/volumes
-- https://docs.railway.com/projects/project-members
-- https://github.com/railwayapp/docs/blob/main/content/docs/deployments/github-autodeploys.md
+Các kết quả A1 ở mục 4 chỉ là bằng chứng lịch sử,
+không thay thế kiểm chứng A2.
+
+Còn cần hoàn thiện hoặc xác nhận:
+- Reviewer xác nhận phạm vi bằng chứng và cấu hình deployment.
+- Đồng bộ UML với tên service, domain và cách phát hành thực tế.
+- Thanh toán và các workflow checkout còn lại trên production.
+- Restart/redeploy PostgreSQL, backup/restore và rollback ứng dụng.
+- Pipeline tự động deploy Railway sau quality gate.
+- Owner billing, gói/ngân sách được duyệt và chi phí đo thực tế.
+- Dọn service Postgres 18 ban đầu sau khi xác nhận không được sử dụng.
+
+Chưa kết luận toàn bộ checkout hoặc nghiệm thu Task 3.2 đã hoàn thành.
 ## 6. Điều kiện chốt Task 3.2
 
 - Nhóm duyệt Railway, gói sử dụng, Owner và ngân sách.

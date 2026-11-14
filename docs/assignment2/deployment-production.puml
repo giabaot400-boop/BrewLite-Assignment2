@@ -1,5 +1,5 @@
 @startuml
-title BrewLite Assignment 2 — Production deployment (PROPOSED)
+title BrewLite A2 — Railway deployment verified 14/11/2026
 top to bottom direction
 skinparam componentStyle uml2
 skinparam defaultFontSize 14
@@ -7,71 +7,72 @@ skinparam nodesep 35
 skinparam ranksep 45
 
 node "Client device" {
-  artifact "Browser / PWA" as browser
+  artifact "Web browser" as browser
 }
 
-cloud "GitHub — A2 source and CI" {
-  artifact "BrewLite-Assignment2\nApproved A2 commit SHA" as repo
+cloud "GitHub — BrewLite-Assignment2" {
+  artifact "Release source\n0bea2e2015c54cf23cb1d3b9f32bc146d2891136" as repo
 
-  node "GitHub Actions runner" {
-    artifact "Quality gate\nInstall / Lint / Typecheck\nUnit / Setup tests / Build" as gate
-    artifact "Build Web/API images\nTag by approved A2 SHA" as build
-    artifact "Release approval\nDeploy / Smoke / Rollback" as cd
+  node "GitHub Actions — CI #32" {
+    artifact "verify — PASS\nInstall / Prisma generate\nWeb lint / Typecheck\nUnit / Setup tests / Build" as gate
+    artifact "publish-ghcr — PASS\nBuild and push Web/API\nSHA tags and image digests" as publish
   }
 
-  node "GHCR — proposed registry" as registry {
-    artifact "A2 Web image\nSHA tag + digest" as webImage
-    artifact "A2 API image\nSHA tag + digest" as apiImage
+  node "GHCR — public packages" {
+    artifact "brewlite-a2-web\nRelease digest recorded in PR #15" as webImage
+    artifact "brewlite-a2-api\nRelease digest recorded in PR #15" as apiImage
   }
 }
 
-cloud "Railway — dedicated A2 production environment" {
+actor "E — operator\nManual Railway deployment" as operator
+
+cloud "Railway — BrewLite-Assignment2 / production" {
   node "Railway HTTPS Edge" as edge
 
-  node "Web service" as web {
-    artifact "Next.js UI + BFF\nTarget: apps/web/Dockerfile\nPort: configured Web PORT" as next
+  node "BrewLite — Web" as web {
+    artifact "Next.js UI + BFF\napps/web/Dockerfile\nPort 3000" as next
   }
 
-  node "API service" as api {
-    artifact "NestJS modules\nTarget: apps/api/Dockerfile\nMock PaymentService inside API\nPort: configured API PORT" as nest
+  node "BrewLite-Assignment2 — API" as api {
+    artifact "NestJS application\napps/api/Dockerfile\nPort 3001" as nest
   }
 
-  node "Database service" {
-    database "PostgreSQL 17\nA2 database / private only" as pg
+  node "postgres — database service" {
+    database "PostgreSQL 17.12\nImage: postgres:17-bookworm\nDatabase: brewlite_a2" as pg
   }
 
-  node "Persistent Railway Volume" {
-    artifact "PostgreSQL data directory" as data
+  node "postgres-volume-gGFY" {
+    artifact "Mount: /var/lib/postgresql/data\nPGDATA: mount/pgdata" as data
   }
 
-  node "API pre-deploy execution\nTemporary, not a fourth service" {
-    artifact "prisma migrate deploy\nApproved API image / private DB" as migrate
+  node "API pre-deploy execution\nTemporary execution" {
+    artifact "prisma migrate deploy\nSame API image / private DB" as migrate
   }
 
-  node "Platform operations" {
-    artifact "A2 environment variables\nSecrets / private service URLs" as config
+  node "Runtime configuration and operations" {
+    artifact "Railway variables\nSecrets and private URLs" as config
     artifact "Startup health checks\nWeb: GET /\nAPI: GET /health" as health
-    artifact "Application logs\nstdout / stderr\nNo tokens or secrets" as logs
+    artifact "Application logs" as logs
   }
 }
 
-browser --> edge : HTTPS / 443
-edge --> next : HTTP / Web target port
-next --> nest : Private HTTP / API PORT
-nest --> pg : Private PostgreSQL / 5432
-pg -- data : Persistent storage
-
-repo --> gate : PR and release checks
-gate --> build : Only after PASS
-build --> webImage : Push image
-build --> apiImage : Push image
-build --> cd : Record SHA and digests
-cd ..> web : Approved Web image digest
-cd ..> api : Approved API image digest
+repo --> gate : Release SHA
+gate --> publish : After verify PASS
+publish --> webImage
+publish --> apiImage
+publish ..> operator : CI result and digests
+operator ..> web : Configure image digest / deploy
+operator ..> api : Configure image digest / deploy
 webImage ..> web : Image pull
 apiImage ..> api : Image pull
-apiImage ..> migrate : Same approved API image
+apiImage ..> migrate : Same API image
+
+browser --> edge : HTTPS / 443\nbrewlite-production.up.railway.app
+edge --> next : HTTP / target port 3000
+next --> nest : Private HTTP / 3001\nbrewlite-assignment2.railway.internal
+nest --> pg : Private PostgreSQL / 5432\npostgres-99de976c.railway.internal
 migrate --> pg : Private migration connection
+pg -- data : Persistent storage
 
 config ..> next
 config ..> nest
@@ -80,26 +81,29 @@ health ..> nest
 next ..> logs
 nest ..> logs
 
-note bottom of registry
-GHCR is a proposal pending B review.
-Registry authentication, Railway image deployment,
-pre-deploy and rollback must be verified.
-Do not enable a second deployment path bypassing CI.
+note bottom of web
+Verified manually:
+HTTPS catalog, product options, cart,
+login and PENDING order total 57000.
+Database ledger SUCCEEDED; hashes match.
 end note
 
-note bottom of web
-Only Web has a public HTTPS domain.
-API and PostgreSQL have no public TCP endpoint.
-External API/health evidence through BFF
-must be agreed and implemented before delivery.
+note bottom of api
+API redeploy: no pending migrations.
+Catalog and existing order retained.
+This does not verify PostgreSQL restart
+or backup/restore.
 end note
 
 legend bottom
-PROPOSED — no A2 production deployment is claimed.
-A2 Dockerfiles and pipeline are not yet implemented at baseline d0a92b9.
-Local: separate A2 checkout/config/database; Compose is local only.
-CI: isolated test database, no production DB access during image build.
-Production: dedicated A2 services, secrets and persistent volume.
-A1 Compose evidence is reference only.
+Observed deployment uses images from source SHA 0bea2e2.
+Newer main commits are not claimed deployed.
+Only Web has a public domain; API and DB use private networking.
+GitHub sources disconnected from Web/API.
+Railway deployment is manual; automatic CD is not verified.
+Payment, rollback and backup/restore remain unverified.
+Initial PostgreSQL 18 service remains outside the target topology;
+it has not yet been removed.
+No secrets are included in this diagram.
 endlegend
 @enduml
