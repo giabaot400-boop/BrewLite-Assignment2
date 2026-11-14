@@ -40,6 +40,43 @@ Windows của lượt gốc; để chạy ở checkout khác, dùng helper tạo
 Xem [kết luận và giới hạn](../../CHECKOUT_WINDOWS_QA.md). Không dùng lượt local
 này như chứng cứ GitHub CI, HTTPS production hoặc nghiệm thu toàn bộ AC.
 
+## Tái lập hash tổng manifest mà không chạy Docker
+
+Thuật toán nằm trong `scripts/BrewLite_A2_Compose_Check.cjs`, ở dòng gán
+`report.sourceManifestSha256`: SHA-256 của UTF-8 `JSON.stringify(report.sourceFiles)`.
+Mảng được tạo từ danh sách file Git (tracked và untracked không bị ignore),
+loại trùng, sắp xếp theo tên file; từng entry giữ thứ tự thuộc tính
+`file`, `bytes`, `sha256` (hoặc `file`, `missing` nếu đã bị xóa).
+Hash từng file source dùng byte gốc; không chuẩn hóa CRLF cho manifest này.
+Chuẩn hóa CRLF/JSON chỉ áp dụng ở bước đối chiếu source trong image riêng.
+
+Từ gốc repo chạy đoạn PowerShell đọc report đã lưu, không ghi file hoặc gọi Docker:
+
+```powershell
+@'
+const fs = require('node:fs');
+const { createHash } = require('node:crypto');
+const report = JSON.parse(fs.readFileSync(
+  'docs/assignment2/testing/checkout-windows-2026-11-13/compose-result.json', 'utf8'
+));
+const actual = createHash('sha256')
+  .update(JSON.stringify(report.sourceFiles), 'utf8').digest('hex');
+if (actual !== report.sourceManifestSha256) {
+  throw new Error('Stored source manifest hash mismatch.');
+}
+console.log('FILES:', report.sourceFiles.length);
+console.log('SHA256:', actual);
+console.log('STORED_SOURCE_MANIFEST_HASH_PASSED');
+'@ | node
+```
+
+Kết quả mong đợi: 347 file và
+`28a047822fbaf4cb5e91e93712a66dd1bbc221e123c2924abd86b8da5d995dae`.
+Đoạn này kiểm tra hash tổng của mảng được lưu trong report; không chứng minh
+source hiện tại trùng bản QA cũ. Khi đối chiếu từng file với checkout mới cần
+xét các sửa đổi sau QA, đặc biệt ba file từ #9/#10 và tài liệu đã bổ sung;
+xem [ranh giới bằng chứng](../../CHECKOUT_WINDOWS_QA.md#thay-đổi-sau-lượt-compose-và-giới-hạn-gán-kết-quả).
+
 ## SHA-256
 
 | File | Byte | SHA-256 |

@@ -11,13 +11,47 @@ Ngày thực hiện: **13/11/2026**. Phạm vi: checkout được tích hợp v�
 - Manifest SHA-256 của 347 file source tại thời điểm kiểm tra:
   `28a047822fbaf4cb5e91e93712a66dd1bbc221e123c2924abd86b8da5d995dae`.
 - Helper đã đối chiếu 67 file của backend và 142 file của frontend trong image
-  với checkout hiện tại; CRLF/LF và cách thụt JSON được chuẩn hóa khi đối chiếu.
+  với checkout tại thời điểm chạy; CRLF/LF và cách thụt JSON được chuẩn hóa khi đối chiếu.
 - Docker Engine `29.9.3`; Compose `v5.7.0`; PostgreSQL trong container `17.11`;
   Chromium `158.0.8127.18`.
 
 Mốc chạy Compose: **20:45:48–20:47:40, UTC+7**. Report giữ timestamp UTC gốc.
 Các tài liệu QA được bổ sung sau lượt chạy; fingerprint trên mô tả source trước
 khi bổ sung hồ sơ, không phải SHA commit cuối cùng.
+
+## Thay đổi sau lượt Compose và giới hạn gán kết quả
+
+Lượt Compose/browser ngày 13/11 kiểm tra source chưa commit trên nền `3be4a11`,
+sau đó được ghi nhận cùng commit `0a086f2`. Nhánh tiếp nhận `main` qua commit
+`3726bace5f43336377fa354ca6c26d2576ea371f`; so với `0a086f2`, ba file thay đổi:
+
+| Nguồn | File | Thay đổi |
+|---|---|---|
+| PR #9 | `apps/web/Dockerfile` | Tạo và cấp quyền ghi riêng cho `.next/cache`, giữ `USER node` |
+| PR #9 | `docs/assignment2/COMPOSE.md` | Ghi kiểm chứng cache của E và điều chỉnh trình bày |
+| PR #10 | `.github/workflows/ci.yml` | Đổi checkout/setup-node v4 sang v6 |
+
+Kết quả Compose **8/8**, browser **9/9**, image ID và source/image fingerprint
+ở report chỉ thuộc lượt local đã mô tả. Chưa build lại image Web/chạy lại
+Compose sau ba thay đổi trên; không gán kết quả đó cho Dockerfile mới,
+workflow CI mới, commit `3726bac` hoặc SHA cuối của PR.
+Các thay đổi tài liệu bổ sung sau QA cũng không nằm trong fingerprint gốc.
+
+CI là bằng chứng riêng: [run 43444806943](https://github.com/giabaot400-boop/BrewLite-Assignment2/actions/runs/43444806943)
+đã đạt `verify` trên head `3726bace5f43336377fa354ca6c26d2576ea371f`.
+Run này không thực thi PostgreSQL, browser hoặc Compose. Sau các chỉnh sửa
+review cần kiểm lại `verify` trên đúng head cuối; không tái sử dụng run cũ để
+khẳng định CI của head mới đã đạt.
+
+Sau đó `main` còn nhận [PR #12](https://github.com/giabaot400-boop/BrewLite-Assignment2/pull/12)
+qua merge `8ccf0368e2666e5833970eb3ee8d932f01700d14`, bổ sung job publish GHCR
+sau `verify`. Khi nhánh cập nhật thêm mốc này, workflow mới cũng nằm ngoài
+phạm vi lượt Compose cũ. Publish GHCR, deployment Railway và smoke production
+cần bằng chứng riêng; không suy ra đã đạt từ report local hoặc CI trước đó.
+
+Muốn có evidence Compose cho phiên bản mới, cần build image từ phiên bản đó
+và chạy kiểm tra tương ứng. Lượt sửa tài liệu ngày 14/11 giữ nguyên giới hạn
+và report gốc, không bổ sung một lượt Docker chưa thực hiện.
 
 ## Bằng chứng Compose trực tiếp
 
@@ -91,6 +125,7 @@ nguyên nhân gốc của các file rỗng chỉ từ việc ổ đĩa từng th
 ## Kết luận trong phạm vi
 
 Checkout A2 đã qua kiểm chứng chức năng local trên Windows và Compose nêu trên.
-Bước tiếp theo của nhánh là rà diff/dependency, commit/push và review PR.
+Nhánh đã commit/push và đang xử lý review PR #11. CI và Compose được ghi
+riêng theo phiên bản, không suy kết quả local cũ thành chứng cứ cho SHA mới.
 Kết quả này chưa thay cho nghiệm thu toàn bộ 59 AC, GitHub CI của commit cuối,
 kiến trúc/ADR còn lại, CD/HTTPS production, release hoặc việc giảng viên chấp nhận A2.
