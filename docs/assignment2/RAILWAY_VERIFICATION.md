@@ -84,7 +84,8 @@ không phải kết quả chạy bộ E2E tự động.
 - Không chạy seed lại.
 - Kết quả chỉ xác nhận dữ liệu còn nguyên sau redeploy API;
   chưa kiểm chứng restart/redeploy PostgreSQL hoặc backup/restore.
-  
+
+
 ## Chưa kiểm chứng
 
 - Thanh toán, hoàn tiền, loyalty, cancel và expiry.
