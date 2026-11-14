@@ -2,8 +2,13 @@
   "name": "brewlite",
   "version": "0.1.0",
   "private": true,
-  "workspaces": ["apps/web", "apps/api"],
-  "engines": { "node": ">=24.15.0 <25" },
+  "workspaces": [
+    "apps/web",
+    "apps/api"
+  ],
+  "engines": {
+    "node": ">=24.15.0 <25"
+  },
   "scripts": {
     "setup": "node scripts/setup-env.mjs",
     "dev": "concurrently --kill-others-on-fail --names frontend,backend \"npm run dev:frontend\" \"npm run dev:backend\"",
@@ -18,5 +23,8 @@
     "db:migrate": "npm run db:migrate --workspace apps/api --",
     "db:seed": "npm run db:seed --workspace apps/api"
   },
-  "devDependencies": { "concurrently": "^9.2.1" }
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  },
+  "overrides": {}
 }

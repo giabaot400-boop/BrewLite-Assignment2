@@ -1,5 +1,9 @@
 # BrewLite Assignment 2 — Task 1–2
 
+Bản tích hợp checkout: [nguồn, phạm vi và kiểm tra](CHECKOUT_INTEGRATION.md). Tình trạng Task/AC phải đối chiếu evidence của A2; thông tin lịch sử bên dưới không tự xác nhận bản tích hợp mới đã nghiệm thu.
+
+[QA Windows ngày 13/11/2026](CHECKOUT_WINDOWS_QA.md): Compose checkout A2 8/8, browser 9/9, cleanup và persistence đạt; có fingerprint source chưa commit và image ID. Đây là kiểm chứng local cho phần tích hợp, chưa thay nghiệm thu toàn A2 hoặc triển khai production.
+
 **Cập nhật 10/11/2026 · Thiết kế kế thừa Sprint 3 / nền Sprint 2 a1a0e4a.** Tài liệu gốc đã được merge qua [PR A1 #29](https://github.com/giabaot400-boop/BrewLite/pull/29); hiệu đính Task 1 nằm ở [PR A1 #42](https://github.com/giabaot400-boop/BrewLite/pull/42), còn lượt này đồng bộ Task 2 và truy vết; chưa xác nhận đã nghiệm thu Task 1–2, code đã đạt AC hoặc production đã triển khai.
 
 Repository hiện hành: [BrewLite-Assignment2](https://github.com/giabaot400-boop/BrewLite-Assignment2). Các mốc main/PR của phần kế thừa thuộc repo A1; xem [nguồn và ranh giới hai repo](SOURCE_PROVENANCE.md).

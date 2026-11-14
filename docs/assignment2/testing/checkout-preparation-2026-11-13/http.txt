@@ -1,0 +1,16 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @brewlite/backend@0.1.0 test:workflow-http
+> node --import tsx prisma/check-workflow-http.ts
+
+PASS HTTP/BFF 1: FAILED is HTTP 200; holds/points preserved; UI-only fields cannot control payment
+PASS HTTP/BFF 2: restart config changes do not change old key; new key pays same order once
+PASS HTTP/BFF 3: authorization, exact DTO/key validation and empty history query
+PASS HTTP/BFF 4: exact cancel body, full refund and repeated cancel do not repeat effects
+PASS HTTP/BFF 5: startup catch-up expires only eligible policy2; legacy and paid order stay intact
+PASS HTTP/BFF 6: compiled demo CLI validates the flag and advances only the three paid workflow edges
+PASS HTTP/BFF 7: real BFF cookie authentication, origin and expected-owner guards
+PASS HTTP/BFF 8: BFF create promotion, payment, exact-key replay and full refund
+PASS HTTP/BFF 9: no-attempt terminal marker is only returned when the exact payment key has no attempt
+WORKFLOW HTTP/BFF CHECKS: 9/9 PASSED (real PostgreSQL/Nest/Next production)
+HTTP fixture cleanup completed.

@@ -15,6 +15,19 @@ chạy code từ thư mục A1. Dependency và file cấu hình được tạo r
 không đưa secret vào Git. Mặc định A2 dùng database `brewlite_a2`, cookie phiên
 `brewlite_a2_session` và một profile browser riêng cho giỏ/pending.
 
+## Bổ sung checkout trên nền A2 3be4a11
+
+Nguồn ứng dụng được nhận từ A1 `3a70df65ee5f65af49a1c3eaa080415cf30f6097`;
+cây apps trùng mốc `88b4e12`. Nền A2 là
+`3be4a11847f479ac87d1c3321009433d3850afb9`, đã có CI và Docker A2.
+Tiếp nhận các file ứng dụng/test liên quan checkout cùng migration mới;
+giữ Docker/Product routing, test và cấu hình độc lập của A2.
+
+[Hồ sơ tích hợp](CHECKOUT_INTEGRATION.md) ghi phần điều chỉnh, kiểm tra và
+những mục còn chờ. Kết quả chuẩn bị thuộc nền cộng patch, chưa có SHA A2
+mới; không đổi thành lượt chạy ở commit nền hoặc kết quả người dùng Windows.
+Script kiểm kê legacy cũng được tiếp nhận từ `docs/sprint3/testing/a1-final-qa-2026-11-12/scripts/legacy-preservation.mjs` của nguồn A1, điều chỉnh import và guard cho A2. Các mốc bên dưới tiếp tục là lịch sử trước khi nhận checkout.
+
 ## Mốc đưa sang A2
 
 | Nguồn | Nội dung và giới hạn |

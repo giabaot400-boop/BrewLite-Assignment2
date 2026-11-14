@@ -12,10 +12,7 @@ Source bắt đầu từ main A1 `69b8011`; tài liệu Task 2/matrix được �
 commit A1 `c7554b2`. Xem [nguồn kế thừa](docs/assignment2/SOURCE_PROVENANCE.md)
 để đối chiếu commit/PR, giới hạn bằng chứng và cách nhận các bản sửa tiếp theo.
 
-Nền này có danh mục, auth, giỏ, tạo đơn PENDING và PWA. Luồng checkout V2,
-payment, kho/điểm và các phần Sprint 3 đang trên nhánh A1 phải được tích hợp,
-review và kiểm chứng riêng trước khi ghi hoàn tất A2. Có source không đồng nghĩa
-đã nghiệm thu Task 1–5 hoặc đã triển khai production.
+Bản tích hợp checkout tiếp nhận workflow A1 `3a70df6` trên nền A2 `3be4a11`: tạo/đọc đơn, thanh toán, hủy/hoàn mock, hết hạn, kho/điểm và giỏ v2. Giữ CI, PWA, Docker và Product API private của A2. Xem [phạm vi và kiểm tra tích hợp](docs/assignment2/CHECKOUT_INTEGRATION.md). Các kiểm tra chuẩn bị không thay review/CI/Windows/Compose A2 hoặc nghiệm thu Task 1–5; production vẫn cần triển khai riêng.
 
 ## Yêu cầu trên máy
 
@@ -65,10 +62,12 @@ Mặc định local:
 | Backend `PORT` | `3001` |
 | Backend `FRONTEND_ORIGIN` | `http://localhost:3000` |
 | Frontend `NEXT_PUBLIC_PRODUCTS_SOURCE` | `api` |
-| Frontend `NEXT_PUBLIC_API_URL` | `http://localhost:3001` |
 | Frontend `BACKEND_INTERNAL_URL` | `http://localhost:3001` |
 | Frontend `APP_ORIGIN` | `http://localhost:3000` |
 | Frontend `AUTH_COOKIE_NAME` | `brewlite_a2_session` |
+| Frontend `CHECKOUT_V2_ENABLED` | `0` ở mẫu local; bật `1` sau migration/kiểm tra |
+| Backend `MOCK_PAYMENT_OUTCOME` | `SUCCEEDED` |
+| Backend `DEMO_WORKFLOW_ENABLED` | `false` |
 
 `AUTH_JWT_SECRET` thuộc backend, không đưa vào biến public hoặc log. Mở đúng
 origin đã cấu hình; đổi biến môi trường thì khởi động lại ứng dụng tương ứng.
@@ -84,8 +83,7 @@ npm exec --workspace apps/api -- prisma migrate deploy
 npm run db:seed
 ```
 
-Dùng migration đã có, không sửa migration đã áp dụng. Seed hiện có upsert bốn
-sản phẩm và hai topping; chưa thay seed kho/promotion của phần Sprint 3.
+Dùng migration đã có, không sửa migration đã áp dụng. Seed catalog upsert bốn sản phẩm và hai topping. Seed kho/promotion demo dùng guard riêng trong [hướng dẫn checkout](docs/assignment2/CHECKOUT_INTEGRATION.md); không reset kho hoặc chạy khởi tạo lên volume đã có đơn.
 
 ## Chạy ứng dụng
 
@@ -115,7 +113,7 @@ không thay yêu cầu có database.
 
 ```powershell
 node --test scripts/setup-env.test.mjs
-npm test --workspace apps/web
+npm test
 npm run lint
 npm run typecheck
 npm run build
@@ -152,6 +150,9 @@ Cây A2 không giữ toàn bộ hồ sơ Sprint 1–3 A1. Chỉ ba tài liệu
 chúng không phải Review/Retro hoặc nghiệm thu hai Sprint của A2.
 
 Mọi thay đổi A2 mở PR tại repo này, có reviewer trước merge. Task 1→5 được
-nghiệm thu theo thứ tự và lịch sử thật. CI/CD, Compose, health/deployment,
-production HTTPS, release và bằng chứng bàn giao còn phải được hoàn thiện;
+nghiệm thu theo thứ tự và lịch sử thật. CI và bằng chứng xanh/đỏ đã có qua PR #2/#6; Compose và Product API private qua PR #7. Checkout tích hợp còn kiểm chứng trên máy A và Compose; CD, production HTTPS, release và bằng chứng bàn giao còn phải được hoàn thiện;
 README này không ghi nhận các đầu ra đó đã đạt.
+
+## Checkout và Docker A2
+
+Đọc [tích hợp checkout](docs/assignment2/CHECKOUT_INTEGRATION.md) và [Compose](docs/assignment2/COMPOSE.md). Web Compose dùng `http://localhost:3100`, database/volume riêng A2; backend/db private. Deploy migration mới trước backend mới. Không sao chép cấu hình/secret hoặc xóa volume A1/A2 để nhận code.

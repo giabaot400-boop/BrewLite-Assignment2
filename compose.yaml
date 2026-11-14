@@ -26,6 +26,8 @@ services:
       NODE_ENV: production
       TZ: UTC
       PORT: "3001"
+      MOCK_PAYMENT_OUTCOME: ${MOCK_PAYMENT_OUTCOME:-SUCCEEDED}
+      DEMO_WORKFLOW_ENABLED: ${DEMO_WORKFLOW_ENABLED:-false}
       DATABASE_URL: postgresql://brewlite:${POSTGRES_PASSWORD:?Missing POSTGRES_PASSWORD}@db:5432/brewlite_a2?schema=public
       AUTH_JWT_SECRET: ${AUTH_JWT_SECRET:?Missing AUTH_JWT_SECRET}
       FRONTEND_ORIGIN: http://localhost:3100
@@ -58,6 +60,7 @@ services:
       BACKEND_INTERNAL_URL: http://backend:3001
       APP_ORIGIN: http://localhost:3100
       AUTH_COOKIE_NAME: brewlite_a2_session
+      CHECKOUT_V2_ENABLED: ${CHECKOUT_V2_ENABLED:-1}
     ports:
       - "127.0.0.1:3100:3000"
     depends_on:

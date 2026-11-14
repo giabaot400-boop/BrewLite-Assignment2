@@ -1,0 +1,16 @@
+✔ fresh setup creates A2 config and a 32-byte random secret encoded as hex (104.012406ms)
+✔ frontend defaults use API, explicit BFF origin and an A2 cookie name (64.773379ms)
+✔ generated secret is not printed in setup output (57.016624ms)
+✔ second setup run preserves both config files byte for byte (142.616649ms)
+✔ separate fresh setups generate different secrets (142.951207ms)
+✔ existing backend config is preserved and is not logged (58.397387ms)
+✔ inherited path migration preserves local config content (57.904187ms)
+✔ a destination conflict stops migration before any config is moved (82.434272ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 843.521423
