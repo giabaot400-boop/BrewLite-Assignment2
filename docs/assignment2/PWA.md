@@ -4,6 +4,16 @@ Ngày cập nhật: 10/11/2026. Nền code PWA kế thừa tại A1: main `82c76
 Phần này triển khai phía A cho NFR-07; không xác nhận hoàn tất Task 3–5 A2.
 Phương án frontend/BFF/PWA nằm trong [PR A1 #31](https://github.com/giabaot400-boop/BrewLite/pull/31); kết quả implementation được ghi riêng dưới đây.
 
+## Bổ sung A2 ngày 14/11/2026
+
+[Lượt PWA thủ công Windows/Compose](testing/pwa-windows-2026-11-14/README.md)
+ghi nhận cài/mở app, offline fallback, cache public, tạo đơn/thanh toán offline,
+không quan sát thấy POST tự gửi lại, thanh toán online và đổi tài khoản A/B.
+Chrome `157.0.8103.51` Stable 64 bit; ứng dụng tại `http://localhost:3100`.
+Git HEAD lúc lấy metadata là `4c177bf`, nhưng container chạy lại image local
+đã có từ 13/11; full image ID và giới hạn được ghi trong bản ghi. Không gán
+kết quả này cho image GHCR mới hoặc toàn bộ AC PWA/production.
+
 ## Phạm vi
 
 - Manifest `/manifest.webmanifest`, icon PNG 192/512 (nguồn vector tại `apps/web/public/icons/icon.svg`).
@@ -13,11 +23,11 @@ Phương án frontend/BFF/PWA nằm trong [PR A1 #31](https://github.com/giabaot
 - Worker không xử lý `/api/*`, POST hoặc phương thức khác GET, request khác origin, RSC hay tài nguyên Next.js. Không lưu HTML ứng dụng hoặc dữ liệu API, không background sync, tự retry, sửa pending/key/body hoặc thao tác localStorage.
 - Worker không gọi `skipWaiting()` và không tự reload tab đang thao tác. Bản cập nhật có thể ở trạng thái waiting cho đến khi worker cũ không còn điều khiển client.
 - Trong `activate`, worker xóa cache phiên bản cũ có tiền tố `brewlite-pwa-static-`, rồi gọi `clients.claim()` để nhận quyền điều khiển các trang trong scope. `clients.claim()` không bỏ qua giai đoạn waiting. Sửa nội dung tài nguyên precache phải tăng phiên bản cache.
-- Không thay auth, Order API, nghiệp vụ giỏ, schema, migration hoặc dependency. Hành vi dọn giỏ hiện vẫn theo Sprint 2; phần đổi sang giữ giỏ đến paid-current thuộc tích hợp Sprint 3 riêng.
+- Worker không thay auth, Order API, nghiệp vụ giỏ, schema, migration hoặc dependency và không quyết định thời điểm dọn giỏ. Bản tích hợp checkout có quy tắc giữ giỏ tới khi xác nhận PAID đúng đơn/phiên; các kết quả Sprint 2 lịch sử bên dưới giữ nguyên phiên bản đã thử.
 
 Trade-off: trang offline chung giúp tránh giữ dữ liệu cá nhân/giá cũ, nhưng không hỗ trợ duyệt menu hoặc đặt hàng offline. Không thêm push notification hoặc thư viện PWA.
 
-Các kết quả dưới đây được kế thừa từ A1 trước khi tách repo, không ghi là đã chạy lại trên A2. Xem [nguồn kế thừa](SOURCE_PROVENANCE.md).
+Các kết quả tự động và local ngày 07/11 bên dưới được kế thừa từ A1 trước khi tách repo, không ghi là đã chạy lại trên A2. Lượt thủ công A2 ngày 14/11 được ghi riêng ở phần bổ sung đầu trang. Xem [nguồn kế thừa](SOURCE_PROVENANCE.md).
 
 ## Kiểm tra tự động đã chạy trong môi trường trợ lý
 
@@ -126,4 +136,4 @@ Giữ các giới hạn này khi review PR và bổ sung kết quả tại mốc
 
 ## Checkout trên bản A2 tích hợp
 
-Catalog browser dùng BFF cùng origin; không cần `NEXT_PUBLIC_API_URL`. Kiểm tra PWA cũ ở trên giữ đúng phiên bản và giới hạn lịch sử, chưa chứng minh checkout/Compose/HTTPS mới. Chạy lại online/offline, owner và recovery theo [hồ sơ tích hợp](CHECKOUT_INTEGRATION.md) trước khi cập nhật evidence A2.
+Catalog browser dùng BFF cùng origin; không cần `NEXT_PUBLIC_API_URL`. Kiểm tra PWA kế thừa giữ đúng phiên bản và giới hạn lịch sử. [Lượt A2 ngày 14/11](testing/pwa-windows-2026-11-14/README.md) bổ sung online/offline và đổi owner trên image local được ghi nhận; chưa kiểm HTTPS production hoặc nhánh đã gửi mutation rồi mất phản hồi trong lượt này. Đối chiếu evidence recovery theo [hồ sơ tích hợp](CHECKOUT_INTEGRATION.md), không tự đổi toàn bộ AC sang PASS.
