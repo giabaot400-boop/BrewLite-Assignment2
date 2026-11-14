@@ -1,0 +1,2217 @@
+{
+  "helperVersion": "A2-1",
+  "startedAt": "2026-11-13T13:45:48.630Z",
+  "repo": "giabaot400-boop/BrewLite-Assignment2",
+  "groups": [
+    {
+      "name": "three healthy services, private DB/backend, real BFF registration/login and access guards",
+      "passed": true
+    },
+    {
+      "name": "promotion total, successful payment, exact-key replay, points, full refund and repeated cancel",
+      "passed": true
+    },
+    {
+      "name": "FAILED configuration, preserved hold/deadline, old-key replay after restart and new-key retry",
+      "passed": true
+    },
+    {
+      "name": "terminal no-attempt marker does not create a payment",
+      "passed": true
+    },
+    {
+      "name": "compiled internal CLI flag, legal state transitions and late-cancel rejection",
+      "passed": true
+    },
+    {
+      "name": "backend startup catches up expired policy2 fixture and releases its hold",
+      "passed": true
+    },
+    {
+      "name": "real browser 9/9: login/menu/product/cart/create/reload/lost response/replay/refund/history/mobile",
+      "passed": true
+    },
+    {
+      "name": "all three services stop/start with persistent orders, payment ledger, points, stock and session",
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "cleanup": true,
+  "sha": "3be4a11847f479ac87d1c3321009433d3850afb9",
+  "branch": "integration/a2-checkout-e2e",
+  "workingTreeDirty": true,
+  "sourceNote": "The HEAD and source hashes describe this checkout; a dirty worktree is not evidence for the unmodified HEAD alone.",
+  "sourceFiles": [
+    {
+      "file": ".dockerignore",
+      "bytes": 138,
+      "sha256": "1cd7a11a6e92f2c621856eb1b6033eb40ec67127e32c0c04dc8cdf61d3164bbf"
+    },
+    {
+      "file": ".gitattributes",
+      "bytes": 173,
+      "sha256": "1ae180a8e46ff9a08dc5c3b071d4a2a88208d8394e32a478605648bcea853faa"
+    },
+    {
+      "file": ".github/pull_request_template.md",
+      "bytes": 1025,
+      "sha256": "2bef727090cf6337f18fa131567ebeec750f73240dba433591e874eb3d10fb37"
+    },
+    {
+      "file": ".github/workflows/ci.yml",
+      "bytes": 1935,
+      "sha256": "50cf68d9f69dd7b6e9846920e1d3352fb3c310fb7cdadba713a7e5ffd1db05ad"
+    },
+    {
+      "file": ".gitignore",
+      "bytes": 309,
+      "sha256": "0144f7162ffc034e8ca421655e31e5bda618c69995aacf8a0093a5398e0af7f0"
+    },
+    {
+      "file": ".nvmrc",
+      "bytes": 3,
+      "sha256": "68ca3fba3b7e864770cb61aeb306d4bd4354b68ab4dd38450860c5d823e42a53"
+    },
+    {
+      "file": "README.md",
+      "bytes": 8041,
+      "sha256": "c8a17894ade9e2e62adb837b3786048e0d0d75ab712573351c7ee375cba04416"
+    },
+    {
+      "file": "apps/api/.env.example",
+      "bytes": 385,
+      "sha256": "ee72e086fb5c190d6d0b62ffa93e4e6fdbdb6d93bb29b34487a7fa76a5c6cc0f"
+    },
+    {
+      "file": "apps/api/Dockerfile",
+      "bytes": 629,
+      "sha256": "b491a80647569b06a26a20b52d8c9f6f5dba89fbb17151497d709aea597fc0a1"
+    },
+    {
+      "file": "apps/api/nest-cli.json",
+      "bytes": 165,
+      "sha256": "8e047587603cf987cd4b3e5b7b682eb80035efc9d2c802cd64eac0b0f276974d"
+    },
+    {
+      "file": "apps/api/package.json",
+      "bytes": 1575,
+      "sha256": "79ce1182c771a2d46e7388b4cbdf8f1f1f3abfd5d1611ce6de19225111f9960d"
+    },
+    {
+      "file": "apps/api/prisma.config.ts",
+      "bytes": 261,
+      "sha256": "f0aafa7f57248fcf28a2d85360011675c58db2314eae23698d1555ae3fd1531a"
+    },
+    {
+      "file": "apps/api/prisma/check-legacy-preservation.mjs",
+      "bytes": 8321,
+      "sha256": "3d0ca2bb8434feffb6d937c1977edf0f4264759b90e4b608cc4d4f5fa3f7f4b6"
+    },
+    {
+      "file": "apps/api/prisma/check-order-lock.ts",
+      "bytes": 2498,
+      "sha256": "617afeae5172b97bb7b4c477e2159835ebc09fb4cbbfd35cf831b8920df89abd"
+    },
+    {
+      "file": "apps/api/prisma/check-workflow-http.ts",
+      "bytes": 18237,
+      "sha256": "f9b942bfc03cdc6a3e0410fe3518e75bd2847c4b2317516cc116ae3157698604"
+    },
+    {
+      "file": "apps/api/prisma/migrations/20261024160346_init_products/migration.sql",
+      "bytes": 994,
+      "sha256": "536a24ff5fbbcf34654bd971fbae2086c2f3674de5b31c5b334a28bccbea20c6"
+    },
+    {
+      "file": "apps/api/prisma/migrations/20261030152601_sprint2_auth_orders/migration.sql",
+      "bytes": 5764,
+      "sha256": "b55c6e6b97339d7c7016ac96dd69f7cd92b0586cbaf1889b02582ea8545b949d"
+    },
+    {
+      "file": "apps/api/prisma/migrations/20261109010714_sprint3_payment_stock/migration.sql",
+      "bytes": 9974,
+      "sha256": "6d3e037165234c05f4a152ff2612bd7dc6951e45a917ecc722de02c49350e9c9"
+    },
+    {
+      "file": "apps/api/prisma/migrations/migration_lock.toml",
+      "bytes": 128,
+      "sha256": "99836963713b4f5b269ad49af0ed3d7b0b2e336115c2f92dc9ac683d139d0900"
+    },
+    {
+      "file": "apps/api/prisma/schema.prisma",
+      "bytes": 8948,
+      "sha256": "b0424839500e70c7cb0876704d9e0d9a3b310fe18500ba8f500190baf7d16085"
+    },
+    {
+      "file": "apps/api/prisma/seed-demo.ts",
+      "bytes": 2707,
+      "sha256": "04b44d654e3908c41764d1bf886dff5c187688e2aa6d923360ed54f604a728c3"
+    },
+    {
+      "file": "apps/api/prisma/seed.ts",
+      "bytes": 2018,
+      "sha256": "d07e829b29b1a72d3eadf9ffe81c5136e8a5803f63949c2898e4431caa3bb8ef"
+    },
+    {
+      "file": "apps/api/src/app.module.ts",
+      "bytes": 340,
+      "sha256": "fa415e865d9d5d2abc4e3e427b1cca0244f234bb6a78dcb30922e92f464494ad"
+    },
+    {
+      "file": "apps/api/src/auth/auth-password-compat.test.ts",
+      "bytes": 3536,
+      "sha256": "08c638c635efafacea9e4ccbd0d4b5c14abad5b27ebfe1beefaeea5fb05bbf03"
+    },
+    {
+      "file": "apps/api/src/auth/auth-session-review.test.ts",
+      "bytes": 8248,
+      "sha256": "00223fa69f787ccc4a5dc2b50395a0c485af74f9a6121b010f08c438c5883ea5"
+    },
+    {
+      "file": "apps/api/src/auth/auth.controller.ts",
+      "bytes": 884,
+      "sha256": "ad01dd8381a42ca2c03696f4345cebf26551ff2f599a4d19530c5d5e1ff9d028"
+    },
+    {
+      "file": "apps/api/src/auth/auth.guard.ts",
+      "bytes": 650,
+      "sha256": "b2148d922457a6bf5d4e1820073e6b358ac2037b1311582940ad8b50e74d051f"
+    },
+    {
+      "file": "apps/api/src/auth/auth.module.ts",
+      "bytes": 431,
+      "sha256": "0221d43bf394ad812fc10f4b4a41886a36b6511314251645b6edd8bb47a7a2fe"
+    },
+    {
+      "file": "apps/api/src/auth/auth.service.test.ts",
+      "bytes": 5431,
+      "sha256": "fbecbcd021df8f08e948e9a604270d9e4f3ce38fa31ff4ca8eb506be9ad44bf1"
+    },
+    {
+      "file": "apps/api/src/auth/auth.service.ts",
+      "bytes": 10025,
+      "sha256": "436b803dd778fcf5db66d82784c5174d0e1cf72e3b2669231cba7dd6362b9a71"
+    },
+    {
+      "file": "apps/api/src/common/order-validation.ts",
+      "bytes": 1247,
+      "sha256": "d6823f054ed4bc1506e6c5d1ae18bd3f509bd5f21f382ea3a35bd691e0499e80"
+    },
+    {
+      "file": "apps/api/src/database/a2-test-target.spec.ts",
+      "bytes": 2052,
+      "sha256": "3873bb4ead59372988ccb66071224d08a11dd0a36a4fcc53922796defe580989"
+    },
+    {
+      "file": "apps/api/src/database/a2-test-target.ts",
+      "bytes": 1554,
+      "sha256": "da287c0811a7a89ac7ad8677e33d4cad583af58e9f678645f12962b518972c1d"
+    },
+    {
+      "file": "apps/api/src/database/order-request-lock.ts",
+      "bytes": 871,
+      "sha256": "1707ca262fe6b074092e7cdff0674b8f3604eb945203100e33abf0231aac85a8"
+    },
+    {
+      "file": "apps/api/src/database/prisma.module.ts",
+      "bytes": 274,
+      "sha256": "54244e72233bd46f4a82a8a827e6bcd72092c0c37140d6d0ab89f35729f3fa96"
+    },
+    {
+      "file": "apps/api/src/database/prisma.service.ts",
+      "bytes": 691,
+      "sha256": "b990656621e8123c7dcca8ab43341e4665917394b686bd526e3694c373f429bf"
+    },
+    {
+      "file": "apps/api/src/database/stock.ts",
+      "bytes": 12907,
+      "sha256": "515609625e68a9afaa57c98678010557f547603b731cbe01e9fd06e7b4f2fc62"
+    },
+    {
+      "file": "apps/api/src/health.controller.ts",
+      "bytes": 276,
+      "sha256": "0e03d70808de6344501c31917f666ee3650454e3a1dff621cd388bb003bdacd7"
+    },
+    {
+      "file": "apps/api/src/main.ts",
+      "bytes": 1816,
+      "sha256": "65a9055add501b9a94c6aab619033b9bc025ae6fcf7a08cbf84e936940feab3f"
+    },
+    {
+      "file": "apps/api/src/orders/demo-advance.ts",
+      "bytes": 1040,
+      "sha256": "fa940a29da160230548faf5c196c74d164c50d5753f1dfe88be47ea175d6bae1"
+    },
+    {
+      "file": "apps/api/src/orders/dto/create-order-v2.dto.spec.ts",
+      "bytes": 2600,
+      "sha256": "884abc1d0c3d3e47fcb531346d67a4b679cd8a1d7be5dc15bc1692407d816dbd"
+    },
+    {
+      "file": "apps/api/src/orders/dto/create-order-v2.dto.ts",
+      "bytes": 997,
+      "sha256": "17a748e7c395b47ce348d0b657cd026f304bbab76f695a6c43c3c724937765ca"
+    },
+    {
+      "file": "apps/api/src/orders/dto/create-order.dto.ts",
+      "bytes": 1207,
+      "sha256": "223facb540965167998eaf12c312b35170e48c2b8ab92e479952d24745cccac5"
+    },
+    {
+      "file": "apps/api/src/orders/loyalty.spec.ts",
+      "bytes": 3235,
+      "sha256": "39730ee39c476528741be90ae55bf843480992a4ffb76b9e0681292926550cfd"
+    },
+    {
+      "file": "apps/api/src/orders/loyalty.ts",
+      "bytes": 3411,
+      "sha256": "fd72973a7fcdb386f633488f2f8d35c176f497cdea822391dea22eca3b920542"
+    },
+    {
+      "file": "apps/api/src/orders/mock-payment.service.ts",
+      "bytes": 617,
+      "sha256": "d245e57b8ab4126921dfc1b763597c2526127de38e50b0068c590938bdbaf5d5"
+    },
+    {
+      "file": "apps/api/src/orders/order-actions.controller.ts",
+      "bytes": 1742,
+      "sha256": "4ef0d81ecf257ef814b90bb90fc2ed41e570340629e3916c4e7c62ab3fcd284e"
+    },
+    {
+      "file": "apps/api/src/orders/order-canonical-v2.spec.ts",
+      "bytes": 5136,
+      "sha256": "96eb18071cc3c1708c3276367b51bda6d526f8e6db4a1a2ad523d798fd689574"
+    },
+    {
+      "file": "apps/api/src/orders/order-canonical-v2.ts",
+      "bytes": 4421,
+      "sha256": "2ec1427f768adce16b2a8c6f92657549bad1cea28a09abc686cd4273c843665b"
+    },
+    {
+      "file": "apps/api/src/orders/order-canonical.spec.ts",
+      "bytes": 3621,
+      "sha256": "cd71599e051362fc414ef28ed0f55a151004a3f7cf5e11edfa5d4d24a1e44d18"
+    },
+    {
+      "file": "apps/api/src/orders/order-canonical.ts",
+      "bytes": 2448,
+      "sha256": "4aade452f37bf9fdcbafc5b07787bced6aa7079577b06f71ff497b871ee6c225"
+    },
+    {
+      "file": "apps/api/src/orders/order-expiry.service.ts",
+      "bytes": 1868,
+      "sha256": "41324c1d343a6b0ca8e7768e62a0caa377ddee6d29da41b2ca3b756a3b2bf801"
+    },
+    {
+      "file": "apps/api/src/orders/order-idempotency-v2.spec.ts",
+      "bytes": 1342,
+      "sha256": "0e51e2ba0f7a010394a45de3c1fe02fcc05e0a768376ccb7de348348006a0adb"
+    },
+    {
+      "file": "apps/api/src/orders/order-idempotency-v2.ts",
+      "bytes": 580,
+      "sha256": "abbdbb2fd22239994edc5182fd477a0d3a6ab3eb9196e6d70cceb885e2159dcb"
+    },
+    {
+      "file": "apps/api/src/orders/order-workflow.service.ts",
+      "bytes": 11492,
+      "sha256": "e30fe7e2fd35a1b63ef1446baa9e2ed544ab1a25c0f95991cd1c3eb16b6d9167"
+    },
+    {
+      "file": "apps/api/src/orders/order-workflow.spec.ts",
+      "bytes": 4099,
+      "sha256": "a0abdb8730c5ca474d9f1990b455739f3c062bcde389621f0de11b72f1f1c7d0"
+    },
+    {
+      "file": "apps/api/src/orders/order-workflow.ts",
+      "bytes": 1261,
+      "sha256": "44e97ac552bdcf477f83e5d897b5389140c87f2a803d96d746dd4c741791b454"
+    },
+    {
+      "file": "apps/api/src/orders/orders-closeout.integration.mjs",
+      "bytes": 13561,
+      "sha256": "690e66285851a6bc3f39e1be39f480999e50ae0b24947489a70c1f0d2dc6e22e"
+    },
+    {
+      "file": "apps/api/src/orders/orders-http.spec.ts",
+      "bytes": 5854,
+      "sha256": "4c574aecbda150a56142f4b5d6df560debefb0502f01d037d6cc63c4758d6880"
+    },
+    {
+      "file": "apps/api/src/orders/orders-p07-rejected.integration.ts",
+      "bytes": 3628,
+      "sha256": "a4e6fd9932c51c0d271f2125f6bb0a8215c406a32776e3d86c88cfa10ae71bab"
+    },
+    {
+      "file": "apps/api/src/orders/orders-p07-retry-rejected.integration.ts",
+      "bytes": 5644,
+      "sha256": "ccd3e55716e9d23abc9a2b17c907e621f9e577485d7b895eaead9620b315992a"
+    },
+    {
+      "file": "apps/api/src/orders/orders-p07-retry-succeeded.integration.ts",
+      "bytes": 4715,
+      "sha256": "0573b6bec6dc1918b5a7f9532cf019ce552dadd24d83084f09944205b6d218cf"
+    },
+    {
+      "file": "apps/api/src/orders/orders-p07-succeeded.integration.ts",
+      "bytes": 2852,
+      "sha256": "1f295a4c5fabf9f2e4a7422e74479bbba6cb1533863ae61aea596823ea89e535"
+    },
+    {
+      "file": "apps/api/src/orders/orders-reader.service.spec.ts",
+      "bytes": 2674,
+      "sha256": "69ae85ae77debe5e2988e7ce53c8ff8ee43375622fe5d109df2b267d76ea6cb1"
+    },
+    {
+      "file": "apps/api/src/orders/orders-reader.service.ts",
+      "bytes": 7276,
+      "sha256": "1bc400612dc2d7c91f6b425be3ee903d7e11a181f031bd5e41621a340b702e59"
+    },
+    {
+      "file": "apps/api/src/orders/orders-v2.service.spec.ts",
+      "bytes": 22409,
+      "sha256": "231b7bdde2c8b2b11ed7bcca78ed0780d646aa2308edfe131a6b5f438803f917"
+    },
+    {
+      "file": "apps/api/src/orders/orders.controller.spec.ts",
+      "bytes": 5123,
+      "sha256": "b020bc5ba9724eabda78a771c81f8cc93725815db6ada0d2eaccf245bf987734"
+    },
+    {
+      "file": "apps/api/src/orders/orders.controller.ts",
+      "bytes": 4579,
+      "sha256": "bbf0640240b6f507a2b1b7d8fb6761d8408ed6b8cd13dd3ff009ac014284865f"
+    },
+    {
+      "file": "apps/api/src/orders/orders.integration.ts",
+      "bytes": 17639,
+      "sha256": "90d5e6b79aa6411a3949aa43f1d8f282dcadec3af2753f662d69850dd6cc5198"
+    },
+    {
+      "file": "apps/api/src/orders/orders.module.ts",
+      "bytes": 895,
+      "sha256": "9faf7c70279ab25c53819a51edbd923fcd3a8cab69600bbc9f3d65b1a787b584"
+    },
+    {
+      "file": "apps/api/src/orders/orders.service.spec.ts",
+      "bytes": 20770,
+      "sha256": "31020f697f71d2ef9938e8577847243f1835b46ae3f4a8728055b811d91fa0fd"
+    },
+    {
+      "file": "apps/api/src/orders/orders.service.ts",
+      "bytes": 32098,
+      "sha256": "8c3a62dd5015ff9d8d5d863bdd56723ca62fcee59649c26578bccd92ca189272"
+    },
+    {
+      "file": "apps/api/src/orders/price-order.spec.ts",
+      "bytes": 5388,
+      "sha256": "f81b6fc89199300903bdc511c1f084c7abb192dbf24a9a42b37a965a76b32839"
+    },
+    {
+      "file": "apps/api/src/orders/price-order.ts",
+      "bytes": 8099,
+      "sha256": "0ab3aaf449d5771a0222ca184effa8c1162eab73ec8929c9a5e996bdfbba4060"
+    },
+    {
+      "file": "apps/api/src/orders/workflow-postgres.integration.ts",
+      "bytes": 32008,
+      "sha256": "52b74156b01fa2a84724ad2d8a8e894c039868bd23a69970c4c0a7b739e9ee6a"
+    },
+    {
+      "file": "apps/api/src/orders/workflow-transaction.ts",
+      "bytes": 2174,
+      "sha256": "5b6321e91bde3335fcb1f84f116c6f8407392ded277485c640e6fe56cb8f713f"
+    },
+    {
+      "file": "apps/api/src/products/products-prisma.service.spec.ts",
+      "bytes": 4670,
+      "sha256": "9347f1e40b33d3f7be2dcd211fe4f8c53258bf1a675c17b957aa15bcb14e343b"
+    },
+    {
+      "file": "apps/api/src/products/products-prisma.service.ts",
+      "bytes": 3707,
+      "sha256": "5f61bae680016c861f4317169634377710c3511e34be92ebdfd00417606f0bd1"
+    },
+    {
+      "file": "apps/api/src/products/products.controller.ts",
+      "bytes": 619,
+      "sha256": "f5d4b258397fa75179f4e8ed3ef8d47bc87b363a165041a0486a2c34fac43826"
+    },
+    {
+      "file": "apps/api/src/products/products.module.ts",
+      "bytes": 381,
+      "sha256": "a9265e9b4897ab86416e520f59a784f25ee56fdab5a0df7c08caca36e7a4ad37"
+    },
+    {
+      "file": "apps/api/src/products/products.service.ts",
+      "bytes": 1837,
+      "sha256": "83cf75857d018dc3914a2998596477f93a631c98092bbeab76a94daabbde792d"
+    },
+    {
+      "file": "apps/api/tsconfig.build.json",
+      "bytes": 100,
+      "sha256": "b5e34a94b08b2fc3449b2ffe4fd2b532de6e3ddf3c55edca2dcd2aaa3fd93746"
+    },
+    {
+      "file": "apps/api/tsconfig.json",
+      "bytes": 553,
+      "sha256": "5103a668f11dee66a9b70df3b01c0706d98463d0c06f80724d07733632074836"
+    },
+    {
+      "file": "apps/web/.env.local.example",
+      "bytes": 312,
+      "sha256": "ecd3df5928903ac16e872ef2b454d51e8cedc1083b5a24585fbd2b3153578401"
+    },
+    {
+      "file": "apps/web/AGENTS.md",
+      "bytes": 679,
+      "sha256": "063098f6cb31bb44c6f8fbea25b3876de7ee1e5f7d00a50dbab506f6415eb7f0"
+    },
+    {
+      "file": "apps/web/Dockerfile",
+      "bytes": 611,
+      "sha256": "a2936d72ad1925d3512ed520a1e0de741db7d434edd2fb99361bea7358c0d709"
+    },
+    {
+      "file": "apps/web/eslint.config.mjs",
+      "bytes": 303,
+      "sha256": "2de12a26290b55cdfcc9f969f2f887b4474fb2585ea6ee7658c7c1b4554b90d9"
+    },
+    {
+      "file": "apps/web/next.config.ts",
+      "bytes": 516,
+      "sha256": "bbc75a557f8ddfdd15c289c3a8d704b334d67bb5bbb0013129edf9d76a6c3653"
+    },
+    {
+      "file": "apps/web/package.json",
+      "bytes": 702,
+      "sha256": "3a00078b19c952700ae7649d16d61da35313e4c221366fdc8e2a298b650c5abd"
+    },
+    {
+      "file": "apps/web/postcss.config.mjs",
+      "bytes": 87,
+      "sha256": "f8ed6853d2d91797f125edbb2af4052bd0adc52ba638d0de65d696a62d1ad3f7"
+    },
+    {
+      "file": "apps/web/public/icons/icon-192.png",
+      "bytes": 4506,
+      "sha256": "1710ee81a846e3ad133813963d0be4985fc3ecd071efe6f3287bc9e5aba9ad8f"
+    },
+    {
+      "file": "apps/web/public/icons/icon-512.png",
+      "bytes": 15519,
+      "sha256": "5902d477d289f5a97ea61e943b9afc50aef1f135bcf7b06d8c203bca03f1f305"
+    },
+    {
+      "file": "apps/web/public/icons/icon.svg",
+      "bytes": 539,
+      "sha256": "12ebfa06f35aabd21d14fe2ae0f91fad223a495636c46251368d390244f2dbb6"
+    },
+    {
+      "file": "apps/web/public/images/americano.svg",
+      "bytes": 652,
+      "sha256": "130c6239035f94969fbb6e3c48a18abc061cb13a825ea835192f886737030506"
+    },
+    {
+      "file": "apps/web/public/images/cappuccino.svg",
+      "bytes": 652,
+      "sha256": "d8183d3403323037fbe90dc9211ed05d6fc01643c5c0611225d4f3a844e7056f"
+    },
+    {
+      "file": "apps/web/public/images/coffee-milk.svg",
+      "bytes": 652,
+      "sha256": "6ff25cc6d442439778793d0139ec386d154e94dd3deb6e4539794ed1c6f73668"
+    },
+    {
+      "file": "apps/web/public/images/peach-tea.svg",
+      "bytes": 652,
+      "sha256": "75aa8c8872042dd2d1ae9abea0f2925cfb41f1b612a0e950fa0bdeef2510def5"
+    },
+    {
+      "file": "apps/web/public/images/placeholder.svg",
+      "bytes": 652,
+      "sha256": "f38e4e394d847ad0695da8eec3b69a8492a97a76360bd22e17956db319fa51eb"
+    },
+    {
+      "file": "apps/web/public/offline.html",
+      "bytes": 1574,
+      "sha256": "9bec5d22550dc72a841f423aa94b6b1dca1310bbec6d4a492201bb02a1701dce"
+    },
+    {
+      "file": "apps/web/public/sw.js",
+      "bytes": 1920,
+      "sha256": "df2eae07647231d3ff4309cdfe57bcb6a1cbe8e52e8419eeeecacfaf9e9094ce"
+    },
+    {
+      "file": "apps/web/scripts/check-workflow-browser.mjs",
+      "bytes": 6239,
+      "sha256": "d0fd865fb0c311e9cc6fab28abe107a00c2e52feb6958cc3d583ade9b4dcd2c0"
+    },
+    {
+      "file": "apps/web/src/app/api/auth/login/route.ts",
+      "bytes": 1909,
+      "sha256": "55718d18fdfc1e224e512fcecb49ef548d3b3d69508e8bdbd579bc6a5d0c0135"
+    },
+    {
+      "file": "apps/web/src/app/api/auth/logout/route.ts",
+      "bytes": 782,
+      "sha256": "62526904531e012107cb672ddc0a08fc749cb61c76e21da62e377322ef79a341"
+    },
+    {
+      "file": "apps/web/src/app/api/auth/me/route.ts",
+      "bytes": 1587,
+      "sha256": "232707b1ae61448fb54251af0cd8789f82a98708155d0b88be2f375a823af71a"
+    },
+    {
+      "file": "apps/web/src/app/api/auth/register/route.ts",
+      "bytes": 1420,
+      "sha256": "10a22fe139c2444f763cffd34561d18dba8971ea8b15fa71c3f14293f8e56323"
+    },
+    {
+      "file": "apps/web/src/app/api/orders/[id]/cancel/route.ts",
+      "bytes": 869,
+      "sha256": "af295638d89d92b7382c83019b112c9d65d75e61ffaef02855fe79fb9c4ccf62"
+    },
+    {
+      "file": "apps/web/src/app/api/orders/[id]/route.ts",
+      "bytes": 358,
+      "sha256": "4729a9680bda0a579dc0382c000e70573861ca9504b796ed5fe4893774c4eac5"
+    },
+    {
+      "file": "apps/web/src/app/api/orders/me/route.ts",
+      "bytes": 264,
+      "sha256": "2af59d7fd0489cdec88ebd4a66bd737d7d8291cd186b68f2cc5ede0f3abea4a4"
+    },
+    {
+      "file": "apps/web/src/app/api/orders/route.ts",
+      "bytes": 777,
+      "sha256": "694cf442b2e0d3aedbb1778732129f215dad6e712dbc10276ec684386cb3e2e7"
+    },
+    {
+      "file": "apps/web/src/app/api/payments/route.ts",
+      "bytes": 789,
+      "sha256": "aebba0e43e425fb14bc19b97190112ef0c164c8cb787aa461e0e60fc816187a6"
+    },
+    {
+      "file": "apps/web/src/app/api/products/route.ts",
+      "bytes": 890,
+      "sha256": "7d0d7a36d7a4fe93f68d2d1e297e1c18ba23be2777f6824636a56a75216be8fe"
+    },
+    {
+      "file": "apps/web/src/app/cart/page.tsx",
+      "bytes": 597,
+      "sha256": "8478c9b70fa50fe7c0adad8b4cb0aa2fe3452681c3caf353c734b74ba36caace"
+    },
+    {
+      "file": "apps/web/src/app/dev/checkout/page.tsx",
+      "bytes": 663,
+      "sha256": "1e556619073f671c7f77c8197cd57d3dd126f7d90390124819758b98841ed8f9"
+    },
+    {
+      "file": "apps/web/src/app/error.tsx",
+      "bytes": 448,
+      "sha256": "f843ce079a75f48db30f347ce7cca8fc19904c1922dde00989478233e25bca46"
+    },
+    {
+      "file": "apps/web/src/app/globals.css",
+      "bytes": 762,
+      "sha256": "f2bcb3bb54320eb0b36b5842eb46e173f31d9faeb76522cef1313a182b78670b"
+    },
+    {
+      "file": "apps/web/src/app/layout.tsx",
+      "bytes": 1486,
+      "sha256": "3faf5ade2066256d12b9821556daaacdcdf4b03248c2825795bed978cddb6c32"
+    },
+    {
+      "file": "apps/web/src/app/login/page.tsx",
+      "bytes": 1007,
+      "sha256": "315bf92b81de24f25cf80e9af09583be2afe79f1917d0b29871e77a9171b2e66"
+    },
+    {
+      "file": "apps/web/src/app/manifest.ts",
+      "bytes": 605,
+      "sha256": "1c37a038b78317ea8710e26e5610f49b6cc9a68fe0e147a43b0d70c35613fdfa"
+    },
+    {
+      "file": "apps/web/src/app/not-found.tsx",
+      "bytes": 535,
+      "sha256": "56dacdaaa830b360571a6819ca2cc1ede0d827f33df992f3a35a7b235c3080cc"
+    },
+    {
+      "file": "apps/web/src/app/orders/[id]/page.tsx",
+      "bytes": 1021,
+      "sha256": "4c573a2f2a768b57f9e3738b281e0c83556319ae34ddae62f5db59e78c978829"
+    },
+    {
+      "file": "apps/web/src/app/orders/page.tsx",
+      "bytes": 493,
+      "sha256": "942c53a44d3fb295c2c76ff5a4a28b6faa20bcab919cc46cb5539fd6161364fe"
+    },
+    {
+      "file": "apps/web/src/app/page.tsx",
+      "bytes": 119,
+      "sha256": "d6ee756cb0977fa4ef45685f62c2f461cfc6dd7a0248974fa0133449982b7724"
+    },
+    {
+      "file": "apps/web/src/app/products/[id]/loading.tsx",
+      "bytes": 323,
+      "sha256": "a36315cedf36a876860b4108387cbdcfad2329f6bf1ca8d4c18ba7b56e7d0a48"
+    },
+    {
+      "file": "apps/web/src/app/products/[id]/page.tsx",
+      "bytes": 1282,
+      "sha256": "c5f6a82157e3fba7276aee764b06fff0b4943eccd0c9246fbe4873533a510016"
+    },
+    {
+      "file": "apps/web/src/app/register/page.tsx",
+      "bytes": 839,
+      "sha256": "8410bc665d680bcebface661dd93807dd542fcc0d50a62e036dfae287e0a7978"
+    },
+    {
+      "file": "apps/web/src/components/layout/header.tsx",
+      "bytes": 999,
+      "sha256": "f3364d8d516f99debe54d9b4836fd8b422f24db4714d44c6afc0939e825f1fc6"
+    },
+    {
+      "file": "apps/web/src/components/layout/page-container.tsx",
+      "bytes": 835,
+      "sha256": "b4e57a7f864a9720f0bf90db995bdeb12535f74062bf8a1cbeb9860c4e8ef56c"
+    },
+    {
+      "file": "apps/web/src/components/layout/responsive-grid.tsx",
+      "bytes": 552,
+      "sha256": "d7769d7e1479d29981931cb07a04945ef9d07a030e841e53169e093d8de4f566"
+    },
+    {
+      "file": "apps/web/src/components/layout/skip-link.tsx",
+      "bytes": 453,
+      "sha256": "f05f48adb6e7fb158b952df3f513d749d7592a7499a192086cab75771510d6a3"
+    },
+    {
+      "file": "apps/web/src/components/ui/alert.tsx",
+      "bytes": 799,
+      "sha256": "d6a440873f859312beff2a034c43c16c5cdea04789eb6d2965b1540e181b613d"
+    },
+    {
+      "file": "apps/web/src/components/ui/button.tsx",
+      "bytes": 1084,
+      "sha256": "9b775d2ff13086200d1a4c9791dbc77990379886855462461e4cfd47b02e438f"
+    },
+    {
+      "file": "apps/web/src/components/ui/card.tsx",
+      "bytes": 393,
+      "sha256": "70896de662c3d784176571011ec3aa185830e81af7d90720c50b383c1f44f632"
+    },
+    {
+      "file": "apps/web/src/components/ui/confirm-dialog.tsx",
+      "bytes": 2839,
+      "sha256": "a7c76585b197eece8050e4583d401a4e0826ce7a9fb091433d264dcfda765538"
+    },
+    {
+      "file": "apps/web/src/components/ui/form-field.tsx",
+      "bytes": 1433,
+      "sha256": "90850847528890b7effe506a67a86ea897ba42f05635e15f3d3ab51f635ec7bf"
+    },
+    {
+      "file": "apps/web/src/components/ui/state-message.tsx",
+      "bytes": 1630,
+      "sha256": "974147c12c4a76cb8bd9409642ca141e5b88bfa5d1c31b52e449efd0f93abae1"
+    },
+    {
+      "file": "apps/web/src/components/ui/toast.tsx",
+      "bytes": 2706,
+      "sha256": "6dd468e1db0b533432e0ef4e0b035352bbe2b621ea3095808f3912a7601a2e11"
+    },
+    {
+      "file": "apps/web/src/features/auth/auth-client.test.mjs",
+      "bytes": 6320,
+      "sha256": "08c786cc3568d1eff7da5ff94049ba4f4ccbcfe8cc469dd9ae29ee3e0a90be70"
+    },
+    {
+      "file": "apps/web/src/features/auth/auth-client.ts",
+      "bytes": 9486,
+      "sha256": "f5d99bb4e950c05468a29391d10317b034503af18c73da868e96b157364c05aa"
+    },
+    {
+      "file": "apps/web/src/features/auth/auth-error.test.mjs",
+      "bytes": 1727,
+      "sha256": "9ba9764f57a6c89dfa82e83042ed30f8391db3aa26c3fcb4b67ddc1ce8c79e3f"
+    },
+    {
+      "file": "apps/web/src/features/auth/auth-error.ts",
+      "bytes": 2763,
+      "sha256": "d79e115b5d952564bb0fd9bb16e94b8ad68199561c70df7a2422c7aa840a28ab"
+    },
+    {
+      "file": "apps/web/src/features/auth/auth-logout-binding.test.mjs",
+      "bytes": 6167,
+      "sha256": "c0088fef7fe9ea05c50bda10c77849ef1a9a72be342c17ff4f8bb71af8d5004c"
+    },
+    {
+      "file": "apps/web/src/features/auth/auth-provider.tsx",
+      "bytes": 3387,
+      "sha256": "c6932e8eade9316c461ba14f3dec8f172baff929eb1e485149f819b65326c641"
+    },
+    {
+      "file": "apps/web/src/features/auth/auth-session.test.mjs",
+      "bytes": 8550,
+      "sha256": "b6ca739a6ab008fab6f7826aa1f4923af4fc3c4df98fde71b1656ac4355aa4aa"
+    },
+    {
+      "file": "apps/web/src/features/auth/auth-session.ts",
+      "bytes": 8067,
+      "sha256": "2cdd05a199b8243a48b50533113670de0f340b56e7f667a546befd9ab7cff907"
+    },
+    {
+      "file": "apps/web/src/features/auth/components/auth-card.tsx",
+      "bytes": 443,
+      "sha256": "d75f29bbcd2bcd3aa83329a6d52a2ba2845f1930dfd033a40fe1ecdcf9918024"
+    },
+    {
+      "file": "apps/web/src/features/auth/components/auth-nav.tsx",
+      "bytes": 1289,
+      "sha256": "0d2bc8c5e71e95388d093802afe9264d3b02e624fcfb312ea0ddcdfbe317ece5"
+    },
+    {
+      "file": "apps/web/src/features/auth/components/login-form.tsx",
+      "bytes": 4288,
+      "sha256": "53f8b9dda950a31031661483175c095d26cea6f15c47cc71b0081c419bf563a0"
+    },
+    {
+      "file": "apps/web/src/features/auth/components/logout-control.tsx",
+      "bytes": 3888,
+      "sha256": "88f758616f3c53b7fe52826f67433ef2596f6b879be3f29d705426cb8fadd58b"
+    },
+    {
+      "file": "apps/web/src/features/auth/components/logout-dialog-copy.ts",
+      "bytes": 1648,
+      "sha256": "faa9cd30b2d983e4fbf3eb6a5a009af0d917553679a2bb337a83c13270163fb9"
+    },
+    {
+      "file": "apps/web/src/features/auth/components/register-form.tsx",
+      "bytes": 4684,
+      "sha256": "d661f739c83ff8f0c3f6f140e301eba3d63d5a35692b8fea4574e4cb12cf1553"
+    },
+    {
+      "file": "apps/web/src/features/auth/logout-dialog.test.mjs",
+      "bytes": 2152,
+      "sha256": "70b0ce1f95528bed27aef4d79408eb9f78d054f5b0e5edda2ca447c7dee61927"
+    },
+    {
+      "file": "apps/web/src/features/auth/return-to.test.mjs",
+      "bytes": 1230,
+      "sha256": "541c5687f9c75fc906b3b85fd488391007fc5b554cea03e5b5131770c371e12b"
+    },
+    {
+      "file": "apps/web/src/features/auth/return-to.ts",
+      "bytes": 1181,
+      "sha256": "6d654f5cd59b7c2e844b79af68c58b08e62abb6b605f159e7cca4aabe040a69b"
+    },
+    {
+      "file": "apps/web/src/features/auth/types.ts",
+      "bytes": 1253,
+      "sha256": "57e06bb5b7bf42c7658a2a0b4cc7b3ff8d359c4c61200ac83e3dd6ce761f209c"
+    },
+    {
+      "file": "apps/web/src/features/auth/validation.test.mjs",
+      "bytes": 2671,
+      "sha256": "97eb2fed9b3b4fcf781049ca959005533b21b19a256eca9115a5ce738650459a"
+    },
+    {
+      "file": "apps/web/src/features/auth/validation.ts",
+      "bytes": 3267,
+      "sha256": "fb64aafdc6f4a28e192ef2321023f1bac609f96abdbaef510e1385e331f74d53"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-activation-v2.test.mjs",
+      "bytes": 2504,
+      "sha256": "2b2b5db4b8a7cf7acacd018967dc60eb71cb14b05e606db0f8d76bff394c80d0"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-activation-v2.ts",
+      "bytes": 660,
+      "sha256": "298c5206a4ca9331471e90c7f44a65e5afa14e9691e9ff53f701bd03207e5bb1"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-auth-integration.test.mjs",
+      "bytes": 10745,
+      "sha256": "9c348637fcae005a4e7c294ecf9c09c4036065683891b1c7aff1ee99891480ac"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-cancel-client-v2.test.mjs",
+      "bytes": 22063,
+      "sha256": "e31b47b2537ee9fcf28fda6301897d969777ef35656f2323f86f98cbf008b64b"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-cancel-client-v2.ts",
+      "bytes": 11036,
+      "sha256": "92868b85e7eec66d54709843cd8762edbd89653da1eee74850fd1c471cefe45a"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-checkout-client-v2.test.mjs",
+      "bytes": 23555,
+      "sha256": "194105e8f83d8354fa3816caad0ed21098cbfcb17477d5f0f453b436085bc6bf"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-checkout-client-v2.ts",
+      "bytes": 12349,
+      "sha256": "9c065a9dbd989616c4cfe90f3789ce89c1b9d0ca6728850fecce2ce851f77f73"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-checkout-runtime-v2.test.mjs",
+      "bytes": 25120,
+      "sha256": "d2cf6b8292284e1785dbae12b3bd08db831d7250367ed7f5379c6632bface37a"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-checkout-runtime-v2.ts",
+      "bytes": 5019,
+      "sha256": "3396102ad44a23f41aafb88559d4fb182e8a763346d32fec11cba858ed290fa2"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-checkout-ui.test.mjs",
+      "bytes": 7522,
+      "sha256": "4ef68ff41dece96d2c8a19e338564e66cba1d29f5452663275501f8caae159ea"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-checkout-ui.ts",
+      "bytes": 2817,
+      "sha256": "fa82e2f3fbf1d3f06be1fe9e11a0c6a597eae0c8715045f4105b6e8a818a5650"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-checkout-v2.test.mjs",
+      "bytes": 18917,
+      "sha256": "6b7e814d20aa46c84bc0aab5053e9f94901c0de29de377172a8280467bf7abd6"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-checkout-v2.ts",
+      "bytes": 7238,
+      "sha256": "bcbdb6e570a3e9184a03c495d6b96ba9a450021a4722b3795e330408845f7891"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-controller-v2.test.mjs",
+      "bytes": 16654,
+      "sha256": "8c51ac7f3d541cce9f2943f19addc7356ab163edfa6a23fef02dd4610cfd0f5b"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-controller-v2.ts",
+      "bytes": 10188,
+      "sha256": "ad1e9a2384ba6af3d15457bb0cd905da4cfc617492b859a10239be6a0069048b"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-edit-context.tsx",
+      "bytes": 879,
+      "sha256": "e24b06ac6a9e4d76013e8cb17b1814ac5c3cfecba50f5f59c1e7651bdbdccded"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-envelope-v2.test.mjs",
+      "bytes": 16898,
+      "sha256": "c3d699e5d45834526ad70e5187362bf5d481ba3032983767cea51990a5b09474"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-envelope-v2.ts",
+      "bytes": 9653,
+      "sha256": "c27308cd6025a344d81918bf08f58457535032450dd6e901b3cabc7106eca929"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-envelope.ts",
+      "bytes": 8712,
+      "sha256": "66637463ad0f70ec9f2b4c1ebffa83a7e4718660eecfbacf2df55c842d5a34e0"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-http.ts",
+      "bytes": 3523,
+      "sha256": "c83570422e6e530fbc98951e828515caa3a2a379f96d50c77fd691953ca35509"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-lifecycle.test.mjs",
+      "bytes": 20072,
+      "sha256": "801983f4823f5622a7db362b0304bfc01ee5973d286cd5845f3eac887c7507e7"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-lifecycle.ts",
+      "bytes": 6781,
+      "sha256": "080734bdabdeb6206a9622973bff556cb1ddb0df8acf665ffe014ef9164e9237"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-mutation-transport.test.mjs",
+      "bytes": 17701,
+      "sha256": "49d574ad9c2faff8cabc6c2e94a3c69270d7e3b332e81f12b34bc8c87f362a14"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-mutation-transport.ts",
+      "bytes": 2997,
+      "sha256": "b073b1d8e21929f03490a457230955cd064dfce9d47a37c9bdb2767939bb1d89"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-order-binding-v2.test.mjs",
+      "bytes": 20188,
+      "sha256": "2a91a351b5ca60853e7e5368f9290d441b835573a4784f4fd389b7df5a685dad"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-order-binding-v2.ts",
+      "bytes": 10458,
+      "sha256": "04aff82f089823357f87f8325645aa03ea01ac4a819784bac12fae4a3762cf96"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-order-client.test.mjs",
+      "bytes": 14671,
+      "sha256": "0df39b74f0cc5674a5fc5897316a2e61b733444d21e83c00f55f5ee64b7d53c8"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-order-client.ts",
+      "bytes": 6151,
+      "sha256": "b6a4c491d55c3df26162b9fa6da99828b6558626531f234d04f51e22cbe594ae"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-order-confirmation.test.mjs",
+      "bytes": 6875,
+      "sha256": "9fa020513bead1ba5d318a7ea2dfb5569ee1a1b131f7c0f657e607f556068009"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-order-confirmation.ts",
+      "bytes": 3322,
+      "sha256": "db1bd8e474bb0e2d634c02d9a6c16c7d8256708adb0b520fe1d0fb9942f9b1e6"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-order-feedback.test.mjs",
+      "bytes": 3447,
+      "sha256": "6f653d1015132aff61b65ff217a0b64a5229b59ba135c9e4be43ecfbedf46c1f"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-order-feedback.ts",
+      "bytes": 4458,
+      "sha256": "3e807637c01c770d034aaac9188d841c07d5946953a33390ce9db291d3caf689"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-order-owner-integration.test.mjs",
+      "bytes": 5610,
+      "sha256": "6b005a709a0df7c5e41bf4667bfc7af98b2a6a648cd8d4b16349f088f17f56e9"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-order-reader-v2.test.mjs",
+      "bytes": 16364,
+      "sha256": "3a6a660d31ab22afaff83d703ca8ea6ebecd8ab3f2d8109c52460e3c642d8d1e"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-order-reader-v2.ts",
+      "bytes": 6274,
+      "sha256": "aec021368a14ac5dbe2d056e5d87527ca7691a521a036c8c54932dba7f34493b"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-order-rejection-v2.test.mjs",
+      "bytes": 23775,
+      "sha256": "5f4cfe706ff6d724618064a8ef32f7c08a3e50520afb15c167eb8bb6f58e37b5"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-order-rejection-v2.ts",
+      "bytes": 11192,
+      "sha256": "b94b3ceccca0f152604d53e60757b3332aa1e8a9ee36e6cbe1aee7b813f855de"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-order-response.ts",
+      "bytes": 6221,
+      "sha256": "4098bfcd0644d09ab70bf5d9e13da4740a6b9db7bbd6a35602535557c41a7aa7"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-order-restore-v2.test.mjs",
+      "bytes": 9935,
+      "sha256": "330ea2080b70ae2901fc125e7600b21e700fc32c4eb0f77cbe02fcd04002d819"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-order-restore-v2.ts",
+      "bytes": 4484,
+      "sha256": "28ef66e0b233848e198e5f025ea0ae346716f1120d41658a1b5a1c2c311aa1ed"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-order-settlement.test.mjs",
+      "bytes": 22300,
+      "sha256": "48fab94a2e109ff99ead31d369c1ea96888a68593df2a6e8a506a2797ff8b072"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-order-settlement.ts",
+      "bytes": 4175,
+      "sha256": "ddddc0371cf94cfa44cc388d204625351925b3132f10a41084832668672eb772"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-order-transport.test.mjs",
+      "bytes": 16149,
+      "sha256": "0ae869a2928e807d99e6c8d28109cae797bbfbc6c4ee08619885be82a7cfce2e"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-order-transport.ts",
+      "bytes": 2070,
+      "sha256": "f2d2b2748603adea8b9974c464a81b28103855e60175dd39f850f2b237cfee3b"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-payment-client-v2.test.mjs",
+      "bytes": 30501,
+      "sha256": "0c2b83b3f70dcc895abaaaa849bd5ab921cb26aeaab0c13f26e538fd63508ca5"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-payment-client-v2.ts",
+      "bytes": 12998,
+      "sha256": "c056afbec4a7500b02b4173bf81dbe814f8457ee5d72d6784d6aa019c3fa96cf"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-payment-recovery-v2.test.mjs",
+      "bytes": 30082,
+      "sha256": "56016b880ba638517cb3fa649d62e91d8083da24be316eb79d43f082fa71a078"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-payment-recovery-v2.ts",
+      "bytes": 12912,
+      "sha256": "9c88198901fd5c9dadf3d908f8c2c6751ae35a34b862220bc2e826de00ebc299"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-provider-v2.tsx",
+      "bytes": 4601,
+      "sha256": "1beeb1db11ed6383e658fbaf6fb9dff4122d37af502be4099c0de0d96482a032"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-provider.tsx",
+      "bytes": 16142,
+      "sha256": "b65b785086f05f5ffdc32c3a5ad33242847aeae4e52accbc632738762779e2ae"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-reducer.test.mjs",
+      "bytes": 8473,
+      "sha256": "09d7aee619f4848070495f0fffd846adcb64cef553c7324cd10c818a224b1014"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-reducer.ts",
+      "bytes": 5180,
+      "sha256": "1a419cac661d22919710d4e6cf176e5d725adafd83a8d50351967e6b52d8467f"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-session-bridge-v2.test.mjs",
+      "bytes": 17576,
+      "sha256": "72a034ef88872ec80715947074f5d8a4b3576322a12f4fa9b8aea2e32161fec4"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-session-bridge-v2.ts",
+      "bytes": 6671,
+      "sha256": "4d48ae67932b9d2d8403a0c9a47b7e11360482641e2b39e27e0204f87858f537"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-session-bridge.test.mjs",
+      "bytes": 8142,
+      "sha256": "f895f68510ba39f0dc7051c7ab97ba30120354c088d50f87b3f70e1b4dc4b1ec"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-session-bridge.ts",
+      "bytes": 5625,
+      "sha256": "46885bbc6459ef10883b74cc8c12d40dbceadd3b50edf625ffceddd3c26c5b88"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-storage.test.mjs",
+      "bytes": 15928,
+      "sha256": "5bd2d4b9b1b09295e778ae625cc48080e0dd3c414c50ed926a518c1f963e6f32"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-storage.ts",
+      "bytes": 12547,
+      "sha256": "b53d28d9523c87e24721ec68355ce25020762e77cd61bab9c072dbb6679f21ab"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-view.test.mjs",
+      "bytes": 5908,
+      "sha256": "564cfabb6aa667f94a14c8e6555729243fd9b9eed1434df1ab1d8eb3223b90df"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-view.ts",
+      "bytes": 2010,
+      "sha256": "e1f849ab7c7059cf7c2779265763571bfa3f63ba2cadcf811b4f04077da30c8c"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-writer-v2.test.mjs",
+      "bytes": 18447,
+      "sha256": "02f7d67f2e1bcb3efdf589c24f99efcbb2ff90f1eddc0b71c38e4f05c7108277"
+    },
+    {
+      "file": "apps/web/src/features/cart/cart-writer-v2.ts",
+      "bytes": 4179,
+      "sha256": "3b57728d380d9194fb6b80a6bc010a5b449908a7cf790dcc517bb7d7168f3d99"
+    },
+    {
+      "file": "apps/web/src/features/cart/components/cart-badge.tsx",
+      "bytes": 944,
+      "sha256": "c5cd262d004172c9e1937508fb94e555417357b9ba27d6535597fcc85131c817"
+    },
+    {
+      "file": "apps/web/src/features/cart/components/cart-checkout-panel-v2.tsx",
+      "bytes": 4014,
+      "sha256": "e7a5cd580b13e0d3450f39317aa09b5ccb7f23e2ba26daad7069302c519bf0dd"
+    },
+    {
+      "file": "apps/web/src/features/cart/components/cart-notice.tsx",
+      "bytes": 1074,
+      "sha256": "2854fc1c028216043e23250b4f9102a2750cd45592d1e1c371c7f956f07e0c75"
+    },
+    {
+      "file": "apps/web/src/features/cart/components/cart-order-panel.tsx",
+      "bytes": 7619,
+      "sha256": "6dde98aca625da7ff1c61ee887a1d63cb2a3c83451261d6dbe13c72c767de02c"
+    },
+    {
+      "file": "apps/web/src/features/cart/components/cart-panel.tsx",
+      "bytes": 4955,
+      "sha256": "5ddb312c7538b4018dc0c40fe2c84d6343c9460d8e58f904de6bbf44e0408115"
+    },
+    {
+      "file": "apps/web/src/features/cart/components/cart-refresh-boundary.tsx",
+      "bytes": 1359,
+      "sha256": "a62e7ebbc1485ad4be90bde51d75d9393d62ea79d9d2011b574832abdc386c73"
+    },
+    {
+      "file": "apps/web/src/features/cart/components/checkout-v2-panel.tsx",
+      "bytes": 22529,
+      "sha256": "9dfe74e4db0336d5903d87882f7245f65fb44e379f58a56d7c1f30439d1f5e4e"
+    },
+    {
+      "file": "apps/web/src/features/cart/preview/checkout-fixture.test.mjs",
+      "bytes": 7770,
+      "sha256": "8ecf54e7654a7655f5f43b23d0bf5ba16759236560df34c38771746692f655aa"
+    },
+    {
+      "file": "apps/web/src/features/cart/preview/checkout-fixture.ts",
+      "bytes": 11725,
+      "sha256": "248beb09af24eb7bdf96d86c98aef6dcb3c7a7401a192e9172877660f7effbee"
+    },
+    {
+      "file": "apps/web/src/features/cart/preview/checkout-preview.tsx",
+      "bytes": 4368,
+      "sha256": "10808c05b937e38dc3ebc67be25c03f2c6c563ef862ae3f5d6d3a1cc352b43d2"
+    },
+    {
+      "file": "apps/web/src/features/cart/product-cart-draft.ts",
+      "bytes": 1376,
+      "sha256": "a3b7ac1c3e1c724b77b1d114707b05e3deb5c30445d5fb9d9bea4dde8ee4a649"
+    },
+    {
+      "file": "apps/web/src/features/cart/types.ts",
+      "bytes": 901,
+      "sha256": "ef92ba483f3a4861702c4750d73da9b9a7cf1a1e2f4d8c6bc33913a8a025bb72"
+    },
+    {
+      "file": "apps/web/src/features/orders/components/order-detail-page.tsx",
+      "bytes": 2107,
+      "sha256": "971a2012c9f7524686e628f634c267ce50f98a4808267a492696e9faf6d0e2c9"
+    },
+    {
+      "file": "apps/web/src/features/orders/components/order-detail-view.tsx",
+      "bytes": 4419,
+      "sha256": "9a12bbd4a95b369954719d97425ab3136a411b257a5487415e180c65cefe22ae"
+    },
+    {
+      "file": "apps/web/src/features/orders/components/order-history-page.tsx",
+      "bytes": 3180,
+      "sha256": "ed695758fa397c2340d3adbff1c913fa02e6d9c93497363723b66cf2ef437750"
+    },
+    {
+      "file": "apps/web/src/features/orders/components/order-lines.tsx",
+      "bytes": 2106,
+      "sha256": "49dabc0ee7afa55f6ccc4e0bb8372167bc4ccb5b0a63a7bacf8a55fc98bf57c4"
+    },
+    {
+      "file": "apps/web/src/features/orders/components/order-status-badge.tsx",
+      "bytes": 568,
+      "sha256": "c699355dc42bd8211da7ab983697f22b4c2e97e1cb52b5f006950dba60660c84"
+    },
+    {
+      "file": "apps/web/src/features/orders/components/payment-deadline.tsx",
+      "bytes": 1430,
+      "sha256": "541ed26e9aadfa47b786f361564f9eab77bd2cba8924b8d9a57f59691c5cd91d"
+    },
+    {
+      "file": "apps/web/src/features/orders/components/payment-summary.tsx",
+      "bytes": 1539,
+      "sha256": "e1f9bc6386707ec14e82a8a08a470e0951bbfa6697a253f2bfa18cc3d834198d"
+    },
+    {
+      "file": "apps/web/src/features/orders/components/require-session.tsx",
+      "bytes": 1526,
+      "sha256": "fc0409eaa7c85302831eeb02fd6be0d67082d7678dd44afede38e86927d04aa7"
+    },
+    {
+      "file": "apps/web/src/features/orders/order-error.test.mjs",
+      "bytes": 4578,
+      "sha256": "670468baae87e705c530a4578e2986005a6f5543dd992b73a02146cc192ca084"
+    },
+    {
+      "file": "apps/web/src/features/orders/order-error.ts",
+      "bytes": 8183,
+      "sha256": "17c5d64e67380407ec340afda0a415f3ad74039cea70724d9aaca0456ab48212"
+    },
+    {
+      "file": "apps/web/src/features/orders/order-fixtures.ts",
+      "bytes": 5531,
+      "sha256": "57c7dc680249842afdb8eac86611487f43ede127e6cd5cadeeb0041ed9dda7a6"
+    },
+    {
+      "file": "apps/web/src/features/orders/order-format.test.mjs",
+      "bytes": 2829,
+      "sha256": "0038984d18c700e847ff4bad3dce06bd02748aeb5154192c6c2d9ee33cbc490f"
+    },
+    {
+      "file": "apps/web/src/features/orders/order-format.ts",
+      "bytes": 3047,
+      "sha256": "8c3d0e141efb54ba326fd06fa038ef31de0bcde4728f6a917661f2169cd02a34"
+    },
+    {
+      "file": "apps/web/src/features/orders/order-parse.test.mjs",
+      "bytes": 3345,
+      "sha256": "f983ab3ae4a71fefa467b78384eeff52ff34efd01fc358b94b102e221817dae0"
+    },
+    {
+      "file": "apps/web/src/features/orders/order-parse.ts",
+      "bytes": 6308,
+      "sha256": "46cb21c6a4e733b08b8fe17a8c5adf88765ce4a270dc5bad7f31f2c653410171"
+    },
+    {
+      "file": "apps/web/src/features/orders/order-read-client.test.mjs",
+      "bytes": 5388,
+      "sha256": "1d2a54f78f7c3bbecc0b8256fc8de74bf38555d19e4a14c18a1fa5d9bf5c7730"
+    },
+    {
+      "file": "apps/web/src/features/orders/order-read-client.ts",
+      "bytes": 4966,
+      "sha256": "f911fca231269ca1a8140906b19aea53aedebfb9f66bf9f0cba59dd1fac241f2"
+    },
+    {
+      "file": "apps/web/src/features/orders/order-status.test.mjs",
+      "bytes": 2163,
+      "sha256": "946d49584f3162091cdab35de5ba2a789d301208da6c5c93f658ede1e53b6150"
+    },
+    {
+      "file": "apps/web/src/features/orders/order-status.ts",
+      "bytes": 3611,
+      "sha256": "30d18566c4f84c95743753813d30021e04036f606c0fca9c40dba1c048fe034e"
+    },
+    {
+      "file": "apps/web/src/features/orders/order-version.test.mjs",
+      "bytes": 3719,
+      "sha256": "df111b150498c413d28d7b6e712206c2d164b36b524165b62d2246371861ca76"
+    },
+    {
+      "file": "apps/web/src/features/orders/order-version.ts",
+      "bytes": 2848,
+      "sha256": "7f49da94e62daea2082b1c6a9a71d7cf5465a655bf1f9b3bacef8e51a4c0b32a"
+    },
+    {
+      "file": "apps/web/src/features/orders/order-view-state.test.mjs",
+      "bytes": 2344,
+      "sha256": "e9f4bdfb1213c8fa46c7f644b9708982e15a2a3b966ebcaeb41431c684b74007"
+    },
+    {
+      "file": "apps/web/src/features/orders/order-view-state.ts",
+      "bytes": 2656,
+      "sha256": "c137d469b18f06042903b8f3eed1124c4ef0617ecb67708feab66402119ce92d"
+    },
+    {
+      "file": "apps/web/src/features/orders/types.ts",
+      "bytes": 2093,
+      "sha256": "f7ddcdf7f2b591c751651bc8fd4a38c81588d81ede114502514fcbddc181ed63"
+    },
+    {
+      "file": "apps/web/src/features/orders/use-order-reads.ts",
+      "bytes": 3793,
+      "sha256": "58b3c9544661ced3b8dc8392f8e33de15aee3099bfc7c7ab3926971105de073f"
+    },
+    {
+      "file": "apps/web/src/features/products/api.test.mjs",
+      "bytes": 6743,
+      "sha256": "4e2de43102f445e0925091a3a6fa2662cd5c77cb9ffaed60051482a96aaf88c6"
+    },
+    {
+      "file": "apps/web/src/features/products/api.ts",
+      "bytes": 3403,
+      "sha256": "9e619d9962416dbd0af963c6d2d6505449852dadf939dec7a93dc49621c9b7fe"
+    },
+    {
+      "file": "apps/web/src/features/products/components/menu.tsx",
+      "bytes": 2472,
+      "sha256": "d44097f9fd89be7c5525acb08fc86f18d723967d4e1403a7fd295f52a3f3a3f1"
+    },
+    {
+      "file": "apps/web/src/features/products/components/product-card.tsx",
+      "bytes": 948,
+      "sha256": "8c9001b98d0c99497ec52abccc68fb40a5fe01529e5c869d96da4b18aecbda57"
+    },
+    {
+      "file": "apps/web/src/features/products/components/product-image.tsx",
+      "bytes": 465,
+      "sha256": "c56991ee54499111c98179d6c422dc5d348fc63117a10455fc592dcf5b4a5b0d"
+    },
+    {
+      "file": "apps/web/src/features/products/components/product-options.tsx",
+      "bytes": 4877,
+      "sha256": "7a4da9f075f8f41c797659710d00c9f1066000b7c5ce1eb8c250b6be1df1a990"
+    },
+    {
+      "file": "apps/web/src/features/products/fixtures.ts",
+      "bytes": 1311,
+      "sha256": "d8497cb2a3d63a0646f8483f5606f7349140e302dca6df1f0ca305284cdad307"
+    },
+    {
+      "file": "apps/web/src/features/products/format-price.test.mjs",
+      "bytes": 403,
+      "sha256": "2d5336184ade50c57331c8c4f0a7f8629126c7714f41861412c97326d904d2d6"
+    },
+    {
+      "file": "apps/web/src/features/products/format-price.ts",
+      "bytes": 168,
+      "sha256": "cc523247df18f4a0bca064d3dde39c4aff38d44eded5dd34cbb7d7f635fadebf"
+    },
+    {
+      "file": "apps/web/src/features/products/types.ts",
+      "bytes": 407,
+      "sha256": "886377acb649d453fea48df3ae69d591af07f1145f274bafe2c0a59bd79e2a79"
+    },
+    {
+      "file": "apps/web/src/features/pwa/pwa-support.tsx",
+      "bytes": 1232,
+      "sha256": "a71828bd0f49c8b3547671df34ff3395908f444dc04438a5d7617a11cda5438f"
+    },
+    {
+      "file": "apps/web/src/features/pwa/service-worker.test.mjs",
+      "bytes": 6311,
+      "sha256": "a102522b15cfa2748760156f667d4d40c825d31582b91f7979799b147e614f11"
+    },
+    {
+      "file": "apps/web/src/lib/order-owner.ts",
+      "bytes": 637,
+      "sha256": "75925b2b8f88f855cd10731cc65e389d732607efd7c771911cf2de8a7101ceec"
+    },
+    {
+      "file": "apps/web/src/lib/order-path.ts",
+      "bytes": 439,
+      "sha256": "9bac9cea9078981f0c47c81c15f7ce9e5b2c76d450f36325206ce011e729796e"
+    },
+    {
+      "file": "apps/web/src/lib/server/auth/config.ts",
+      "bytes": 393,
+      "sha256": "b9d99a91b7da6fa724114bb0c23117d3e22631d7b715c99a36ef788571fe055c"
+    },
+    {
+      "file": "apps/web/src/lib/server/auth/cookie-options.test.ts",
+      "bytes": 440,
+      "sha256": "d9f170f4e3578cb3bc6f9ea4857583073f0a5fdc178fa2d7e9a0e08584f77a37"
+    },
+    {
+      "file": "apps/web/src/lib/server/auth/cookie-policy.ts",
+      "bytes": 232,
+      "sha256": "7dfc10a7121e13985f03c0fa94c6af64e939971c6b58fae9b98e7dbc4c361f53"
+    },
+    {
+      "file": "apps/web/src/lib/server/auth/cookie.ts",
+      "bytes": 810,
+      "sha256": "ae8f29e9660615c38c0bf59f47cf28441cef9c7549186c41bb9c7fff8dd51273"
+    },
+    {
+      "file": "apps/web/src/lib/server/auth/csrf.test.ts",
+      "bytes": 1993,
+      "sha256": "8ae3956757ccb005a5b9f7e70862fdacba844375a268cb5a231a0def18925fba"
+    },
+    {
+      "file": "apps/web/src/lib/server/auth/csrf.ts",
+      "bytes": 1910,
+      "sha256": "26aba5cc90e9c585861827d3470426753c7056ea6831e4ed6d184f33ad1e1d2b"
+    },
+    {
+      "file": "apps/web/src/lib/server/auth/http.ts",
+      "bytes": 2100,
+      "sha256": "5619ac3d6dfeff23f8cabfd22fbdb5743ff1c9574eecffae5e31ab7258b4831a"
+    },
+    {
+      "file": "apps/web/src/lib/server/auth/logout-handler.test.mjs",
+      "bytes": 4903,
+      "sha256": "e7fcef99dad1c9cf5a4f9ee071de492281e3e6993d384c26dfb3eb1772cc686d"
+    },
+    {
+      "file": "apps/web/src/lib/server/auth/logout-handler.ts",
+      "bytes": 2198,
+      "sha256": "52a5519a7a9c4f653873cbef8fdf0a1e7c09301b4e74e70ab4d5ec3e282e1b7e"
+    },
+    {
+      "file": "apps/web/src/lib/server/auth/session-binding.ts",
+      "bytes": 323,
+      "sha256": "8958c77a683bc15211817f1f275cf0b6159538c730b36c46536b1dbbab45c792"
+    },
+    {
+      "file": "apps/web/src/lib/server/checkout-integration.ts",
+      "bytes": 347,
+      "sha256": "36bbd7d09be07775419d982d8abc3b75e54d9c377ca13e2e93a630041fb48aef"
+    },
+    {
+      "file": "apps/web/src/lib/server/checkout-mutation.test.mjs",
+      "bytes": 16633,
+      "sha256": "5d718c323548a51cca345160ed4a52db06cad571a52bf8c16ca598e31903fd3a"
+    },
+    {
+      "file": "apps/web/src/lib/server/orders/cancel-handler.ts",
+      "bytes": 966,
+      "sha256": "0536ca6888d34fd5abd5fa074103fb3c7e3e1de57c7645a5da1bdd958de182dd"
+    },
+    {
+      "file": "apps/web/src/lib/server/orders/order-handler.test.mjs",
+      "bytes": 13850,
+      "sha256": "fff0ef87fa34e88ad9d9d2954f6bbfdcffc4435ce1d1c2c7608a53493858b50d"
+    },
+    {
+      "file": "apps/web/src/lib/server/orders/order-handler.ts",
+      "bytes": 755,
+      "sha256": "07100c273255adbd93e96e46c0096646df177d82d52abef387036bcb95cd5839"
+    },
+    {
+      "file": "apps/web/src/lib/server/orders/order-read-handler.test.mjs",
+      "bytes": 8010,
+      "sha256": "d73aa5664b2bff51088ede54c0175740d4e6ee1ac1de2001befd4e80f1ddffa4"
+    },
+    {
+      "file": "apps/web/src/lib/server/orders/order-read-handler.ts",
+      "bytes": 6137,
+      "sha256": "72e76c723321564b00fdda3f97057b951e0c5848121e1b8a9a404e314536f352"
+    },
+    {
+      "file": "apps/web/src/lib/server/orders/order-read-route.ts",
+      "bytes": 745,
+      "sha256": "bd22e5815f1a1bf778e32c34e80d45c6fae3d4edaab44aa6b4df328d279825ea"
+    },
+    {
+      "file": "apps/web/src/lib/server/owner-mutation-handler.ts",
+      "bytes": 8650,
+      "sha256": "f2ec9716662441046fc137ef6df227a235af4dec18c2b6b81a92cf0dbc4d8bf5"
+    },
+    {
+      "file": "apps/web/src/lib/server/payments/payment-handler.ts",
+      "bytes": 680,
+      "sha256": "ed3c8e7db3fe534b43d03e791001d3ccca5612f47623889b5ab556e65dd7bead"
+    },
+    {
+      "file": "apps/web/src/lib/session-binding.ts",
+      "bytes": 359,
+      "sha256": "faaf94dbc16423b5771fc0c6f6211dd3716505da2e196bf21c52f01ca7ebe594"
+    },
+    {
+      "file": "apps/web/tsconfig.json",
+      "bytes": 674,
+      "sha256": "8a71c1cad4292e7a909a8477ddff3798232b372f2e814e4d209cb87e42df6523"
+    },
+    {
+      "file": "compose.yaml",
+      "bytes": 2200,
+      "sha256": "cb458bd37817f0e4169bbb6d5e683d767b97f02f7cbdfc75911cb8df470786fb"
+    },
+    {
+      "file": "docs/README.md",
+      "bytes": 2215,
+      "sha256": "775c82e2a9ea396b549922a377f3f48a98627f333468168467e224ba9ea2068f"
+    },
+    {
+      "file": "docs/architecture/frontend-bff-pwa.md",
+      "bytes": 12230,
+      "sha256": "a1b9e9e259a174245d2837fe67b613b1ca0f4d9f5d3edf05710b10e5b45119bc"
+    },
+    {
+      "file": "docs/assignment2/CHANGELOG.md",
+      "bytes": 1728,
+      "sha256": "af9b24c0bd945fcd4ea6bf96dc4ed8f236ab251fdf06e37a54175249c7185b2e"
+    },
+    {
+      "file": "docs/assignment2/CHECKOUT_INTEGRATION.md",
+      "bytes": 8386,
+      "sha256": "bb1415752459e025fd38266ac62da96a388a213fca6bef32f696759a0055727f"
+    },
+    {
+      "file": "docs/assignment2/CI.md",
+      "bytes": 4475,
+      "sha256": "4d38fcbe843b4da58ec3f8724e8bfaac496c69abf4d27322524971a9703ec8da"
+    },
+    {
+      "file": "docs/assignment2/COMPOSE.md",
+      "bytes": 5097,
+      "sha256": "f8a6b6edf7ccbb2ff6bf8f025fd4c8247c0dd1f6a11cf863887dfc109b4c4e12"
+    },
+    {
+      "file": "docs/assignment2/CONTRACTS.md",
+      "bytes": 14231,
+      "sha256": "7c6aa9dd028d7bfb3273c94825bf3376836bb66e26394d6d41b8e95a5dee7eee"
+    },
+    {
+      "file": "docs/assignment2/PWA.md",
+      "bytes": 10728,
+      "sha256": "dae9f6ab8a73aa50412d080dd12ca5deff73fb7a5e10f49e8c562a47780c2b64"
+    },
+    {
+      "file": "docs/assignment2/README.md",
+      "bytes": 7176,
+      "sha256": "c4dca812a42e4a460c6b9f7d05ab3df45740771066a4a94e38f43490bb4ab627"
+    },
+    {
+      "file": "docs/assignment2/SOURCE_PROVENANCE.md",
+      "bytes": 7392,
+      "sha256": "d50700cd9c598b9548911ec4ed91260743e68e748fb4c9cc8bfecef41529b27d"
+    },
+    {
+      "file": "docs/assignment2/TASK4_REPO_BACKLOG_DOD.md",
+      "bytes": 1987,
+      "sha256": "17c1c12d6c9ae31d3cfcb29f8d83f476fe4cc7054c6e093aca6fbfbe9f4e82b2"
+    },
+    {
+      "file": "docs/assignment2/TEAM_PLAN.md",
+      "bytes": 9378,
+      "sha256": "de7ecc3125159cacb405824addd73fa10676152e8420e803b58f6a0c267b8cfc"
+    },
+    {
+      "file": "docs/assignment2/testing/checkout-preparation-2026-11-13/README.md",
+      "bytes": 1464,
+      "sha256": "d7005a2aa733ee2424a5a17c9fe402823da5839c9aa17185f03c6fc344c0c7eb"
+    },
+    {
+      "file": "docs/assignment2/testing/checkout-preparation-2026-11-13/build-initial-environment-failure.txt",
+      "bytes": 2777,
+      "sha256": "4004035c6eb61262156a4abdb3d2bfb8100a02085d0d1757fb23fd3f29d28cd1"
+    },
+    {
+      "file": "docs/assignment2/testing/checkout-preparation-2026-11-13/build.txt",
+      "bytes": 1442,
+      "sha256": "14e46f96a1759af874799e14269f9072143028c8cb0d88d5154d35290f72647f"
+    },
+    {
+      "file": "docs/assignment2/testing/checkout-preparation-2026-11-13/http-browser-launch-failure.txt",
+      "bytes": 1479,
+      "sha256": "a6eb15be165f4d4d637d34692d7bb4abc2f16ccccc7ae92e8b2a8a7ed4370b5f"
+    },
+    {
+      "file": "docs/assignment2/testing/checkout-preparation-2026-11-13/http.txt",
+      "bytes": 1133,
+      "sha256": "c9f034eb9007c3a632d2dc02c81385f0799938c0cdd51c1925246ecc10dc310c"
+    },
+    {
+      "file": "docs/assignment2/testing/checkout-preparation-2026-11-13/legacy.txt",
+      "bytes": 1795,
+      "sha256": "fdf515c70d9038ae87c45f0e2669d3f87bbda80712510f858590a9ecc8d9d7fe"
+    },
+    {
+      "file": "docs/assignment2/testing/checkout-preparation-2026-11-13/lint.txt",
+      "bytes": 303,
+      "sha256": "462ddb22546d7f8b77a0a3770283480d05bb22363407b565ff11be84301856a2"
+    },
+    {
+      "file": "docs/assignment2/testing/checkout-preparation-2026-11-13/migration.txt",
+      "bytes": 868,
+      "sha256": "3ec23ca3642e2f496c32980c14f2b1ba6225dd5e735c83e88fc05f2a3b8f69db"
+    },
+    {
+      "file": "docs/assignment2/testing/checkout-preparation-2026-11-13/postgres.txt",
+      "bytes": 3718,
+      "sha256": "4d834080cb86beee06e9d33a794e8ffd2671cdff18847a3f205cfe64cd5aa005"
+    },
+    {
+      "file": "docs/assignment2/testing/checkout-preparation-2026-11-13/result.json",
+      "bytes": 40006,
+      "sha256": "1ffc9b2033e189d4ff108e93dc45cd2ea4bc4b9c499985b04cad3da3cf896a54"
+    },
+    {
+      "file": "docs/assignment2/testing/checkout-preparation-2026-11-13/setup.txt",
+      "bytes": 737,
+      "sha256": "a0b8f0fe957c4801802c1eec99121861aba2ec7bad1988768b8520879ca97796"
+    },
+    {
+      "file": "docs/assignment2/testing/checkout-preparation-2026-11-13/typecheck.txt",
+      "bytes": 785,
+      "sha256": "9d36085794f8bdc90ea5c63dee75965bc960809f5c77e3e4a501eacc850f2822"
+    },
+    {
+      "file": "docs/assignment2/testing/checkout-preparation-2026-11-13/unit.txt",
+      "bytes": 132213,
+      "sha256": "c153108ee8f080a7c4f8952b1e0b034c7fd7bc1ecfebb20b4bbe0d5204f4aa4c"
+    },
+    {
+      "file": "docs/diagrams/README.md",
+      "bytes": 1421,
+      "sha256": "3c9c865e604504dbf1b97c656561064a9b8bcaed74571df54d882c37cdb22d18"
+    },
+    {
+      "file": "docs/diagrams/activity-checkout.md",
+      "bytes": 2548,
+      "sha256": "81248fdd9ab3a01890ae1e6b957764b4bc8cd99cdf7dc50f42ae560a2601242e"
+    },
+    {
+      "file": "docs/diagrams/activity-checkout.puml",
+      "bytes": 4475,
+      "sha256": "3d6fa807fd5ffb492ccf4f9ae8e47b0801f45249da6a442fbdd0faf882ad280a"
+    },
+    {
+      "file": "docs/diagrams/activity-checkout.svg",
+      "bytes": 55992,
+      "sha256": "c761949c197baa16e53ed6d316d8e4ed30120d469ee841e83f62dd1c4c93ae1f"
+    },
+    {
+      "file": "docs/diagrams/class-domain.md",
+      "bytes": 1914,
+      "sha256": "03fddccf55e870102af25562b466347f608d96e120f172de91cf53acca0a638d"
+    },
+    {
+      "file": "docs/diagrams/class-domain.puml",
+      "bytes": 3307,
+      "sha256": "e5932c7b03c62c03566afc664d579e8c665c1b5b0d22b3ea8409b18259c65067"
+    },
+    {
+      "file": "docs/diagrams/class-domain.svg",
+      "bytes": 31887,
+      "sha256": "5eb62c3fb10c8142dd75ec1b78fcaa6d6f3a9f2b3d686c2a0ae7d2cc9ad8ec08"
+    },
+    {
+      "file": "docs/diagrams/master-use-case.puml",
+      "bytes": 3972,
+      "sha256": "4738fa0c0e0c6975e1c9b6f639acb3c33caddb85ff1038372af2b395c3d53f93"
+    },
+    {
+      "file": "docs/diagrams/master-use-case.svg",
+      "bytes": 23869,
+      "sha256": "30b1c3939010ecbc7b8759360832ad20a5cab4a05acf595bb85d052e9e5339e8"
+    },
+    {
+      "file": "docs/diagrams/sequence-checkout.md",
+      "bytes": 3316,
+      "sha256": "e5873c0b9103f681cff60ff6f5f42ba517c78e490b3ec4d8b41f0be85e86d38f"
+    },
+    {
+      "file": "docs/diagrams/sequence-checkout.puml",
+      "bytes": 6333,
+      "sha256": "a23dfe3f2907a7154e27a7ef8969e7286458c3463aa7830875c5966a3b259742"
+    },
+    {
+      "file": "docs/diagrams/sequence-checkout.svg",
+      "bytes": 134744,
+      "sha256": "a5b8fa71e357ddc1aa6a6dd1dcf2217d92fcaa20561ff8f2d6d18bb92d3b51b9"
+    },
+    {
+      "file": "docs/diagrams/use-case-checkout.puml",
+      "bytes": 2449,
+      "sha256": "e4e2e07ed3045a49d0cf120a7527c044edb28a9e3a9046de06a3f7c77c5e8e36"
+    },
+    {
+      "file": "docs/diagrams/use-case-checkout.svg",
+      "bytes": 15132,
+      "sha256": "bdb597e4337a2381d18c689b9f2e8a51e30f7f7d63e1e948674d0e234d8deaa6"
+    },
+    {
+      "file": "docs/guides/API_CONTRACT.md",
+      "bytes": 2879,
+      "sha256": "d04a85b147612238ac11ea51c808a673393e9cc274be74d05af7133a7abc3b21"
+    },
+    {
+      "file": "docs/guides/GIT_WORKFLOW.md",
+      "bytes": 2280,
+      "sha256": "12df91b7f7d1dfe22d937216c6149f5a61efcc40b47d7276e295673cee6fde7e"
+    },
+    {
+      "file": "docs/guides/UI_SHARED_COMPONENTS.md",
+      "bytes": 4301,
+      "sha256": "8040d1b067325fc0483ea685e2c9c15fea7a7fa54049366823056ec8051c1c3c"
+    },
+    {
+      "file": "docs/reference/a1/README.md",
+      "bytes": 1776,
+      "sha256": "97a0f9252544fcc5f0e40649d8f920646048140581c6778f2e5554a6f97d139e"
+    },
+    {
+      "file": "docs/reference/a1/checkout-contract.md",
+      "bytes": 40381,
+      "sha256": "92d7dda4a2a478a78dae7310d89a43c9f8938cfeadd4d95b55ce3f30e46bf0bb"
+    },
+    {
+      "file": "docs/reference/a1/checkout-design.md",
+      "bytes": 42112,
+      "sha256": "71779f2c866b204720b1461ab30bce7a25a704df46e667970e30ef6c49fae426"
+    },
+    {
+      "file": "docs/reference/a1/order-ui.md",
+      "bytes": 9402,
+      "sha256": "8fbe1d284b266d1a197b2026fa0e1d43d159bed8ea2101841dee7c7ea014e37a"
+    },
+    {
+      "file": "docs/requirements/checkout-supporting-flows.md",
+      "bytes": 7683,
+      "sha256": "dc9ce26fb028a13830a8e7b7a18d6281287479e588a4957d058ad31063330284"
+    },
+    {
+      "file": "docs/requirements/context-and-scope.md",
+      "bytes": 27818,
+      "sha256": "21f8833dce97452aabaf85e23f98b1aae5f2ca333808fda903d989cac22ad691"
+    },
+    {
+      "file": "docs/requirements/srs.md",
+      "bytes": 44223,
+      "sha256": "df7a8b5bb3e00fa840748635f81f118dd869885329ec8f036c7c6a4618140b43"
+    },
+    {
+      "file": "docs/requirements/use-case-checkout.md",
+      "bytes": 16351,
+      "sha256": "f612c80ee17a6dea67a95188457b4cba6dfb36d9e91e13cb5f58d144c9376c36"
+    },
+    {
+      "file": "docs/traceability-matrix.md",
+      "bytes": 9214,
+      "sha256": "fe1717b9a1731ba60789a0d18734d0c2d64161c71c792344947a616c03ea80c6"
+    },
+    {
+      "file": "package-lock.json",
+      "bytes": 419793,
+      "sha256": "a45644aa88a07d25527136ff864b87109a23b34336a0c77173a67a59d3002592"
+    },
+    {
+      "file": "package.json",
+      "bytes": 975,
+      "sha256": "91437e1ae0932b4945e7092969e7711e30aaddb09e120fc5f52b033c773e42ea"
+    },
+    {
+      "file": "scripts/setup-env.mjs",
+      "bytes": 2217,
+      "sha256": "ed5501eb0876fca03e129c58c58c42ae06c8c6f048600974c9632c8ee3607a4a"
+    },
+    {
+      "file": "scripts/setup-env.test.mjs",
+      "bytes": 4593,
+      "sha256": "85b8e193fdd9afee8f20c9ed1d56ee4ef711564a36fb78a14ec565d86dd8dce7"
+    }
+  ],
+  "sourceManifestSha256": "28a047822fbaf4cb5e91e93712a66dd1bbc221e123c2924abd86b8da5d995dae",
+  "browserRunnerSha256": "d0fd865fb0c311e9cc6fab28abe107a00c2e52feb6958cc3d583ade9b4dcd2c0",
+  "beforeServices": [
+    {
+      "service": "backend",
+      "name": "brewlite-a2-checkout-backend-1",
+      "state": "running",
+      "health": "healthy",
+      "image": "brewlite-a2-api:local"
+    },
+    {
+      "service": "db",
+      "name": "brewlite-a2-checkout-db-1",
+      "state": "running",
+      "health": "healthy",
+      "image": "postgres:17-bookworm"
+    },
+    {
+      "service": "frontend",
+      "name": "brewlite-a2-checkout-frontend-1",
+      "state": "running",
+      "health": "healthy",
+      "image": "brewlite-a2-web:local"
+    }
+  ],
+  "docker": "Docker version 29.9.3, build 5457199",
+  "compose": "Docker Compose version v5.7.0",
+  "imageIds": {
+    "backend": "sha256:83960bc7324edf613d158107f347cf230e710923433070de0f797c06d6f9645c",
+    "frontend": "sha256:99172636a2b5b088c60a9c484a793f7e68abd584afd42dd97d7dd3a9d8b22db3",
+    "db": "sha256:665dc7b37ac52a17e298511414c21d23ffa4e6a6ef6225b3e5d59c7afb35e994"
+  },
+  "runtime": {
+    "project": "brewlite-a2-checkout",
+    "checkout": "1",
+    "backend": "http://backend:3001",
+    "origin": "http://localhost:3100",
+    "cookie": "brewlite_a2_session",
+    "mockOutcome": "SUCCEEDED",
+    "globalDemoWorkflowEnabled": false
+  },
+  "imageSource": {
+    "backend": {
+      "files": 67,
+      "manifestSha256": "d9fc329490ff74437a4f4dff940dbc0fe66d6525c5303e726730124f16e9ef8e"
+    },
+    "frontend": {
+      "files": 142,
+      "manifestSha256": "045e93e88931eb8979e3a3b148f9276185632bba91a85693c6a7a0bcf73888c0"
+    }
+  },
+  "database": {
+    "name": "brewlite_a2",
+    "version": "17.11 (Debian 17.11-1.pgdg12+2)"
+  },
+  "phase": "readiness: three-service stop/start",
+  "readiness": [
+    {
+      "reason": "initial deployment",
+      "probes": [
+        {
+          "status": 200
+        }
+      ]
+    },
+    {
+      "reason": "backend outcome FAILED",
+      "probes": [
+        {
+          "status": 200
+        }
+      ]
+    },
+    {
+      "reason": "backend outcome SUCCEEDED",
+      "probes": [
+        {
+          "status": 200
+        }
+      ]
+    },
+    {
+      "reason": "expiry backend restart",
+      "probes": [
+        {
+          "status": 200
+        }
+      ]
+    },
+    {
+      "reason": "three-service stop/start",
+      "probes": [
+        {
+          "status": 200
+        }
+      ]
+    }
+  ],
+  "demoBaseline": [
+    {
+      "id": "americano",
+      "price": 40000,
+      "stock": 10,
+      "reservedStock": 0,
+      "stockVersion": 1
+    },
+    {
+      "id": "cappuccino",
+      "price": 45000,
+      "stock": 10,
+      "reservedStock": 0,
+      "stockVersion": 1
+    },
+    {
+      "id": "coffee-milk",
+      "price": 35000,
+      "stock": 10,
+      "reservedStock": 0,
+      "stockVersion": 1
+    },
+    {
+      "id": "peach-tea",
+      "price": 39000,
+      "stock": 10,
+      "reservedStock": 0,
+      "stockVersion": 1
+    }
+  ],
+  "lastRequest": {
+    "method": "GET",
+    "path": "/api/orders/me"
+  },
+  "requests": [
+    {
+      "method": "POST",
+      "path": "/api/auth/register",
+      "status": 201,
+      "elapsedMs": 472.94
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200,
+      "elapsedMs": 389.69
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/register",
+      "status": 201,
+      "elapsedMs": 373.25
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200,
+      "elapsedMs": 345.15
+    },
+    {
+      "method": "GET",
+      "path": "/api/orders/me",
+      "status": 401,
+      "elapsedMs": 15.05
+    },
+    {
+      "method": "POST",
+      "path": "/api/orders",
+      "status": 201,
+      "elapsedMs": 240.43
+    },
+    {
+      "method": "POST",
+      "path": "/api/payments",
+      "status": 200,
+      "elapsedMs": 130.86
+    },
+    {
+      "method": "POST",
+      "path": "/api/payments",
+      "status": 404,
+      "elapsedMs": 49.46
+    },
+    {
+      "method": "POST",
+      "path": "/api/payments",
+      "status": 403,
+      "elapsedMs": 10.38
+    },
+    {
+      "method": "POST",
+      "path": "/api/payments",
+      "status": 403,
+      "elapsedMs": 15.92
+    },
+    {
+      "method": "GET",
+      "path": "/api/orders/me",
+      "status": 403,
+      "elapsedMs": 9.05
+    },
+    {
+      "method": "POST",
+      "path": "/api/orders/:id/cancel",
+      "status": 200,
+      "elapsedMs": 124.95
+    },
+    {
+      "method": "POST",
+      "path": "/api/orders",
+      "status": 201,
+      "elapsedMs": 87.47
+    },
+    {
+      "method": "POST",
+      "path": "/api/payments",
+      "status": 200,
+      "elapsedMs": 117.55
+    },
+    {
+      "method": "POST",
+      "path": "/api/payments",
+      "status": 200,
+      "elapsedMs": 28.41
+    },
+    {
+      "method": "POST",
+      "path": "/api/orders/:id/cancel",
+      "status": 200,
+      "elapsedMs": 117.5
+    },
+    {
+      "method": "POST",
+      "path": "/api/orders/:id/cancel",
+      "status": 200,
+      "elapsedMs": 74.07
+    },
+    {
+      "method": "POST",
+      "path": "/api/orders",
+      "status": 201,
+      "elapsedMs": 150.89
+    },
+    {
+      "method": "POST",
+      "path": "/api/payments",
+      "status": 400,
+      "elapsedMs": 57.6
+    },
+    {
+      "method": "POST",
+      "path": "/api/payments",
+      "status": 200,
+      "elapsedMs": 110.88
+    },
+    {
+      "method": "POST",
+      "path": "/api/payments",
+      "status": 200,
+      "elapsedMs": 75.55
+    },
+    {
+      "method": "POST",
+      "path": "/api/payments",
+      "status": 200,
+      "elapsedMs": 138.07
+    },
+    {
+      "method": "POST",
+      "path": "/api/orders/:id/cancel",
+      "status": 200,
+      "elapsedMs": 116.77
+    },
+    {
+      "method": "POST",
+      "path": "/api/payments",
+      "status": 200,
+      "elapsedMs": 28.35
+    },
+    {
+      "method": "POST",
+      "path": "/api/orders",
+      "status": 201,
+      "elapsedMs": 130.59
+    },
+    {
+      "method": "POST",
+      "path": "/api/orders/:id/cancel",
+      "status": 200,
+      "elapsedMs": 88.37
+    },
+    {
+      "method": "POST",
+      "path": "/api/payments",
+      "status": 409,
+      "elapsedMs": 32.5
+    },
+    {
+      "method": "POST",
+      "path": "/api/orders",
+      "status": 201,
+      "elapsedMs": 90.42
+    },
+    {
+      "method": "POST",
+      "path": "/api/payments",
+      "status": 200,
+      "elapsedMs": 100.4
+    },
+    {
+      "method": "GET",
+      "path": "/api/orders/:id",
+      "status": 200,
+      "elapsedMs": 29.38
+    },
+    {
+      "method": "GET",
+      "path": "/api/orders/:id",
+      "status": 200,
+      "elapsedMs": 21.71
+    },
+    {
+      "method": "GET",
+      "path": "/api/orders/:id",
+      "status": 200,
+      "elapsedMs": 23.54
+    },
+    {
+      "method": "POST",
+      "path": "/api/orders/:id/cancel",
+      "status": 409,
+      "elapsedMs": 27.34
+    },
+    {
+      "method": "POST",
+      "path": "/api/orders",
+      "status": 201,
+      "elapsedMs": 83.6
+    },
+    {
+      "method": "GET",
+      "path": "/api/orders/:id",
+      "status": 200,
+      "elapsedMs": 39.81
+    },
+    {
+      "method": "GET",
+      "path": "/api/orders/me",
+      "status": 200,
+      "elapsedMs": 81.48
+    }
+  ],
+  "executedBrowserSha256": "8a8fcc8f7b81cf9cae7fe9348d4a7f9ee1ff0d19bb66a69cba8b2186be1e26e7",
+  "browserAdaptation": "Copy of the recorded A2 runner; resolve Playwright from this repository and click the product card from the menu instead of opening its URL directly. Repository source is unchanged.",
+  "browser": {
+    "browser": "158.0.8127.18",
+    "checks": 9,
+    "passed": true,
+    "posts": [
+      {
+        "path": "/api/auth/login",
+        "keyPresent": false
+      },
+      {
+        "path": "/api/orders",
+        "keyPresent": true
+      },
+      {
+        "path": "/api/payments",
+        "keyPresent": true
+      },
+      {
+        "path": "/api/payments",
+        "keyPresent": true
+      },
+      {
+        "path": "/api/orders/7ca8be9a-d819-46d2-b70d-a273129ade5b/cancel",
+        "keyPresent": false
+      }
+    ],
+    "pageErrors": []
+  },
+  "afterServices": [
+    {
+      "service": "backend",
+      "name": "brewlite-a2-checkout-backend-1",
+      "state": "running",
+      "health": "healthy",
+      "image": "brewlite-a2-api:local"
+    },
+    {
+      "service": "db",
+      "name": "brewlite-a2-checkout-db-1",
+      "state": "running",
+      "health": "healthy",
+      "image": "postgres:17-bookworm"
+    },
+    {
+      "service": "frontend",
+      "name": "brewlite-a2-checkout-frontend-1",
+      "state": "running",
+      "health": "healthy",
+      "image": "brewlite-a2-web:local"
+    }
+  ],
+  "finalMockOutcome": "SUCCEEDED",
+  "demoAfter": [
+    {
+      "id": "americano",
+      "price": 40000,
+      "stock": 10,
+      "reservedStock": 0,
+      "stockVersion": 1
+    },
+    {
+      "id": "cappuccino",
+      "price": 45000,
+      "stock": 10,
+      "reservedStock": 0,
+      "stockVersion": 1
+    },
+    {
+      "id": "coffee-milk",
+      "price": 35000,
+      "stock": 10,
+      "reservedStock": 0,
+      "stockVersion": 1
+    },
+    {
+      "id": "peach-tea",
+      "price": 39000,
+      "stock": 10,
+      "reservedStock": 0,
+      "stockVersion": 1
+    }
+  ],
+  "completedAt": "2026-11-13T13:47:40.878Z"
+}

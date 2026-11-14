@@ -1,0 +1,10 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> brewlite@0.1.0 lint
+> npm run lint --workspace apps/web
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @brewlite/frontend@0.1.0 lint
+> eslint .
+

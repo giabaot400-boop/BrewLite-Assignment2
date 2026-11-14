@@ -61,7 +61,6 @@ Terminal frontend, đặt biến **trước build** vì `NEXT_PUBLIC_*` được
 
 ```powershell
 Set-Location D:\cnpm\brewlite-a2
-$env:NEXT_PUBLIC_API_URL = "http://localhost:3001"
 $env:NEXT_PUBLIC_PRODUCTS_SOURCE = "api"
 $env:BACKEND_INTERNAL_URL = "http://localhost:3001"
 $env:APP_ORIGIN = "http://localhost:3000"
@@ -124,3 +123,7 @@ app trên hạ tầng triển khai, các viewport NFR-06 chưa ghi nhận, nhán
 mutation rồi mất phản hồi dưới worker và các tình huống phiên đổi đồng thời.
 Kết quả nền Sprint 2 không tự thay bằng chứng cho bản tích hợp Sprint 3.
 Giữ các giới hạn này khi review PR và bổ sung kết quả tại mốc triển khai thật.
+
+## Checkout trên bản A2 tích hợp
+
+Catalog browser dùng BFF cùng origin; không cần `NEXT_PUBLIC_API_URL`. Kiểm tra PWA cũ ở trên giữ đúng phiên bản và giới hạn lịch sử, chưa chứng minh checkout/Compose/HTTPS mới. Chạy lại online/offline, owner và recovery theo [hồ sơ tích hợp](CHECKOUT_INTEGRATION.md) trước khi cập nhật evidence A2.

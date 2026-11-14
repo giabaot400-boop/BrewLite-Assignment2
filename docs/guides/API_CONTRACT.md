@@ -3,8 +3,7 @@
 > Hướng dẫn kỹ thuật kế thừa từ [A1 tại 69b8011](https://github.com/giabaot400-boop/BrewLite/blob/69b801165fc0b199ac70fdc3afa75932a82601c9/docs/API_CONTRACT.md).
 > Các kết quả/giới hạn kiểm thử cũ dưới đây thuộc A1; không tự ghi thành PASS A2.
 
-Backend NestJS chạy tại `http://localhost:3001`. Frontend đọc URL từ
-`NEXT_PUBLIC_API_URL`, không gọi trực tiếp database.
+Backend NestJS local chạy tại `http://localhost:3001`. Browser đọc menu qua BFF `/api/products`; trang chi tiết server dùng `BACKEND_INTERNAL_URL` (fallback `BACKEND_URL`/localhost). Frontend không gọi trực tiếp database. Trong Compose A2, Web mở cổng 3100 và API dùng mạng private. Checkout/payment/cancel theo [contract A2](../assignment2/CONTRACTS.md).
 
 ## GET /products
 

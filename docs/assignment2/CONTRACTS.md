@@ -13,6 +13,30 @@ Ngày cập nhật: 10/11/2026. Kế thừa thiết kế từ A1; source, cấu 
 
 ## Giá và cấu hình demo
 
+### Chi tiết runtime nhận từ bản tích hợp A1
+
+Bản A2 nhận code từ A1 `3a70df6` trên nền A2 `3be4a11`; phạm vi và kiểm tra
+ở [CHECKOUT_INTEGRATION.md](CHECKOUT_INTEGRATION.md). Giữ API/DTO/canonical
+đã chốt, làm rõ các phản hồi runtime dùng bởi cả backend và frontend:
+
+- `CHECKOUT_CHANGED.details.reason`: `PRODUCT_PRICE_CHANGED` khi có ít nhất
+  một giá dòng đổi; `EXPECTED_TOTAL_MISMATCH` khi các giá dòng vẫn khớp nhưng
+  tổng khác. Nếu cả hai, ưu tiên reason giá dòng. Không nhận tên tổng quát
+  `PRICE_OR_TOTAL_CHANGED` trong runtime.
+- `OUT_OF_STOCK.details.reason = INSUFFICIENT_STOCK`; chỉ liệt kê Product
+  thực sự thiếu, requested bằng tổng qty các cấu hình của Product. Không
+  dùng tên đề xuất `INSUFFICIENT_PRODUCT_STOCK`.
+- Nếu không có PaymentAttempt cho đúng owner/key/body và đơn đã terminal,
+  backend có thể trả 409 `ORDER_NOT_PAYABLE`, details chính xác gồm
+  `{reason:'NO_ATTEMPT_TERMINAL_ORDER',orderId,orderVersion,orderStatus}`.
+  Recovery phải kiểm đúng order/key, schema và current Order trước khi chốt;
+  response chung/không rõ vẫn giữ recovery. Attempt đã có phải replay kết
+  quả cũ trước, không trả marker thay cho nó.
+
+Ba bản ở `docs/reference/a1` là tài liệu lịch sử cố định. Chi tiết vừa nêu
+và chính sách A2 hiện hành được đối chiếu với code/test của lần tích hợp này;
+không sửa tài liệu tham khảo thành hồ sơ kiểm thử A2.
+
 UI preview dùng giá giỏ và một cấu hình DEMO10 tập trung (10%, tối thiểu 50.000đ, trần 20.000đ), ghi rõ chưa kiểm chứng active/window/min ở server. Với mã khác, chưa tự giảm hoặc coi mã hợp lệ. POST /orders backend kiểm tra lại; mã sai/giá thay đổi/expectedTotal lệch bị từ chối rõ, không âm thầm bỏ mã hay sửa body/key. Sau rejection đã xác nhận, khách cập nhật dữ liệu từ API catalog/detail hiện có rồi xác nhận yêu cầu mới. PENDING đã tạo phải được đọc lại để hiển thị tổng chính thức trước thanh toán.
 
 Mock outcome do backend cấu hình SUCCEEDED/FAILED, mặc định success; cấu hình sai phải báo lỗi khởi động. Demo FAIL rồi SUCCESS đổi cấu hình/restart backend; key cũ replay vẫn FAILED, khách xác nhận key mới trên cùng Order còn hạn để thử lần mới. Không nhận mode/amount/failpoint hoặc dữ liệu thẻ thật từ browser.
