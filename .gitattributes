@@ -1,1 +1,3 @@
 * text=auto eol=lf
+# Preserve raw command output, including its trailing empty line.
+docs/assignment2/testing/checkout-preparation-2026-11-13/*.txt whitespace=-blank-at-eof

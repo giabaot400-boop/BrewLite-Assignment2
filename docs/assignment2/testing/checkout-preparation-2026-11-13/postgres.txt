@@ -1,0 +1,46 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @brewlite/backend@0.1.0 test:workflow
+> node --import tsx --test src/orders/workflow-postgres.integration.ts
+
+PostgreSQL 17.11; isolated fixture prefix a2-workflow-09964ae1-4f6d-4d31-804a-912a6e224a64
+(node:114) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ payment WALLET commits one attempt, stock consumption and points (359.304999ms)
+✔ payment CARD commits one attempt, stock consumption and points (52.961126ms)
+✔ FAILED keeps hold; replay old key stays FAILED after success with a new key (68.811994ms)
+✔ cancel before payment releases hold once and retains immutable creation replay (39.166951ms)
+✔ PAID cancel refunds full amount, returns stock, reverses points exactly once (81.325091ms)
+✔ expiry rechecks database deadline, rejects payment and never mutates legacy orders (44.641742ms)
+✔ internal demo advances only paid chain and cancellation stops at PREPARING (55.763482ms)
+✔ other owner cannot pay, cancel or read an order; no mutation or attempt is created (22.692083ms)
+✔ two concurrent payments with the same key converge on one attempt and one award (65.174725ms)
+✔ different payment keys racing on one order cannot produce two successes (29.149984ms)
+✔ payment racing cancel leaves one consistent canceled state and zero net award (32.999682ms)
+✔ payment rollback after injected paymentAttempt.create failure preserves order/hold/points/key (34.845982ms)
+✔ payment rollback after injected product.updateMany failure preserves order/hold/points/key (31.537221ms)
+✔ payment rollback after injected loyaltyEntry.create failure preserves order/hold/points/key (33.582606ms)
+✔ payment rollback after injected order.updateMany failure preserves order/hold/points/key (32.579836ms)
+✔ refund write failure rolls back returned stock, reversed points and refund metadata (34.432261ms)
+✔ two customers reading two available cups cannot reserve quantities 2 and 1 together (82.408862ms)
+[Nest] 114  - 11/13/2026, 4:09:55 PM   ERROR [OrderExpiryService] An expired order could not be released; it remains eligible for retry.
+✔ expiry batch shares an in-flight scan and retries failed rows without stopping the batch (20.29098ms)
+✔ loyalty entry includes 0 points and reverses the original entry exactly once (60.140154ms)
+✔ loyalty entry includes 9 points and reverses the original entry exactly once (54.661939ms)
+✔ loyalty entry includes 28 points and reverses the original entry exactly once (61.570226ms)
+✔ payment racing expiry after the deadline cannot consume the expired hold (25.169336ms)
+✔ cancel racing PREPARING has exactly one valid outcome with consistent refund and stock (35.83049ms)
+✔ new V1 payload keeps canonical identity and still reserves policy2 stock with a deadline (31.832875ms)
+✔ distinct configurations share one Product hold, and failure on the second Product rolls back the first (38.244582ms)
+✔ promotion integer boundary and expiry preserve the original order total through FAILED and retry (52.579494ms)
+✔ simultaneous create with one key commits one order and replay converges without a second hold (16.387011ms)
+✔ a new failed retry uses the logical PENDING edge once; cancel releases its original hold (39.24254ms)
+CLEANUP: only this run's isolated fixtures removed.
+ℹ tests 28
+ℹ suites 0
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2203.187412

@@ -1,5 +1,9 @@
 # BrewLite Assignment 2 — Task 1–2
 
+Bản tích hợp checkout: [nguồn, phạm vi và kiểm tra](CHECKOUT_INTEGRATION.md). Tình trạng Task/AC phải đối chiếu evidence của A2; thông tin lịch sử bên dưới không tự xác nhận bản tích hợp mới đã nghiệm thu.
+
+[QA Windows ngày 13/11/2026](CHECKOUT_WINDOWS_QA.md): Compose checkout A2 8/8, browser 9/9, cleanup và persistence đạt; có fingerprint source chưa commit và image ID. Đây là kiểm chứng local cho phần tích hợp, chưa thay nghiệm thu toàn A2 hoặc triển khai production.
+
 **Cập nhật 10/11/2026 · Thiết kế kế thừa Sprint 3 / nền Sprint 2 a1a0e4a.** Tài liệu gốc đã được merge qua [PR A1 #29](https://github.com/giabaot400-boop/BrewLite/pull/29); hiệu đính Task 1 nằm ở [PR A1 #42](https://github.com/giabaot400-boop/BrewLite/pull/42), còn lượt này đồng bộ Task 2 và truy vết; chưa xác nhận đã nghiệm thu Task 1–2, code đã đạt AC hoặc production đã triển khai.
 
 Repository hiện hành: [BrewLite-Assignment2](https://github.com/giabaot400-boop/BrewLite-Assignment2). Các mốc main/PR của phần kế thừa thuộc repo A1; xem [nguồn và ranh giới hai repo](SOURCE_PROVENANCE.md).
@@ -17,13 +21,13 @@ Repository hiện hành: [BrewLite-Assignment2](https://github.com/giabaot400-bo
 | 1.1 | [Bối cảnh và phạm vi](../requirements/context-and-scope.md) | Stakeholder, IN/OUT, giả định/ràng buộc/rủi ro |
 | 1.2 | [SRS](../requirements/srs.md) | [Master SVG](../diagrams/master-use-case.svg) / [nguồn](../diagrams/master-use-case.puml) |
 | 1.3 | [UC-09 Thanh toán không tiền mặt](../requirements/use-case-checkout.md) | [SVG](../diagrams/use-case-checkout.svg) / [nguồn](../diagrams/use-case-checkout.puml) |
-| 2.1 | [Activity](../diagrams/activity-checkout.md) | [Tạo đơn](../diagrams/activity-checkout-order.svg), [payment](../diagrams/activity-checkout-payment.svg) / [nguồn](../diagrams/activity-checkout.puml) |
-| 2.2 | [Sequence](../diagrams/sequence-checkout.md) | [CHÍNH: UC-09 thanh toán](../diagrams/sequence-checkout-payment.svg), bổ trợ: [tạo đơn](../diagrams/sequence-checkout-order.svg), [hủy/hết hạn](../diagrams/sequence-checkout-cancel-expiry.svg) / [nguồn](../diagrams/sequence-checkout.puml) |
+| 2.1 | [Activity](../diagrams/activity-checkout.md) | [Activity](../diagrams/activity-checkout.svg) / [nguồn](../diagrams/activity-checkout.puml) |
+| 2.2 | [Sequence](../diagrams/sequence-checkout.md) | [Sequence UC-09](../diagrams/sequence-checkout.svg) / [nguồn](../diagrams/sequence-checkout.puml) |
 | 2.3 | [Domain class](../diagrams/class-domain.md) | [SVG](../diagrams/class-domain.svg) / [nguồn](../diagrams/class-domain.puml) |
 | 3.2 | [Deployment A2 — đề xuất](DEPLOYMENT.md) | [UML SVG](deployment-production.svg) / [nguồn](deployment-production.puml); Railway chưa triển khai |
 | Truy vết | [Ma trận FR/NFR→UC→thiết kế→API→test](../traceability-matrix.md) | Code/test chưa xác minh ghi CHỜ |
 
-Trong repo, đọc trực tiếp các liên kết bên dưới docs; mở SVG bằng trình duyệt và chỉnh qua nguồn PlantUML. Các tệp được bố trí theo đường dẫn tạo phẩm của đề, không commit gói ZIP. Bảy tài liệu nội dung (gồm ngữ cảnh hỗ trợ), năm nguồn và tám SVG cùng nội dung thiết kế.
+Trong repo, đọc trực tiếp các liên kết bên dưới docs; mở SVG bằng trình duyệt và chỉnh qua nguồn PlantUML. Các tệp được bố trí theo đường dẫn tạo phẩm của đề, không commit gói ZIP. Bảy tài liệu nội dung (gồm ngữ cảnh hỗ trợ), năm nguồn và năm SVG cùng nội dung thiết kế.
 
 ## Phạm vi và trạng thái
 
@@ -41,7 +45,7 @@ Task 1.3 chỉ chọn **UC-09 Thanh toán không tiền mặt**. UC-08 và các 
 
 ## Kiểm tra tài liệu
 
-Đã kiểm tra tập 17 FR/12 NFR/59 AC và 14 mã UC; kiểm tra liên kết, nguồn PlantUML và tám SVG. Khung ngữ cảnh trong sequence chính bổ sung nội dung tạo đơn/giữ kho, giữ UC-09 là trọng tâm. Đây là kiểm tra tài liệu, không phải test ứng dụng, PR review hoặc nghiệm thu Task 1–5.
+Đã kiểm tra tập 17 FR/12 NFR/59 AC và 14 mã UC; kiểm tra liên kết, nguồn PlantUML và năm SVG. Ba sơ đồ Task 2 được vẽ lại theo đề; sequence có khung tạo đơn/giữ kho, UC-09 vẫn là trọng tâm. Đây là kiểm tra tài liệu, không phải test ứng dụng, PR review hoặc nghiệm thu Task 1–5.
 
 ## Quan hệ A1 và A2
 

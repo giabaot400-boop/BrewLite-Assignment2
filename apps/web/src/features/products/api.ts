@@ -1,10 +1,14 @@
-import { productFixtures } from "./fixtures";
+import { productFixtures } from "./fixtures.ts";
 import type { ProductDetail, ProductSummary, SizeOption, ToppingOption } from "./types";
 
 export class ProductApiError extends Error {
-  constructor(message: string, public readonly status?: number) {
+  readonly status?: number;
+
+  // Không dùng parameter property để module chạy được dưới `node --test` (chế độ strip-only của Node).
+  constructor(message: string, status?: number) {
     super(message);
     this.name = "ProductApiError";
+    this.status = status;
   }
 }
 
@@ -44,8 +48,13 @@ function isDetail(value: unknown): value is ProductDetail {
 }
 
 async function request(path: string, signal?: AbortSignal): Promise<unknown> {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
-  if (!baseUrl) throw new ProductApiError("Thiếu NEXT_PUBLIC_API_URL.");
+    const baseUrl = typeof window === "undefined"
+    ? (
+      process.env.BACKEND_INTERNAL_URL ||
+      process.env.BACKEND_URL ||
+      "http://localhost:3001"
+    )
+    : "/api";
   const response = await fetch(`${baseUrl.replace(/\/+$/, "")}${path}`, { signal, cache: "no-store" });
   if (!response.ok) throw new ProductApiError("Không tải được dữ liệu sản phẩm.", response.status);
   return response.json();

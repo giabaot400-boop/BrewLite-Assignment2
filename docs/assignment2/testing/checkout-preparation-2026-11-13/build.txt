@@ -1,0 +1,58 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> brewlite@0.1.0 build
+> npm run build --workspaces
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @brewlite/frontend@0.1.0 build
+> next build
+
+▲ Next.js 16.4.2 (Turbopack)
+✓ Running next.config.ts took 32ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 3.4s
+  Running TypeScript ...
+  Finished TypeScript in 3.0s ...
+  Collecting page data using 8 workers ...
+  Generating static pages using 8 workers (0/2) ...
+✓ Generating static pages using 8 workers (2/2) in 74ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+├ ƒ /_not-found
+├ ƒ /api/auth/login
+├ ƒ /api/auth/logout
+├ ƒ /api/auth/me
+├ ƒ /api/auth/register
+├ ƒ /api/orders
+├ ƒ /api/orders/[id]
+├ ƒ /api/orders/[id]/cancel
+├ ƒ /api/orders/me
+├ ƒ /api/payments
+├ ƒ /api/products
+├ ƒ /cart
+├ ƒ /dev/checkout
+├ ƒ /login
+├ ○ /manifest.webmanifest
+├ ƒ /orders
+├ ƒ /orders/[id]
+├ ƒ /products/[id]
+└ ƒ /register
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+
+> @brewlite/backend@0.1.0 build
+> prisma generate && nest build
+
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma/schema.prisma.
+
+✔ Generated Prisma Client (7.10.1) to ./src/generated/prisma in 127ms
+
