@@ -14,6 +14,11 @@ Git HEAD lúc lấy metadata là `4c177bf`, nhưng container chạy lại image 
 đã có từ 13/11; full image ID và giới hạn được ghi trong bản ghi. Không gán
 kết quả này cho image GHCR mới hoặc toàn bộ AC PWA/production.
 
+[Lượt responsive/bàn phím cùng ngày](testing/ui-keyboard-windows-2026-11-14/README.md)
+bổ sung quan sát tại 360x800, 768x1024, 1366x768 và các thao tác focus/đối thoại.
+Đây là lượt thủ công tiếp theo trên container local cũ; giữ rõ từng màn hình,
+phím và phần chưa kiểm, không thay giới hạn của lượt PWA trước đó.
+
 ## Phạm vi
 
 - Manifest `/manifest.webmanifest`, icon PNG 192/512 (nguồn vector tại `apps/web/public/icons/icon.svg`).
