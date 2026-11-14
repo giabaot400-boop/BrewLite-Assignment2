@@ -38,9 +38,13 @@ Trong cấu hình Docker Compose local, trình duyệt truy cập Next.js tại 
 
 ### 1.3. Giới hạn xác nhận
 
-Tại thời điểm lập tài liệu, Prisma schema có trạng thái đơn hàng `PENDING` và chưa có model thanh toán riêng. Không coi các chức năng thanh toán, quản lý tồn kho, điểm thưởng hoặc Checkout E2E của Assignment 1 là đã được tích hợp và nghiệm thu trong Assignment 2.
+Tài liệu kiến trúc ban đầu được xây dựng trên source Assignment 2 tại commit `3be4a11`. Phần cập nhật Checkout V2 được đối chiếu với `origin/main` tại commit `4c177bf`, sau khi PR #11 (`integration/a2-checkout-e2e`) được merge.
 
-Docker Compose local và các kết quả kiểm thử do E báo cáo không thay thế bằng chứng triển khai production hoặc kiểm thử nghiệp vụ end-to-end.
+Checkout V2 bổ sung các trạng thái Order `PENDING`, `PAYMENT_FAILED`, `PAID`, `PREPARING`, `READY`, `COMPLETED` và `CANCELLED`; `MockPaymentService` hỗ trợ kết quả giả lập `SUCCEEDED` hoặc `FAILED` cho phương thức `WALLET` và `CARD`. Database được mở rộng với PaymentAttempt, StockReservation, LoyaltyEntry, Promotion và các trường quản lý tồn kho, điểm thưởng.
+
+Bằng chứng QA Windows/Compose ngày 13/11/2026 ghi nhận Compose 8/8 và Browser 9/9, không có page error. Kết quả này thuộc lượt chạy local trên nhánh tích hợp, có thay đổi chưa commit tại thời điểm kiểm thử; không được xem là bằng chứng GitHub CI, triển khai HTTPS production hoặc nghiệm thu toàn bộ acceptance criteria.
+
+Các mô tả trong tài liệu phân biệt rõ thành phần đã có trong source, kết quả kiểm thử được báo cáo và những nội dung chưa được xác minh. Không sử dụng kết quả Assignment 1 làm bằng chứng nghiệm thu Assignment 2.
 
 ## 2. Kiến trúc module Backend NestJS
 
@@ -105,6 +109,40 @@ Cách tổ chức này giúp:
 
 Đây là cách phân chia trách nhiệm ở mức kiến trúc. Chi tiết từng endpoint và luồng xử lý cần đối chiếu với implementation và test tương ứng.
 
+### 2.6. Các thành phần hỗ trợ vận hành và Checkout V2
+
+**Mock Payment**
+
+Checkout V2 sử dụng `MockPaymentService` trong backend NestJS để giả lập kết quả thanh toán. Service đọc biến môi trường `MOCK_PAYMENT_OUTCOME`, mặc định là `SUCCEEDED` và chỉ chấp nhận hai giá trị `SUCCEEDED` hoặc `FAILED`.
+
+Các phương thức thanh toán được hỗ trợ trong mock là `WALLET` và `CARD`. Đây là cơ chế giả lập phục vụ phát triển và kiểm thử, không phải tích hợp cổng thanh toán production.
+
+**Logging**
+
+Backend sử dụng cơ chế `Logger` của NestJS tại một số thành phần, bao gồm `ProductsPrismaService`, để ghi nhận lỗi trong quá trình xử lý dữ liệu.
+
+Chưa xác nhận hệ thống có logging tập trung, correlation ID hoặc giải pháp giám sát production.
+
+**Health Check**
+
+`HealthController` cung cấp endpoint `GET /health`, trả về trạng thái `ok` và tên service `brewlite-api`.
+
+Endpoint này kiểm tra khả năng phản hồi của tiến trình API, không thực hiện kiểm tra kết nối PostgreSQL. Vì vậy, đây là liveness check, chưa phải database readiness check.
+
+**Configuration Management**
+
+Backend sử dụng biến môi trường thông qua `process.env`, bao gồm `DATABASE_URL` và `MOCK_PAYMENT_OUTCOME`.
+
+`PrismaService` yêu cầu `DATABASE_URL` để thiết lập kết nối PostgreSQL. `MockPaymentService` kiểm tra giá trị cấu hình mock payment khi khởi tạo.
+
+Chưa xác nhận việc sử dụng `@nestjs/config` hoặc `ConfigModule` trong source đã khảo sát.
+
+**Order Workflow**
+
+Checkout V2 bổ sung cơ chế kiểm soát chuyển trạng thái Order. Những chuyển trạng thái không hợp lệ bị từ chối bằng `ConflictException` với mã lỗi `INVALID_ORDER_TRANSITION`.
+
+Các thành phần nghiệp vụ liên quan bao gồm `MockPaymentService`, xử lý tồn kho và quản lý điểm thưởng. Chi tiết tính nhất quán dữ liệu và giao dịch được mô tả tại phần 3.
+
 ## 3. Kiến trúc dữ liệu, Migration và Mock
 
 ### 3.1. Kiến trúc dữ liệu
@@ -125,33 +163,74 @@ flowchart TD
 
 ### 3.2. Mô hình dữ liệu
 
-Prisma schema hiện có 9 model:
+Prisma schema của BrewLite Assignment 2 được mở rộng từ 9 model của Sprint 2 lên 13 model sau Checkout V2.
 
-| Nhóm           | Model            | Vai trò                                |
-| -------------- | ---------------- | -------------------------------------- |
-| Catalog        | Product          | Thông tin sản phẩm                     |
-| Catalog        | Topping          | Thông tin topping                      |
-| Catalog        | ProductTopping   | Quan hệ sản phẩm và topping            |
-| Authentication | User             | Tài khoản người dùng                   |
-| Authentication | AuthSession      | Phiên đăng nhập                        |
-| Orders         | Order            | Đơn hàng                               |
-| Orders         | OrderItem        | Chi tiết món trong đơn                 |
-| Orders         | OrderItemTopping | Topping của từng món                   |
-| Orders         | OrderRequest     | Ghi nhận kết quả xử lý yêu cầu tạo đơn |
+| Nhóm | Model | Vai trò |
+| --- | --- | --- |
+| Catalog | Product | Sản phẩm, tồn kho và phiên bản tồn kho |
+| Catalog | Topping | Thông tin topping |
+| Catalog | ProductTopping | Quan hệ sản phẩm và topping |
+| Authentication | User | Tài khoản và điểm thưởng |
+| Authentication | AuthSession | Phiên đăng nhập |
+| Orders | Order | Đơn hàng, trạng thái và thông tin checkout |
+| Orders | OrderItem | Chi tiết món trong đơn |
+| Orders | OrderItemTopping | Topping của từng món |
+| Orders | OrderRequest | Ghi nhận yêu cầu tạo đơn và idempotency |
+| Checkout | PaymentAttempt | Ghi nhận các lần thanh toán |
+| Checkout | StockReservation | Quản lý giữ, tiêu thụ, giải phóng và hoàn hàng |
+| Loyalty | LoyaltyEntry | Ghi nhận cộng điểm và thu hồi điểm |
+| Promotion | Promotion | Cấu hình chương trình khuyến mãi |
 
-Schema định nghĩa hai enum:
+**Trạng thái đơn hàng**
 
-- `OrderStatus`: `PENDING`.
-- `OrderRequestState`: `SUCCEEDED`, `REJECTED`.
+`OrderStatus` gồm `PENDING`, `PAYMENT_FAILED`, `PAID`, `PREPARING`, `READY`, `COMPLETED` và `CANCELLED`.
 
-Các trường `requestKey`, `requestHash` và ràng buộc unique theo `userId + requestKey` hỗ trợ thiết kế xử lý yêu cầu tạo đơn có tính idempotency.
+`OrderRequestState` gồm `SUCCEEDED` và `REJECTED`.
+
+**Thanh toán**
+
+`PaymentMethod` gồm `WALLET` và `CARD`; `PaymentStatus` gồm `SUCCEEDED` và `FAILED`.
+
+`PaymentAttempt` lưu thông tin lần thanh toán, request key, request hash, phương thức, số tiền, trạng thái và thông tin hoàn tiền. Các ràng buộc unique hỗ trợ ngăn xử lý trùng yêu cầu thanh toán.
+
+**Tồn kho**
+
+`Product` sử dụng `stock`, `reservedStock` và `stockVersion`. Số lượng khả dụng được tính bằng `stock - reservedStock`.
+
+`StockReservationState` gồm `ACTIVE`, `CONSUMED`, `RELEASED` và `RETURNED`.
+
+Các thao tác cập nhật tồn kho kiểm tra phiên bản dữ liệu và số lượng trước khi ghi, nhằm phát hiện xung đột giữa các giao dịch đồng thời.
+
+**Điểm thưởng và khuyến mãi**
+
+`User` lưu số điểm hiện tại; `LoyaltyEntry` ghi nhận điểm theo đơn hàng và thời điểm thu hồi điểm.
+
+Checkout V2 tính điểm dự kiến theo `Math.floor(order.total / 10_000)`. Cơ chế kiểm tra bản ghi theo `orderId` giúp tránh cộng hoặc thu hồi điểm nhiều lần.
+
+`Promotion` lưu mã khuyến mãi, thời gian hiệu lực, điều kiện giá trị đơn hàng và chính sách giảm giá.
+
+**Tính tương thích dữ liệu**
+
+`checkoutPolicyVersion` phân biệt đơn hàng Sprint 2 (version 1) và Checkout V2 (version 2). Migration Sprint 3 giữ dữ liệu đơn cũ bằng cách gán `subtotal = total` cho các bản ghi trước đó.
 
 ### 3.3. Chiến lược Migration
 
-Repository hiện có hai migration:
+Repository có ba migration được xác nhận tại `origin/main` commit `4c177bf`:
 
-1. `20261024160346_init_products`
-2. `20261030152601_sprint2_auth_orders`
+1. `20261024160346_init_products`: Khởi tạo schema sản phẩm.
+2. `20261030152601_sprint2_auth_orders`: Bổ sung xác thực, phiên đăng nhập và đơn hàng.
+3. `20261109010714_sprint3_payment_stock`: Mở rộng schema cho Checkout V2, thanh toán, tồn kho, điểm thưởng và khuyến mãi.
+
+**Thay đổi chính của migration Sprint 3**
+
+- Mở rộng `OrderStatus` với các trạng thái `PAYMENT_FAILED`, `PAID`, `PREPARING`, `READY`, `COMPLETED` và `CANCELLED`.
+- Bổ sung các bảng `payment_attempts`, `stock_reservations`, `loyalty_entries` và `promotions`.
+- Bổ sung `stock`, `reserved_stock`, `stock_version` cho sản phẩm và `loyalty_points` cho người dùng.
+- Bổ sung các trường Checkout V2 cho đơn hàng, bao gồm `subtotal`, `discount_total`, `checkout_policy_version`, `payment_deadline` và `paid_at`.
+- Giữ dữ liệu đơn hàng cũ bằng cách cập nhật `subtotal = total` trước khi áp dụng ràng buộc `NOT NULL`.
+- Bổ sung các ràng buộc về số lượng tồn kho, tổng tiền, phiên bản checkout và tính duy nhất của thanh toán thành công.
+
+Migration này mở rộng schema hiện có thay vì yêu cầu xóa và tạo lại toàn bộ database. Tuy nhiên, khả năng áp dụng an toàn trên một database cụ thể vẫn cần được kiểm tra bằng migration test và phương án sao lưu dữ liệu.
 
 Các script backend liên quan:
 
@@ -199,9 +278,15 @@ Dữ liệu của Assignment 1 và Assignment 2 phải được tách biệt. Kh
 
 ### 3.6. Giới hạn hiện tại
 
-Prisma schema đã khảo sát chưa có model thanh toán riêng, chưa có trường tồn kho trên Product và chưa có cấu trúc điểm thưởng.
+Checkout V2 tại `origin/main` commit `4c177bf` đã bổ sung `MockPaymentService`, các trạng thái Order mở rộng, quản lý tồn kho và điểm thưởng, cùng các model `PaymentAttempt`, `StockReservation`, `LoyaltyEntry` và `Promotion`.
 
-Vì vậy, các chức năng Payment, Stock và Points từ Assignment 1 không được coi là đã hoàn thành trong Assignment 2 chỉ dựa trên kết quả kiểm thử hoặc tài liệu của Assignment 1.
+Mock Payment chỉ giả lập kết quả `SUCCEEDED` hoặc `FAILED` cho `WALLET` và `CARD`; chưa phải tích hợp cổng thanh toán thực.
+
+Các thao tác giữ hàng, tiêu thụ, giải phóng và hoàn hàng sử dụng cơ chế kiểm tra tồn kho và phiên bản dữ liệu. Việc cộng và thu hồi điểm có các kiểm tra nhằm hạn chế xử lý trùng.
+
+Bằng chứng QA Windows/Compose ngày 13/11/2026 ghi nhận Compose 8/8 và Browser 9/9, không có page error. Đây là kết quả kiểm thử local trên nhánh tích hợp có thay đổi chưa commit tại thời điểm chạy, không phải bằng chứng nghiệm thu toàn bộ Checkout V2 tại commit `4c177bf`.
+
+Chưa xác nhận tích hợp thanh toán production, kiểm thử trên môi trường production hoặc việc đáp ứng toàn bộ acceptance criteria của Assignment 2.
 
 ## 4. Triển khai local, Trade-off và quyết định kiến trúc
 
@@ -251,44 +336,24 @@ Tài liệu cấu hình chi tiết: `docs/assignment2/COMPOSE.md`.
 
 ### 4.3. Các quyết định kiến trúc (ADR)
 
-Các ADR dưới đây ghi lại những lựa chọn hiện có hoặc đề xuất cần review. Việc ghi nhận trong tài liệu không đồng nghĩa mọi quyết định đã được nhóm phê duyệt.
+Các ADR được lưu thành file riêng trong thư mục `docs/architecture/adr/`.
+Mỗi ADR ghi rõ trạng thái, quyết định, lý do và hệ quả.
+Các ADR đang chờ review không được xem là đã phê duyệt.
 
-**ADR-001 — Phân chia Frontend/BFF và Backend API**
-
-- Trạng thái: Ghi nhận kiến trúc hiện tại.
-- Quyết định: Sử dụng Next.js cho giao diện và các BFF Route Handlers; NestJS đảm nhiệm API và nghiệp vụ.
-- Lý do: Phân tách giao diện, xử lý request phía server và logic nghiệp vụ.
-- Hệ quả: Cần quản lý hợp đồng API, cookie/session và cấu hình kết nối giữa các service.
-- Tham chiếu: `docs/architecture/frontend-bff-pwa.md` và Product BFF trong PR A2 #7.
-
-**ADR-002 — PostgreSQL và Prisma**
-
-- Trạng thái: Ghi nhận kiến trúc hiện tại.
-- Quyết định: Sử dụng PostgreSQL làm database và Prisma để định nghĩa schema, truy cập dữ liệu, quản lý migration.
-- Lý do: Dữ liệu sản phẩm, người dùng và đơn hàng có quan hệ và ràng buộc rõ ràng.
-- Hệ quả: Cần quản lý migration có phiên bản, generate Prisma Client và kiểm thử tích hợp với database thực.
-
-**ADR-003 — Tách môi trường và dữ liệu A2 khỏi A1**
-
-- Trạng thái: Đề xuất quy trình, chờ review.
-- Quyết định đề xuất: Sử dụng database và cấu hình môi trường riêng cho Assignment 2; không mặc định tái sử dụng database A1.
-- Lý do: Tránh xung đột schema, migration và dữ liệu giữa hai repository.
-- Hệ quả: Cần chuẩn bị database, secrets, migration và seed độc lập.
-
-**ADR-004 — Kết hợp Mock Test và Integration Test**
-
-- Trạng thái: Đề xuất chiến lược kiểm thử, chờ review.
-- Quyết định đề xuất: Sử dụng mock cho unit test; sử dụng PostgreSQL và các service thực cho integration/E2E test.
-- Lý do: Cân bằng tốc độ kiểm thử với khả năng phát hiện lỗi tích hợp.
-- Hệ quả: Cần chuẩn bị dữ liệu kiểm thử, cô lập môi trường và thu thập bằng chứng PASS/FAIL.
+1. [ADR-001 — Phân chia Frontend/BFF và Backend API](adr/ADR-001-frontend-bff-backend.md)
+2. [ADR-002 — PostgreSQL và Prisma](adr/ADR-002-postgresql-prisma.md)
+3. [ADR-003 — Tách môi trường và dữ liệu A2 khỏi A1](adr/ADR-003-a2-environment-isolation.md)
+4. [ADR-004 — Kết hợp Mock Test và Integration Test](adr/ADR-004-testing-strategy.md)
 
 ### 4.4. Rủi ro và nội dung cần xác nhận
 
-1. Chưa có bằng chứng đầy đủ về luồng Payment/Checkout E2E trong A2.
-2. Chưa xác nhận pipeline triển khai production và kết quả kiểm thử trên môi trường production.
-3. Cần kiểm tra nội dung seed, tính an toàn khi chạy lại và dữ liệu demo.
-4. Cần xác nhận chiến lược migration production với thành viên E.
-5. Cần đối chiếu hợp đồng API và các luồng Auth/Orders với implementation và test hiện tại.
+1. **Bằng chứng Checkout E2E:** QA Windows/Compose ngày 13/11/2026 ghi nhận Compose 8/8 và Browser 9/9, không có page error. Cần đối chiếu lại kết quả với source đã merge tại commit `4c177bf`, vì lượt QA được thực hiện trên nhánh tích hợp có thay đổi chưa commit.
+2. **Thanh toán:** `MockPaymentService` phục vụ giả lập và kiểm thử; chưa xác nhận tích hợp cổng thanh toán thực, webhook hoặc quy trình đối soát production.
+3. **Tồn kho và điểm thưởng:** Cần tiếp tục xác minh các trường hợp cạnh tranh đồng thời, retry, hủy đơn và khôi phục dữ liệu qua integration/E2E test.
+4. **Triển khai production:** Chưa xác nhận pipeline triển khai production, cấu hình HTTPS và kết quả kiểm thử trên môi trường production.
+5. **Seed và migration:** Cần kiểm tra khả năng chạy lại seed an toàn, dữ liệu demo và chiến lược áp dụng migration production với thành viên E.
+6. **Hợp đồng API:** Cần đối chiếu các luồng Auth, Orders và Checkout với implementation, DTO và test hiện tại.
+7. **Giới hạn nghiệm thu:** Bằng chứng QA local không thay thế GitHub CI hoặc xác nhận toàn bộ acceptance criteria của Assignment 2.
 
 ### 4.5. Tiêu chí review Task 3.1
 
