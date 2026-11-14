@@ -74,11 +74,22 @@ Seed không được thêm vào pre-deploy.
 Đây là kiểm thử thủ công luồng tạo đơn trên production,
 không phải kết quả chạy bộ E2E tự động.
 
+## Kiểm tra sau redeploy API
+
+- Deployment API 473519f1 đạt Active.
+- Pre-deploy báo: No pending migrations to apply.
+- HTTPS /api/products vẫn trả 200 và đủ 4 sản phẩm.
+- Đơn 7c13e6f8-0b0e-4df3-bba3-a05c7b187001 vẫn PENDING,
+  total 57000, ledger SUCCEEDED và hash khớp.
+- Không chạy seed lại.
+- Kết quả chỉ xác nhận dữ liệu còn nguyên sau redeploy API;
+  chưa kiểm chứng restart/redeploy PostgreSQL hoặc backup/restore.
+  
 ## Chưa kiểm chứng
 
 - Thanh toán, hoàn tiền, loyalty, cancel và expiry.
 - Rollback ứng dụng và phục hồi database từ backup.
-- Khả năng giữ dữ liệu sau redeploy/restart trên Railway.
+- Khả năng giữ dữ liệu sau restart/redeploy PostgreSQL trên Railway.
 - Tự động triển khai Railway sau CI; lần này cấu hình triển khai thủ công.
 - Chi phí vận hành thực tế và cảnh báo ngân sách.
 
