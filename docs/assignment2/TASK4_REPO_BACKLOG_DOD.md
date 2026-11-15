@@ -40,8 +40,8 @@ không kết luận là chưa có GitHub Project hoặc board ngoài repo. Ba Sp
 
 | Sprint A2 | Phạm vi theo kế hoạch nhóm | Link backlog/board thật | Trạng thái |
 |---|---|---|---|
-| Sprint 1 | B điền theo [TEAM_PLAN](TEAM_PLAN.md) | B điền link (chưa có trong repo) | CHỜ B |
-| Sprint 2 | B điền theo [TEAM_PLAN](TEAM_PLAN.md) | B điền link (chưa có trong repo) | CHỜ B |
+| Sprint 1 | Task 4: cấu trúc repo, backlog/DoD, MVP menu, CI | Không có board ngoài repo; theo dõi bằng [TEAM_PLAN](TEAM_PLAN.md) và [HANDOVER](HANDOVER.md) | BẢN TRONG REPO |
+| Sprint 2 | Task 5: hoàn thiện MVP/checkout, tích hợp-kiểm thử, CD, production, bàn giao | Không có board ngoài repo; theo dõi bằng [TEAM_PLAN](TEAM_PLAN.md) và [HANDOVER](HANDOVER.md) | BẢN TRONG REPO |
 
 Nếu nhóm không có board ngoài repo, B dùng bảng trên và [HANDOVER](HANDOVER.md) làm bản trong repository, ghi đúng ngày cập nhật và
 chỉ ghi việc đã có PR/SHA/log. Quy ước commit: [GIT_WORKFLOW](../guides/GIT_WORKFLOW.md#quy-ước-thông-điệp-commit).
