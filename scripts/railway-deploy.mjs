@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { safeAssertionMessage } from "../apps/api/prisma/assertion-message.mjs";
 import { mkdir, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -66,7 +67,7 @@ export function validateContext(context, config) {
   assert.equal(context.projectToken.projectId, config.projectId, "Wrong Railway project token.");
   assert.equal(context.projectToken.environmentId, config.environmentId, "Wrong Railway environment token.");
   for (const kind of ["api", "web"]) {
-    assert.equal(context[kind].id, config[kind].id); assert.equal(context[kind].projectId, config.projectId);
+    assert.equal(context[kind].id, config[kind].id, "Service ID does not match the selected target."); assert.equal(context[kind].projectId, config.projectId, "Service belongs to another project.");
     assert(!context[`${kind}Instance`].source?.repo, "Disconnect GitHub source before image-based delivery.");
     pinnedImage(context[`${kind}Instance`].source?.image, kind);
     assert(Number.isInteger(context[`${kind}Instance`].numReplicas) && context[`${kind}Instance`].numReplicas > 0, "Record the active replica count before releasing.");
@@ -80,7 +81,7 @@ export function validateContext(context, config) {
   assert(upstream.protocol === "http:" && upstream.hostname.endsWith(".railway.internal") && upstream.port === "3001", "Use private API port 3001.");
   assert(["postgres:", "postgresql:"].includes(database.protocol) && database.hostname.endsWith(".railway.internal") && database.pathname === "/brewlite_a2", "Use the private A2 database.");
   assert.equal(api.FRONTEND_ORIGIN, config.origin, "API origin mismatch.");
-  assert.equal(web.PORT, "3000"); assert.equal(api.PORT, "3001");
+  assert.equal(web.PORT, "3000", "Set Web PORT=3000."); assert.equal(api.PORT, "3001", "Set API PORT=3001.");
 }
 
 export async function deployRelease(config, call, { wait = delay, timeoutMs = 900000, now = Date.now, checkpoint = async () => {} } = {}) {
@@ -99,17 +100,17 @@ export async function deployRelease(config, call, { wait = delay, timeoutMs = 90
       const healthcheckPath = kind === "api" ? "/health" : "/api/health";
       const variables = { serviceId: target.id, environmentId: config.environmentId };
       assert.equal((await call(operations.update, { ...variables, input: { source: { image: target.image },
-        preDeployCommand, healthcheckPath, numReplicas: previous.numReplicas } })).serviceInstanceUpdate, true);
+        preDeployCommand, healthcheckPath, numReplicas: previous.numReplicas } })).serviceInstanceUpdate, true, "Railway did not confirm the service update.");
       const saved = (await call(operations.config, variables)).serviceInstance;
-      assert.equal(saved.source?.image, target.image); assert(!saved.source?.repo);
-      assert.deepEqual(saved.preDeployCommand ?? [], preDeployCommand); assert.equal(saved.healthcheckPath, healthcheckPath);
+      assert.equal(saved.source?.image, target.image, "Saved image differs from the requested digest."); assert(!saved.source?.repo, "GitHub source remains connected.");
+      assert.deepEqual(saved.preDeployCommand ?? [], preDeployCommand, "Saved pre-deploy command does not match the release configuration."); assert.equal(saved.healthcheckPath, healthcheckPath, "Saved healthcheck path does not match the release configuration.");
       entry.deploymentId = (await call(operations.deploy, variables)).serviceInstanceDeployV2;
-      assert.equal(typeof entry.deploymentId, "string"); await checkpoint(report);
+      assert.equal(typeof entry.deploymentId, "string", "Railway did not return a deployment ID."); await checkpoint(report);
       const until = now() + timeoutMs;
       while (true) {
         const status = (await call(operations.status, { id: entry.deploymentId })).deployment;
-        assert.equal(status.id, entry.deploymentId); assert.equal(status.serviceId, target.id);
-        assert.equal(status.environmentId, config.environmentId); assert.equal(status.projectId, config.projectId);
+        assert.equal(status.id, entry.deploymentId, "Deployment ID mismatch while polling."); assert.equal(status.serviceId, target.id, "Deployment belongs to another service.");
+        assert.equal(status.environmentId, config.environmentId, "Deployment belongs to another environment."); assert.equal(status.projectId, config.projectId, "Deployment belongs to another project.");
         entry.status = status.status; await checkpoint(report);
         if (status.status === "SUCCESS") break;
         if (["FAILED", "CRASHED", "REMOVED", "SKIPPED"].includes(status.status)) throw Error("Deployment failed.");
@@ -118,8 +119,8 @@ export async function deployRelease(config, call, { wait = delay, timeoutMs = 90
       }
     }
     report.passed = true;
-  } catch {
-    report.error = "Release stopped. Inspect recorded deployment IDs. Follow docs/deployment.md before any rollback; database changes are not reversed automatically.";
+  } catch (error) {
+    report.error = safeAssertionMessage(error, "Release stopped. Inspect recorded deployment IDs and docs/deployment.md; database changes are not reversed automatically.");
   }
   report.finishedAt = new Date().toISOString(); await checkpoint(report);
   return report;
@@ -136,8 +137,8 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
       const path = "delivery-artifacts/railway-deploy.json";
       const checkpoint = async r => { await mkdir(dirname(path), { recursive: true }); await writeFile(path, JSON.stringify(r, null, 2) + "\n"); };
       const result = await deployRelease(config, railwayClient(process.env.RAILWAY_PROJECT_TOKEN), { checkpoint });
-      console.log(result.passed ? "RAILWAY_DEPLOY_PASSED; run smoke next." : "RAILWAY_DEPLOY_FAILED; inspect the sanitized artifact and dashboard.");
+      console.log(result.passed ? "RAILWAY_DEPLOY_PASSED; run smoke next." : "RAILWAY_DEPLOY_FAILED: " + result.error);
       if (!result.passed) process.exitCode = 1;
     }
-  } catch { console.error("RAILWAY_RELEASE_FAILED: check required configuration/secret and docs/deployment.md. No credentials are logged."); process.exitCode = 1; }
+  } catch (error) { console.error("RAILWAY_RELEASE_FAILED: " + safeAssertionMessage(error, "Check required configuration/secret and docs/deployment.md; inspect the dashboard privately.")); process.exitCode = 1; }
 }

@@ -45,6 +45,12 @@ ALLOW_A2_RAILWAY_STOCK_INIT=1 npm run stock:init:railway --workspace apps/api --
 
 Helper khóa và kiểm tra trong transaction serializable, chỉ cấp 10 ly/sản phẩm cho bốn ID catalog, tăng version đúng một lần; giữ nguyên đơn policy1. Có đơn policy2, reservation, stock/version đã dùng hoặc catalog khác thì từ chối. Lần chạy lại từ chối thay vì cấp thêm. Đây là kho demo theo phạm vi môn, không là API nhập kho tổng quát. Không thêm helper vào pre-deploy, không đổi guard seed-demo local/Compose.
 
+### Điều kiện của cả API và Web trước lượt CI đầu tiên
+
+Trước deploy=true, kiểm **cả hai service** đã ngắt GitHub source, source là đúng GHCR image ghim digest và deployment gần nhất SUCCESS. Không chỉ kiểm API. Nếu Web chưa đạt, cấu hình Web bằng digest đã publish, đợi deployment SUCCESS và kiểm lại origin/cookie/flag; không dùng tag latest. Preflight dừng trước mutation nếu một trong hai service chưa đạt.
+
+Lượt đối chiếu của A ngày 15/11 xác nhận cả hai source cũ đều đã ghim digest của 0bea2e2; vẫn cần đọc trạng thái deployment sau mỗi thay đổi. Cấu hình Source không tự chứng minh container mới đã active.
+
 ## GitHub Environment và secret
 
 Tạo Environment `railway-production`. Chỉ người có quyền Railway/GitHub cấu hình; không cần gửi token cho người viết code.
@@ -92,3 +98,5 @@ Script dùng Railway Public API tại endpoint cố định; không dump variabl
 - Release/tag/notes, run CD/smoke, kết quả workflow HTTPS và PWA, demo, Review/Retro và người ngoài clone/chạy vẫn cần bằng chứng thật. Hướng dẫn/code này không tự đánh dấu những mục đó đạt.
 
 Nguồn API Railway đã đối chiếu: [Authentication](https://docs.railway.com/integrations/api), [Services](https://docs.railway.com/integrations/api/manage-services), [Deployments](https://docs.railway.com/integrations/api/manage-deployments), [schema CLI chính thức](https://github.com/railwayapp/cli/blob/master/src/gql/schema.json). Token project dùng header riêng; không dùng account token rộng hơn cho workflow này.
+
+Thông báo lỗi chỉ cho phép AssertionError có message viết tay do code kiểm soát; assertion tự sinh và lỗi từ SQL/API được che bằng thông báo chung. Artifact vẫn giữ stage/status/deployment ID để gỡ lỗi mà không in variables hoặc payload.

@@ -180,7 +180,7 @@ Cây A2 không giữ toàn bộ hồ sơ Sprint 1–3 A1. Chỉ ba tài liệu
 [tham khảo có nguồn](docs/reference/a1/README.md) còn được giữ cho contract/thiết kế/UI;
 chúng không phải Review/Retro hoặc nghiệm thu hai Sprint của A2.
 
-Mọi thay đổi A2 mở PR tại repo này, có reviewer trước merge. Task 1→5 được nghiệm thu theo thứ tự và lịch sử thật. CI xanh/đỏ đã có qua PR #2/#6; Compose/Product API private qua #7; checkout tích hợp và QA local qua #11. Hồ sơ PWA/UI ở #14 đang review. E đã báo cáo HTTPS/tạo PENDING của bản nền `0bea2e2` tại #15; không gán kết quả đó cho bản S3 mới. Run CD/smoke trên đúng bản phát hành, release và bằng chứng bàn giao cần được bổ sung theo checklist.
+Mọi thay đổi A2 mở PR tại repo này, có reviewer trước merge. Task 1→5 được nghiệm thu theo thứ tự và lịch sử thật. CI xanh/đỏ đã có qua PR #2/#6; Compose/Product API private qua #7; checkout tích hợp và QA local qua #11. Hồ sơ PWA/UI ở #14; đối chiếu trạng thái review/merge trên PR. E đã báo cáo HTTPS/tạo PENDING của bản nền `0bea2e2` tại #15; không gán kết quả đó cho bản S3 mới. Run CD/smoke trên đúng bản phát hành, release và bằng chứng bàn giao cần được bổ sung theo checklist.
 
 ## Checkout và Docker A2
 

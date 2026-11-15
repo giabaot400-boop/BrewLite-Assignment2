@@ -205,7 +205,7 @@ jobs:
         run: node tests/smoke.mjs --report delivery-artifacts/smoke.json
       - name: Retain deployment IDs, previous pins and smoke results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: railway-release-${{ github.sha }}-${{ github.run_attempt }}
           path: delivery-artifacts/
