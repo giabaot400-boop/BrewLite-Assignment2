@@ -9,10 +9,16 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      deploy:
+        description: "Deploy the verified main images to Railway (requires prepared DB/stock and environment configuration)"
+        type: boolean
+        required: true
+        default: false
 
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: ci-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read
@@ -61,6 +67,9 @@ jobs:
       - name: Test script cấu hình local
         run: node --test scripts/setup-env.test.mjs
 
+      - name: Test delivery guards, smoke and rollout failure paths
+        run: npm run test:delivery
+
       - name: Build (web và api)
         run: npm run build
 
@@ -75,6 +84,9 @@ jobs:
     needs: verify
     if: ${{ needs.verify.result == 'success' && github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
     timeout-minutes: 30
+    outputs:
+      api_digest: ${{ steps.build-api.outputs.digest }}
+      web_digest: ${{ steps.build-web.outputs.digest }}
 
     permissions:
       contents: read
@@ -136,6 +148,7 @@ jobs:
           tags: ${{ steps.meta-web.outputs.tags }}
           labels: ${{ steps.meta-web.outputs.labels }}
           build-args: |
+            BREWLITE_BUILD_SHA=${{ github.sha }}
             NEXT_PUBLIC_PRODUCTS_SOURCE=api
             NEXT_PUBLIC_AUTH_SOURCE=http
           cache-from: type=gha,scope=web
@@ -160,3 +173,45 @@ jobs:
           echo "- Tag: \`latest\`" >> "$GITHUB_STEP_SUMMARY"
           echo "- Tag: \`sha-${GITHUB_SHA}\`" >> "$GITHUB_STEP_SUMMARY"
           echo "- Digest: \`${{ steps.build-web.outputs.digest }}\`" >> "$GITHUB_STEP_SUMMARY"
+
+  deploy:
+    name: deploy-railway-and-smoke
+    needs: [verify, publish]
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.deploy && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    environment: railway-production
+    concurrency:
+      group: railway-production
+      cancel-in-progress: false
+    env:
+      RAILWAY_PROJECT_ID: ${{ vars.RAILWAY_PROJECT_ID }}
+      RAILWAY_ENVIRONMENT_ID: ${{ vars.RAILWAY_ENVIRONMENT_ID }}
+      RAILWAY_API_SERVICE_ID: ${{ vars.RAILWAY_API_SERVICE_ID }}
+      RAILWAY_WEB_SERVICE_ID: ${{ vars.RAILWAY_WEB_SERVICE_ID }}
+      RAILWAY_DEPLOY_READY: ${{ vars.RAILWAY_DEPLOY_READY }}
+      SMOKE_BASE_URL: ${{ vars.SMOKE_BASE_URL }}
+      API_IMAGE: ghcr.io/giabaot400-boop/brewlite-a2-api@${{ needs.publish.outputs.api_digest }}
+      WEB_IMAGE: ghcr.io/giabaot400-boop/brewlite-a2-web@${{ needs.publish.outputs.web_digest }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+      - name: Deploy pinned API then Web and wait for completion
+        env:
+          RAILWAY_PROJECT_TOKEN: ${{ secrets.RAILWAY_PROJECT_TOKEN }}
+        run: node scripts/railway-deploy.mjs --deploy
+      - name: Read-only smoke on the released HTTPS application
+        run: node tests/smoke.mjs --report delivery-artifacts/smoke.json
+      - name: Retain deployment IDs, previous pins and smoke results
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: railway-release-${{ github.sha }}-${{ github.run_attempt }}
+          path: delivery-artifacts/
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Rollback guidance on failure
+        if: failure()
+        run: echo "Release failed. Inspect recorded deployment IDs, then docs/deployment.md. Do not reverse migrations or restore production automatically."

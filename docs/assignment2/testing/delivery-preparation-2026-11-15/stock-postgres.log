@@ -1,0 +1,18 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> brewlite@0.1.0 test:stock-guard
+> node --test tests/integration/railway-stock.integration.mjs
+
+✔ real PostgreSQL plan writes nothing; initialization preserves the legacy snapshot (29.66508ms)
+✔ a modern order blocks the operation without changing stock (5.225655ms)
+✔ a reservation blocks the operation without changing stock (4.938724ms)
+✔ a database error partway through UPDATE rolls back every product (7.724716ms)
+✔ two connections cannot initialize the same stock twice (60.82319ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 284.654982

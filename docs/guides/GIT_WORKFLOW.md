@@ -46,7 +46,18 @@ A1 tiếp tục Sprint 3 ở repo riêng. Khi A2 cần một thay đổi, ngư�
 tra ở môi trường A2. Không merge mù toàn bộ nhánh A1 hoặc giả định PR đang mở
 đã có trong source A2. Reviewer đối chiếu contract, schema/migration và UI/BFF.
 
-## Cấu hình và bằng chứng
+## Quy ước commit
+
+Dùng `type(scope): mô tả ngắn`, ví dụ `fix(checkout): giữ pending khi timeout` hoặc `docs(a2): cập nhật evidence Railway`.
+
+- `feat`: thêm hành vi; `fix`: sửa lỗi; `test`: kiểm thử; `docs`: tài liệu; `ci`: workflow; `chore`: bảo trì cấu hình.
+- Scope là phần thay đổi như `cart`, `auth`, `checkout`, `deploy`, `a2`; viết mô tả nêu kết quả cụ thể.
+- PR ghi mã backlog/phạm vi, nguồn kế thừa nếu có, cách kiểm và giới hạn; có reviewer khác tác giả theo DoD.
+- Quy ước áp dụng từ bản bổ sung này, không sửa lại lịch sử commit đã có.
+
+Product Backlog hai Sprint: [SPRINT_BACKLOG.md](../assignment2/SPRINT_BACKLOG.md).
+
+## Bảo vệ cấu hình và bằng chứng
 
 `.env`, `.env.test`, JWT secret và database local không được chuyển qua Git.
 Dùng mẫu của A2 và tạo database riêng. Không commit node_modules, .next, dist

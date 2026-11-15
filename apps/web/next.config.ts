@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Inline image identity at build time; runtime variables cannot change this value.
+  env: { BREWLITE_BUILD_SHA: process.env.BREWLITE_BUILD_SHA || "unknown" },
   async headers() {
     return [{
       source: "/sw.js",

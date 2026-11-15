@@ -17,3 +17,5 @@ apps/web/next-env.d.ts
 frontend/next-env.d.ts
 
 /db-backups/
+/delivery-artifacts/
+/tests/artifacts/

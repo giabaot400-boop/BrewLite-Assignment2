@@ -1,0 +1,49 @@
+{
+  "startedAt": "2026-11-15T02:34:10.822Z",
+  "origin": "http://localhost:3320",
+  "sourceSha": null,
+  "checks": [
+    {
+      "name": "Web home",
+      "passed": true,
+      "elapsedMs": 126
+    },
+    {
+      "name": "Web and private API process health",
+      "passed": true,
+      "elapsedMs": 8
+    },
+    {
+      "name": "Catalog BFF and database read",
+      "passed": true,
+      "elapsedMs": 40
+    },
+    {
+      "name": "Product page",
+      "passed": true,
+      "elapsedMs": 47
+    },
+    {
+      "name": "PWA manifest",
+      "passed": true,
+      "elapsedMs": 9
+    },
+    {
+      "name": "Service worker",
+      "passed": true,
+      "elapsedMs": 5
+    },
+    {
+      "name": "PWA icon 192",
+      "passed": true,
+      "elapsedMs": 2
+    },
+    {
+      "name": "PWA icon 512",
+      "passed": true,
+      "elapsedMs": 2
+    }
+  ],
+  "passed": true,
+  "finishedAt": "2026-11-15T02:34:11.062Z"
+}

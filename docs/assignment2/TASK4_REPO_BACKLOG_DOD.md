@@ -13,6 +13,8 @@
 
 ## Backlog Task 4
 
+Product Backlog có hai Sprint theo Task 4/5: [SPRINT_BACKLOG.md](SPRINT_BACKLOG.md). Quy ước commit: [Git workflow](../guides/GIT_WORKFLOW.md#quy-ước-commit). Các item bên dưới là checklist kỹ thuật chi tiết, không thay toàn bộ backlog hai Sprint.
+
 | ID | Việc | Trạng thái |
 |---|---|---|
 | T4-1 | Workflow CI install→lint→typecheck→test→build ([CI.md](CI.md)) | Xong; đã chạy xanh trên `main` (run 43013162855) |

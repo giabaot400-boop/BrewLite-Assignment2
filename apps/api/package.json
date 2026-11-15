@@ -18,7 +18,8 @@
     "pretest": "npm run db:generate",
     "test:workflow": "node --import tsx --test src/orders/workflow-postgres.integration.ts",
     "test:workflow-http": "node --import tsx prisma/check-workflow-http.ts",
-    "test:legacy": "node prisma/check-legacy-preservation.mjs"
+    "test:legacy": "node prisma/check-legacy-preservation.mjs",
+    "stock:init:railway": "node prisma/initialize-railway-stock.mjs"
   },
   "dependencies": {
     "@nestjs/common": "12.5.0",

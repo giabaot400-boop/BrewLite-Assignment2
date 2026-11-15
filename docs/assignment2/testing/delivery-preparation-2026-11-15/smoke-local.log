@@ -1,0 +1,8 @@
+PASS SMOKE: Web home
+PASS SMOKE: Web and private API process health
+PASS SMOKE: Catalog BFF and database read
+PASS SMOKE: Product page
+PASS SMOKE: PWA manifest
+PASS SMOKE: Service worker
+PASS SMOKE: PWA icon 192
+PASS SMOKE: PWA icon 512

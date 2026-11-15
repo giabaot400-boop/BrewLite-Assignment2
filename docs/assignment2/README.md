@@ -1,4 +1,6 @@
-# BrewLite Assignment 2 — Task 1–2
+# BrewLite Assignment 2 — Tài liệu và bàn giao
+
+Đầu mối mới: [kiểm thử](../../tests/README.md), [deployment/CD/rollback](../deployment.md), [backlog hai Sprint](SPRINT_BACKLOG.md), [checklist bàn giao](DELIVERY_CHECKLIST.md). Các nội dung lịch sử Task 1–2 bên dưới giữ nguyên nguồn và giới hạn.
 
 Bản tích hợp checkout: [nguồn, phạm vi và kiểm tra](CHECKOUT_INTEGRATION.md). Tình trạng Task/AC phải đối chiếu evidence của A2; thông tin lịch sử bên dưới không tự xác nhận bản tích hợp mới đã nghiệm thu.
 
