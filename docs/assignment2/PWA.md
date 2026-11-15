@@ -1,6 +1,6 @@
 # PWA tối thiểu — hướng dẫn kiểm tra
 
-Ngày cập nhật: 10/11/2026. Nền code PWA kế thừa tại A1: main `82c7675` sau [PR A1 #30](https://github.com/giabaot400-boop/BrewLite/pull/30).
+Ngày cập nhật: 14/11/2026. Nền code PWA kế thừa tại A1: main `82c7675` sau [PR A1 #30](https://github.com/giabaot400-boop/BrewLite/pull/30).
 Phần này triển khai phía A cho NFR-07; không xác nhận hoàn tất Task 3–5 A2.
 Phương án frontend/BFF/PWA nằm trong [PR A1 #31](https://github.com/giabaot400-boop/BrewLite/pull/31); kết quả implementation được ghi riêng dưới đây.
 
