@@ -13,8 +13,8 @@ export const operations = {
     projectToken { projectId environmentId }
     api: service(id: $api) { id projectId }
     web: service(id: $web) { id projectId }
-    apiInstance: serviceInstance(serviceId: $api, environmentId: $environmentId) { source { image repo } numReplicas latestDeployment { id status } }
-    webInstance: serviceInstance(serviceId: $web, environmentId: $environmentId) { source { image repo } numReplicas latestDeployment { id status } }
+    apiInstance: serviceInstance(serviceId: $api, environmentId: $environmentId) { source { image repo } latestDeployment { id status } }
+    webInstance: serviceInstance(serviceId: $web, environmentId: $environmentId) { source { image repo } latestDeployment { id status } }
     webVariables: variablesForServiceDeployment(projectId: $projectId, environmentId: $environmentId, serviceId: $web)
     apiVariables: variablesForServiceDeployment(projectId: $projectId, environmentId: $environmentId, serviceId: $api)
   }`,
@@ -70,7 +70,6 @@ export function validateContext(context, config) {
     assert.equal(context[kind].id, config[kind].id, "Service ID does not match the selected target."); assert.equal(context[kind].projectId, config.projectId, "Service belongs to another project.");
     assert(!context[`${kind}Instance`].source?.repo, "Disconnect GitHub source before image-based delivery.");
     pinnedImage(context[`${kind}Instance`].source?.image, kind);
-    assert(Number.isInteger(context[`${kind}Instance`].numReplicas) && context[`${kind}Instance`].numReplicas > 0, "Record the active replica count before releasing.");
     assert.equal(context[`${kind}Instance`].latestDeployment?.status, "SUCCESS", "Record/recover the previous active deployment before releasing.");
   }
   const web = context.webVariables, api = context.apiVariables;
@@ -99,8 +98,9 @@ export async function deployRelease(config, call, { wait = delay, timeoutMs = 90
       const preDeployCommand = kind === "api" ? [migration] : [];
       const healthcheckPath = kind === "api" ? "/health" : "/api/health";
       const variables = { serviceId: target.id, environmentId: config.environmentId };
+      // Preserve Railway scaling configuration: never send numReplicas or region settings.
       assert.equal((await call(operations.update, { ...variables, input: { source: { image: target.image },
-        preDeployCommand, healthcheckPath, numReplicas: previous.numReplicas } })).serviceInstanceUpdate, true, "Railway did not confirm the service update.");
+        preDeployCommand, healthcheckPath } })).serviceInstanceUpdate, true, "Railway did not confirm the service update.");
       const saved = (await call(operations.config, variables)).serviceInstance;
       assert.equal(saved.source?.image, target.image, "Saved image differs from the requested digest."); assert(!saved.source?.repo, "GitHub source remains connected.");
       assert.deepEqual(saved.preDeployCommand ?? [], preDeployCommand, "Saved pre-deploy command does not match the release configuration."); assert.equal(saved.healthcheckPath, healthcheckPath, "Saved healthcheck path does not match the release configuration.");

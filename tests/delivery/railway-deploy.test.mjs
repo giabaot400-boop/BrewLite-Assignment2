@@ -83,3 +83,23 @@ test("polling rejects a deployment owned by another service and stops before Web
   assert.equal(r.services.length, 1);
   assert.equal(f.calls.filter(c => c.query === operations.update).length, 1);
 });
+
+for (const replicas of [null, undefined, 1, 3]) test(`release preserves scaling when legacy numReplicas is ${replicas}`, async () => {
+  const f = fixture(), call = async (q, v) => {
+    const data = await f.call(q, v);
+    if (q === operations.context) for (const kind of ["api", "web"]) {
+      data[`${kind}Instance`].numReplicas = replicas;
+      data[`${kind}Instance`].multiRegionConfig = { region: { numReplicas: 3 } };
+    }
+    return data;
+  };
+  const report = await deployRelease(f.config, call);
+  assert.equal(report.passed, true);
+  const updates = f.calls.filter(c => c.query === operations.update);
+  assert.equal(updates.length, 2);
+  for (const { variables: { input } } of updates) {
+    assert.deepEqual(Object.keys(input).sort(), ["healthcheckPath", "preDeployCommand", "source"]);
+    assert.equal(Object.hasOwn(input, "numReplicas"), false);
+    assert.equal(Object.hasOwn(input, "multiRegionConfig"), false);
+  }
+});
