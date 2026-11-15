@@ -134,8 +134,7 @@ Nếu volume đã có dữ liệu, dùng project Compose riêng cho checkout dem
 ví dụ `-p brewlite-a2-checkout`, thay vì xóa volume cũ. Mọi lệnh Compose trong
 một lượt phải dùng cùng project, env-file và database đã kiểm tra.
 
-Biến `CHECKOUT_V2_ENABLED=1` bật provider v2. File mẫu local để 0 cho đến khi
-hoàn tất migration/kiểm tra; Compose mặc định 1 sau quy trình chuẩn bị.
+Biến `CHECKOUT_V2_ENABLED=1` bật provider v2. Mẫu local bàn giao và Compose mặc định 1; hoàn tất migration/chuẩn bị kho trước khi chạy. Setup không ghi đè cấu hình cũ; kiểm tra `.env.local` và giữ v2 sau khi storage đã chuyển.
 `MOCK_PAYMENT_OUTCOME` mặc định SUCCEEDED; CLI chỉ mở khi
 `DEMO_WORKFLOW_ENABLED=true`. Không bật CLI demo trên production tùy tiện.
 

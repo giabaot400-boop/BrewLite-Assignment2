@@ -65,7 +65,7 @@ Mặc định local:
 | Frontend `BACKEND_INTERNAL_URL` | `http://localhost:3001` |
 | Frontend `APP_ORIGIN` | `http://localhost:3000` |
 | Frontend `AUTH_COOKIE_NAME` | `brewlite_a2_session` |
-| Frontend `CHECKOUT_V2_ENABLED` | `0` ở mẫu local; bật `1` sau migration/kiểm tra |
+| Frontend `CHECKOUT_V2_ENABLED` | `1` trong mẫu bàn giao; migration và chuẩn bị kho trước khi chạy |
 | Backend `MOCK_PAYMENT_OUTCOME` | `SUCCEEDED` |
 | Backend `DEMO_WORKFLOW_ENABLED` | `false` |
 
@@ -84,6 +84,27 @@ npm run db:seed
 ```
 
 Dùng migration đã có, không sửa migration đã áp dụng. Seed catalog upsert bốn sản phẩm và hai topping. Seed kho/promotion demo dùng guard riêng trong [hướng dẫn checkout](docs/assignment2/CHECKOUT_INTEGRATION.md); không reset kho hoặc chạy khởi tạo lên volume đã có đơn.
+
+### Checkout v2 trên bản bàn giao
+
+Mẫu mới bật `CHECKOUT_V2_ENABLED=1` để hiển thị checkout Sprint 3. `npm run setup` giữ nguyên `.env.local` đang có: nếu dùng cấu hình cũ, kiểm tra/chỉnh cờ và khởi động lại Web. Giữ v2 sau khi storage đã chuyển.
+
+`db:seed` chỉ tạo catalog, không cấp tồn kho. Trước khi demo tạo đơn, chuẩn bị kho/promotion theo [hướng dẫn checkout](docs/assignment2/CHECKOUT_INTEGRATION.md#demo-compose-với-dữ-liệu-mẫu). Trên fixture local mới, có thể chạy từ `apps/api` với DATABASE_URL A2 đã kiểm:
+
+```powershell
+Push-Location apps/api
+$env:DEMO_SEED_ENABLED = "true"
+$env:INIT_DEMO_STOCK = "true"
+try {
+  node --import tsx prisma/seed-demo.ts
+  if ($LASTEXITCODE -ne 0) { throw "Demo preparation failed; inspect the target and existing data." }
+} finally {
+  Remove-Item Env:DEMO_SEED_ENABLED, Env:INIT_DEMO_STOCK -ErrorAction SilentlyContinue
+  Pop-Location
+}
+```
+
+Guard chỉ chấp nhận fixture A2 local/Compose chưa có Order/reservation và kho/version bằng 0. Với dữ liệu đã dùng, giữ nguyên và chọn fixture demo riêng; không xóa/reset để vượt guard. Railway có [quy trình nâng bản riêng](docs/deployment.md), không dùng lệnh seed-demo local này.
 
 ## Chạy ứng dụng
 
@@ -129,6 +150,14 @@ Xem [hướng dẫn PWA](docs/assignment2/PWA.md) để build/start và kiểm t
 Worker chỉ cache tài nguyên public đã chọn, không tự gửi lại giao dịch.
 Kết quả PWA local trước khi tách repo được ghi rõ là bằng chứng kế thừa.
 
+## Kiểm thử tích hợp và triển khai
+
+[tests/README.md](tests/README.md) là đầu mối unit, integration, E2E và smoke. Các lệnh gốc `test:integration`, `test:legacy`, `test:http`, `test:e2e` gọi lại runner đang có; chỉ chạy khi đã chuẩn bị database test local và build theo hướng dẫn.
+
+[docs/deployment.md](docs/deployment.md) hướng dẫn Railway, CI secret, migration, smoke và rollback. Sau triển khai bản mới, API catalog public ở `/api/products`, process health public ở `/api/health` qua BFF; API NestJS/database vẫn private.
+
+Workflow có đường phát hành chủ động từ main bằng `workflow_dispatch` với `deploy=true`, sau verify/publish cùng source. Chưa cấu hình token/IDs hoặc chưa có run deploy thực tế thì tiếp tục ghi chưa kiểm chứng production/CD. [Backlog hai Sprint](docs/assignment2/SPRINT_BACKLOG.md) và [checklist bàn giao](docs/assignment2/DELIVERY_CHECKLIST.md) ghi trạng thái và việc còn mở.
+
 ## Cấu trúc và tài liệu
 
 | Đường dẫn | Nội dung |
@@ -143,15 +172,15 @@ Kết quả PWA local trước khi tách repo được ghi rõ là bằng chứn
 | `docs/assignment2/` | Kế hoạch, contract, nguồn kế thừa và PWA |
 | `docs/traceability-matrix.md` | Yêu cầu → thiết kế → code/test/evidence |
 | `scripts/` | Thiết lập cấu hình local |
+| `tests/` | Đầu mối integration/E2E, smoke và kiểm tra delivery |
+| `docs/deployment.md` | Hướng dẫn production, CD và rollback |
 
 Đọc [mục lục tài liệu A2](docs/README.md) và [quy trình Git](docs/guides/GIT_WORKFLOW.md).
 Cây A2 không giữ toàn bộ hồ sơ Sprint 1–3 A1. Chỉ ba tài liệu
 [tham khảo có nguồn](docs/reference/a1/README.md) còn được giữ cho contract/thiết kế/UI;
 chúng không phải Review/Retro hoặc nghiệm thu hai Sprint của A2.
 
-Mọi thay đổi A2 mở PR tại repo này, có reviewer trước merge. Task 1→5 được
-nghiệm thu theo thứ tự và lịch sử thật. CI và bằng chứng xanh/đỏ đã có qua PR #2/#6; Compose và Product API private qua PR #7. Checkout tích hợp còn kiểm chứng trên máy A và Compose; CD, production HTTPS, release và bằng chứng bàn giao còn phải được hoàn thiện;
-README này không ghi nhận các đầu ra đó đã đạt.
+Mọi thay đổi A2 mở PR tại repo này, có reviewer trước merge. Task 1→5 được nghiệm thu theo thứ tự và lịch sử thật. CI xanh/đỏ đã có qua PR #2/#6; Compose/Product API private qua #7; checkout tích hợp và QA local qua #11. Hồ sơ PWA/UI ở #14 đang review. E đã báo cáo HTTPS/tạo PENDING của bản nền `0bea2e2` tại #15; không gán kết quả đó cho bản S3 mới. Run CD/smoke trên đúng bản phát hành, release và bằng chứng bàn giao cần được bổ sung theo checklist.
 
 ## Checkout và Docker A2
 

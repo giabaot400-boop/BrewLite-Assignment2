@@ -1,0 +1,26 @@
+✔ release accepts only pinned A2 digests and distinct service IDs (2.269581ms)
+✔ project token uses its own header; remote errors cannot echo secrets (4.242146ms)
+✔ wrong project fails before any mutation (2.178275ms)
+✔ API migration and health succeed before Web is changed; rollback pins are retained (1.382007ms)
+✔ API deployment failure prevents Web rollout and returns failure (0.572971ms)
+✔ a deployment stuck in progress times out and preserves its ID (0.804259ms)
+✔ Railway initializer cannot run against local/A1/public targets or without explicit execute flag (2.739688ms)
+✔ stock plan is read-only and allows preserving legacy orders (1.13795ms)
+✔ stock mutation is refused before UPDATE: {"used":true} (0.673272ms)
+✔ stock mutation is refused before UPDATE: {"modern":1} (0.422264ms)
+✔ stock mutation is refused before UPDATE: {"reservations":1} (0.558629ms)
+✔ partial update rolls back rather than leaving partial inventory (0.574604ms)
+✔ production target rejects credentials, arbitrary HTTP, paths and query parameters (2.049671ms)
+✔ smoke covers health/catalog/product/PWA using GET only (7.675517ms)
+✔ smoke fails on health HTTP error and stops at the first failing check (1.454136ms)
+✔ smoke fails on legacy checkout flag and stops at the first failing check (0.984339ms)
+✔ smoke fails on empty catalog and stops at the first failing check (7.171179ms)
+✔ smoke fails on invalid icon and stops at the first failing check (2.579978ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 169.746607

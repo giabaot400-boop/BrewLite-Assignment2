@@ -21,7 +21,14 @@
     "db:generate": "npm run db:generate --workspace apps/api",
     "db:validate": "npm run db:validate --workspace apps/api",
     "db:migrate": "npm run db:migrate --workspace apps/api --",
-    "db:seed": "npm run db:seed --workspace apps/api"
+    "db:seed": "npm run db:seed --workspace apps/api",
+    "test:integration": "node tests/run.mjs workflow",
+    "test:legacy": "node tests/run.mjs legacy",
+    "test:http": "node tests/run.mjs http",
+    "test:e2e": "node tests/run.mjs e2e",
+    "test:delivery": "node --test tests/delivery/*.test.mjs",
+    "test:stock-guard": "node --test tests/integration/railway-stock.integration.mjs",
+    "smoke": "node tests/smoke.mjs"
   },
   "devDependencies": {
     "concurrently": "^9.2.1"
