@@ -8,9 +8,9 @@ test("health uses a credential-free bounded no-store request and reports the act
     assert.equal(init.cache, "no-store"); assert.equal(init.redirect, "error");
     assert(init.signal instanceof AbortSignal); assert.equal(init.headers, undefined);
     return Response.json({ status: "ok", service: "brewlite-api", ignored: "private-data" });
-  });
+  }, "a".repeat(40));
   assert.equal(response.status, 200); assert.equal(response.headers.get("cache-control"), "no-store");
-  assert.deepEqual(await response.json(), { status: "ok", service: "brewlite-web", api: "ok", checkoutV2Enabled: true });
+  assert.deepEqual(await response.json(), { status: "ok", service: "brewlite-web", api: "ok", checkoutV2Enabled: true, buildSha: "a".repeat(40) });
 });
 
 for (const [name, fetcher] of [

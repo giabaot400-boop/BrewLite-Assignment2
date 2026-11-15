@@ -6,5 +6,5 @@ export const dynamic = "force-dynamic";
 
 export async function GET(): Promise<Response> {
   const base = process.env.BACKEND_INTERNAL_URL || process.env.BACKEND_URL || "http://localhost:3001";
-  return processHealth(base, checkoutV2IntegrationEnabled());
+  return processHealth(base, checkoutV2IntegrationEnabled(), fetch, process.env.BREWLITE_BUILD_SHA);
 }

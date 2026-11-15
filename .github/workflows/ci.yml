@@ -17,7 +17,7 @@ on:
         default: false
 
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}
+  group: ci-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
@@ -148,6 +148,7 @@ jobs:
           tags: ${{ steps.meta-web.outputs.tags }}
           labels: ${{ steps.meta-web.outputs.labels }}
           build-args: |
+            BREWLITE_BUILD_SHA=${{ github.sha }}
             NEXT_PUBLIC_PRODUCTS_SOURCE=api
             NEXT_PUBLIC_AUTH_SOURCE=http
           cache-from: type=gha,scope=web
@@ -210,6 +211,7 @@ jobs:
           name: railway-release-${{ github.sha }}-${{ github.run_attempt }}
           path: delivery-artifacts/
           if-no-files-found: warn
+          retention-days: 7
       - name: Rollback guidance on failure
         if: failure()
         run: echo "Release failed. Inspect recorded deployment IDs, then docs/deployment.md. Do not reverse migrations or restore production automatically."

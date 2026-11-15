@@ -100,3 +100,11 @@ Script dùng Railway Public API tại endpoint cố định; không dump variabl
 Nguồn API Railway đã đối chiếu: [Authentication](https://docs.railway.com/integrations/api), [Services](https://docs.railway.com/integrations/api/manage-services), [Deployments](https://docs.railway.com/integrations/api/manage-deployments), [schema CLI chính thức](https://github.com/railwayapp/cli/blob/master/src/gql/schema.json). Token project dùng header riêng; không dùng account token rộng hơn cho workflow này.
 
 Thông báo lỗi chỉ cho phép AssertionError có message viết tay do code kiểm soát; assertion tự sinh và lỗi từ SQL/API được che bằng thông báo chung. Artifact vẫn giữ stage/status/deployment ID để gỡ lỗi mà không in variables hoặc payload.
+
+## Xác nhận đúng build và review bổ sung
+
+CI truyền `BREWLITE_BUILD_SHA` vào Docker build Web; Next.js inline giá trị này khi build. `/api/health` trả `buildSha` của image, không lấy từ biến Railway lúc chạy. Smoke trong CI so sánh nó với `GITHUB_SHA`; thiếu SHA hoặc đang chạy bản cũ thì thất bại. Báo cáo phân biệt `expectedSourceSha` với `observedSourceSha`. Chạy local không có GITHUB_SHA vẫn kiểm chức năng, không chứng minh đúng release. Digest API/Web và deployment ID vẫn được ghi riêng trong deploy artifact; SHA Web không tự chứng minh digest API.
+
+Trước khi dùng project token production, cấu hình Environment chỉ cho nhánh `main` và required reviewer. Workflow concurrency tách push/dispatch; chỉ chạy một lượt production deploy tại một thời điểm. Artifact giữ 7 ngày.
+
+Review bổ sung có test API thành công rồi Web thất bại (giữ hai deployment ID/pin cũ, không rollback database), deployment sai service, GitHub source còn nối, deployment cũ thất bại và checkout flag sai. Các test dùng fixture, không thay thế live Railway.

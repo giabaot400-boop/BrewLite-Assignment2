@@ -25,8 +25,8 @@ async function readLimited(response, limit = 2_000_000) {
   return Buffer.concat(chunks);
 }
 
-export async function runSmoke({ origin, fetcher = fetch, requireV2 = true }) {
-  const report = { startedAt: new Date().toISOString(), origin, sourceSha: process.env.GITHUB_SHA ?? null, checks: [], passed: false };
+export async function runSmoke({ origin, fetcher = fetch, requireV2 = true, expectedSha = process.env.GITHUB_SHA }) {
+  const report = { startedAt: new Date().toISOString(), origin, expectedSourceSha: expectedSha ?? null, observedSourceSha: null, checks: [], passed: false };
   const request = async (path) => {
     const start = performance.now();
     const r = await fetcher(origin + path, { method: "GET", redirect: "error", cache: "no-store", signal: AbortSignal.timeout(15000) });
@@ -45,6 +45,11 @@ export async function runSmoke({ origin, fetcher = fetch, requireV2 = true }) {
     await check("Web and private API process health", async () => {
       const r = await request("/api/health"), body = JSON.parse(r.bytes.toString());
       assert.equal(body.status, "ok"); assert.equal(body.api, "ok");
+      report.observedSourceSha = body.buildSha ?? null;
+      if (expectedSha) {
+        assert.match(expectedSha, /^[a-f0-9]{40}$/);
+        assert.equal(body.buildSha, expectedSha, "Server build differs from the requested release.");
+      }
       assert.equal(r.response.headers.get("cache-control"), "no-store");
       if (requireV2) assert.equal(body.checkoutV2Enabled, true); return r;
     });
