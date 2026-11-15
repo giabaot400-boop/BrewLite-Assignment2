@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { mkdir, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { setTimeout as delay } from "node:timers/promises";
 import { performance } from "node:perf_hooks";
 
 export function smokeOrigin(value, allowLocal = false) {
@@ -25,11 +26,12 @@ async function readLimited(response, limit = 2_000_000) {
   return Buffer.concat(chunks);
 }
 
-export async function runSmoke({ origin, fetcher = fetch, requireV2 = true, expectedSha = process.env.GITHUB_SHA }) {
+export async function runSmoke({ origin, fetcher = fetch, requireV2 = true, expectedSha = process.env.GITHUB_SHA,
+  healthAttempts = 13, healthRetryMs = 10000, healthTimeoutMs = 120000, wait = delay, now = () => performance.now() }) {
   const report = { startedAt: new Date().toISOString(), origin, expectedSourceSha: expectedSha ?? null, observedSourceSha: null, checks: [], passed: false };
-  const request = async (path) => {
+  const request = async (path, timeoutMs = 15000) => {
     const start = performance.now();
-    const r = await fetcher(origin + path, { method: "GET", redirect: "error", cache: "no-store", signal: AbortSignal.timeout(15000) });
+    const r = await fetcher(origin + path, { method: "GET", redirect: "error", cache: "no-store", signal: AbortSignal.timeout(timeoutMs) });
     assert.equal(r.status, 200, `${path}: expected HTTP 200, got ${r.status}`);
     return { response: r, bytes: await readLimited(r), elapsedMs: Math.round(performance.now() - start) };
   };
@@ -43,15 +45,29 @@ export async function runSmoke({ origin, fetcher = fetch, requireV2 = true, expe
       assert.match(r.bytes.toString(), /BrewLite/i); return r;
     });
     await check("Web and private API process health", async () => {
-      const r = await request("/api/health"), body = JSON.parse(r.bytes.toString());
-      assert.equal(body.status, "ok"); assert.equal(body.api, "ok");
-      report.observedSourceSha = body.buildSha ?? null;
-      if (expectedSha) {
-        assert.match(expectedSha, /^[a-f0-9]{40}$/);
-        assert.equal(body.buildSha, expectedSha, "Server build differs from the requested release.");
+      assert(Number.isInteger(healthAttempts) && healthAttempts >= 1 && healthAttempts <= 13);
+      assert(Number.isInteger(healthRetryMs) && healthRetryMs >= 0 && healthRetryMs <= 10000);
+      assert(Number.isInteger(healthTimeoutMs) && healthTimeoutMs > 0 && healthTimeoutMs <= 120000);
+      if (expectedSha) assert.match(expectedSha, /^[a-f0-9]{40}$/);
+      const deadline = now() + healthTimeoutMs;
+      for (let attempt = 1; attempt <= healthAttempts; attempt++) {
+        report.healthAttempts = attempt;
+        report.observedSourceSha = null;
+        try {
+          const remaining = Math.floor(deadline - now());
+          assert(remaining > 0, "Health rollout wait timed out.");
+          const r = await request("/api/health", Math.min(15000, remaining)), body = JSON.parse(r.bytes.toString());
+          report.observedSourceSha = body.buildSha ?? null;
+          assert.equal(body.status, "ok"); assert.equal(body.api, "ok");
+          if (expectedSha) assert.equal(body.buildSha, expectedSha, "Server build differs from the requested release.");
+          assert.equal(r.response.headers.get("cache-control"), "no-store");
+          if (requireV2) assert.equal(body.checkoutV2Enabled, true);
+          return r;
+        } catch (error) {
+          if (attempt === healthAttempts || now() >= deadline) throw error;
+          await wait(Math.min(healthRetryMs, Math.max(0, deadline - now())));
+        }
       }
-      assert.equal(r.response.headers.get("cache-control"), "no-store");
-      if (requireV2) assert.equal(body.checkoutV2Enabled, true); return r;
     });
     let product;
     await check("Catalog BFF and database read", async () => {
