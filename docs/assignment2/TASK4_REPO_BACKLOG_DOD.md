@@ -32,3 +32,16 @@
 4. Tài liệu liên quan được cập nhật; liên kết không gãy.
 5. Không ghi PASS cho kết quả chưa chạy; bằng chứng nêu repo, SHA, môi trường, lệnh, mong đợi, thực tế.
 6. Thay đổi hành vi có test tương ứng hoặc ghi rõ vì sao chưa có.
+
+## Backlog và board hai Sprint (cập nhật 15/11/2026, B)
+
+Hồ sơ này **không tạo lịch sử ngược**. Ô nào chưa có link thật thì để trống cho tới khi B cung cấp; GitHub Issues API hiện chỉ trả PR, nên
+không kết luận là chưa có GitHub Project hoặc board ngoài repo. Ba Sprint của A1 không được đổi nhãn thành hai Sprint của A2.
+
+| Sprint A2 | Phạm vi theo kế hoạch nhóm | Link backlog/board thật | Trạng thái |
+|---|---|---|---|
+| Sprint 1 | B điền theo [TEAM_PLAN](TEAM_PLAN.md) | B điền link (chưa có trong repo) | CHỜ B |
+| Sprint 2 | B điền theo [TEAM_PLAN](TEAM_PLAN.md) | B điền link (chưa có trong repo) | CHỜ B |
+
+Nếu nhóm không có board ngoài repo, B dùng bảng trên và [HANDOVER](HANDOVER.md) làm bản trong repository, ghi đúng ngày cập nhật và
+chỉ ghi việc đã có PR/SHA/log. Quy ước commit: [GIT_WORKFLOW](../guides/GIT_WORKFLOW.md#quy-ước-thông-điệp-commit).

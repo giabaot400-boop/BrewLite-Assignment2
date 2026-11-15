@@ -156,3 +156,7 @@ README này không ghi nhận các đầu ra đó đã đạt.
 ## Checkout và Docker A2
 
 Đọc [tích hợp checkout](docs/assignment2/CHECKOUT_INTEGRATION.md) và [Compose](docs/assignment2/COMPOSE.md). Web Compose dùng `http://localhost:3100`, database/volume riêng A2; backend/db private. Deploy migration mới trước backend mới. Không sao chép cấu hình/secret hoặc xóa volume A1/A2 để nhận code.
+
+## Bàn giao
+
+Trạng thái từng đầu ra (CI, image, deploy, release, demo, Review/Retro) và việc còn mở: [HANDOVER](docs/assignment2/HANDOVER.md). Ma trận 59 AC: [traceability-matrix](docs/traceability-matrix.md). Hướng dẫn chạy cho người ngoài nhóm: [phiếu ghi nhận](docs/assignment2/OUTSIDER_RUN_CHECKLIST.md).
