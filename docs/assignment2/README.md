@@ -6,6 +6,10 @@ Bản tích hợp checkout: [nguồn, phạm vi và kiểm tra](CHECKOUT_INTEGRA
 
 [QA Windows ngày 13/11/2026](CHECKOUT_WINDOWS_QA.md): Compose checkout A2 8/8, browser 9/9, cleanup và persistence đạt; có fingerprint source chưa commit và image ID. Đây là kiểm chứng local cho phần tích hợp, chưa thay nghiệm thu toàn A2 hoặc triển khai production.
 
+[PWA Windows ngày 14/11/2026](testing/pwa-windows-2026-11-14/README.md): bản ghi thủ công trên Chrome 157 và image Compose local ngày 13/11, gồm cài/mở app, offline, cache, checkout và đổi tài khoản. Giữ riêng Git HEAD/image; chưa thay HTTPS production, recovery mất phản hồi hoặc nghiệm thu toàn bộ AC.
+
+[Responsive và bàn phím ngày 14/11/2026](testing/ui-keyboard-windows-2026-11-14/README.md): quan sát thủ công ba viewport theo SRS, auth/validation trống và focus/hộp thoại checkout/logout; ghi riêng phần chưa kiểm, không xác nhận toàn bộ NFR-06/12 hoặc accessibility.
+
 **Cập nhật 10/11/2026 · Thiết kế kế thừa Sprint 3 / nền Sprint 2 a1a0e4a.** Tài liệu gốc đã được merge qua [PR A1 #29](https://github.com/giabaot400-boop/BrewLite/pull/29); hiệu đính Task 1 nằm ở [PR A1 #42](https://github.com/giabaot400-boop/BrewLite/pull/42), còn lượt này đồng bộ Task 2 và truy vết; chưa xác nhận đã nghiệm thu Task 1–2, code đã đạt AC hoặc production đã triển khai.
 
 Repository hiện hành: [BrewLite-Assignment2](https://github.com/giabaot400-boop/BrewLite-Assignment2). Các mốc main/PR của phần kế thừa thuộc repo A1; xem [nguồn và ranh giới hai repo](SOURCE_PROVENANCE.md).
@@ -26,6 +30,7 @@ Repository hiện hành: [BrewLite-Assignment2](https://github.com/giabaot400-bo
 | 2.1 | [Activity](../diagrams/activity-checkout.md) | [Activity](../diagrams/activity-checkout.svg) / [nguồn](../diagrams/activity-checkout.puml) |
 | 2.2 | [Sequence](../diagrams/sequence-checkout.md) | [Sequence UC-09](../diagrams/sequence-checkout.svg) / [nguồn](../diagrams/sequence-checkout.puml) |
 | 2.3 | [Domain class](../diagrams/class-domain.md) | [SVG](../diagrams/class-domain.svg) / [nguồn](../diagrams/class-domain.puml) |
+| 3.2 | [Deployment A2 — production](DEPLOYMENT.md) | [UML SVG](deployment-production.svg) / [nguồn](deployment-production.puml); cập nhật CD #53 |
 | Truy vết | [Ma trận FR/NFR→UC→thiết kế→API→test](../traceability-matrix.md) | Code/test chưa xác minh ghi CHỜ |
 
 Trong repo, đọc trực tiếp các liên kết bên dưới docs; mở SVG bằng trình duyệt và chỉnh qua nguồn PlantUML. Các tệp được bố trí theo đường dẫn tạo phẩm của đề, không commit gói ZIP. Bảy tài liệu nội dung (gồm ngữ cảnh hỗ trợ), năm nguồn và năm SVG cùng nội dung thiết kế.
@@ -51,3 +56,7 @@ Task 1.3 chỉ chọn **UC-09 Thanh toán không tiền mặt**. UC-08 và các 
 ## Quan hệ A1 và A2
 
 A2 tiếp tục đề tài BrewLite nhưng có repository và bộ source riêng theo yêu cầu giảng viên do PO thông báo ngày 10/11/2026. A1 tiếp tục ở `BrewLite`; A2 ở `BrewLite-Assignment2`. Kế thừa code/thiết kế có ghi nguồn và kiểm chứng tương thích, không tự đồng bộ hoặc đưa mọi chi tiết A1 thành yêu cầu bắt buộc A2. Hai phần có thể chuẩn bị song song; A2 nghiệm thu Task 1→5 theo tạo phẩm và lịch sử thật trên repo A2. Hai Sprint A2 là các mốc Task 4/5, không đổi nhãn ba Sprint A1 để thay nghiệm thu. Giữ giới hạn tái sử dụng evidence theo đúng phiên bản, môi trường và AC; xem [nguồn kế thừa](SOURCE_PROVENANCE.md).
+
+## Trạng thái production ngày 15/11/2026
+
+[CD #53 và evidence nguyên bản](testing/railway-production-2026-11-15/README.md) xác nhận source ce4faf6 được triển khai và smoke 8/8. Các câu “chưa production” ở các snapshot lịch sử không thay kết quả mới; không gán QA ngày 13/14 vào build mới. [Nguồn tích hợp](DOCS_INTEGRATION.md), [handover](HANDOVER.md), [deployment](DEPLOYMENT.md), [checklist](DELIVERY_CHECKLIST.md).

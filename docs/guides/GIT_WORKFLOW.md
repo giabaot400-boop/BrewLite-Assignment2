@@ -57,6 +57,28 @@ Dùng `type(scope): mô tả ngắn`, ví dụ `fix(checkout): giữ pending khi
 
 Product Backlog hai Sprint: [SPRINT_BACKLOG.md](../assignment2/SPRINT_BACKLOG.md).
 
+### Ví dụ và quy tắc chi tiết (đóng góp B)
+
+Định dạng một dòng: `loại(phạm vi): mô tả ngắn, thể mệnh lệnh`
+
+| Loại | Dùng cho | Ví dụ trong lịch sử |
+|---|---|---|
+| `feat` | Tính năng hoặc tích hợp mới | `feat(a2): add Docker Compose and private product API routing` |
+| `fix` | Sửa lỗi | `fix(a2): allow node user to write Next.js cache` |
+| `docs` | Chỉ tài liệu hoặc bằng chứng | `docs(a2): ghi bằng chứng CI xanh/đỏ và trạng thái branch protection` |
+| `ci` | Workflow GitHub Actions | `ci: gate GHCR publish behind verify` |
+| `chore` | Cấu hình, repo, việc không đổi hành vi | `chore(a2): establish independent source and local configuration` |
+| `test` | Chỉ thêm hoặc sửa test | `test(a2): cover payment replay after restart` |
+
+Quy tắc:
+
+- Phạm vi ngắn (`a2`, `web`, `api`, `ci`), có thể bỏ nếu không cần. Mô tả dưới khoảng 72 ký tự.
+- Dùng tiếng Việt hoặc tiếng Anh nhất quán trong cùng một PR; giữ nguyên tên file, mã AC, SHA.
+- Một commit một mục đích. Không gộp sửa code và đổi tài liệu không liên quan.
+- Thân commit (nếu cần) giải thích lý do, ghi PR/issue hoặc SHA nguồn khi tiếp nhận thay đổi từ A1.
+- Không ghi trong thông điệp rằng test đã đạt nếu chưa chạy; kết quả nằm trong mô tả PR theo mẫu.
+- Merge commit do GitHub tạo (`Merge pull request #N ...`) giữ nguyên, không chỉnh tay.
+
 ## Bảo vệ cấu hình và bằng chứng
 
 `.env`, `.env.test`, JWT secret và database local không được chuyển qua Git.

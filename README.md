@@ -12,9 +12,17 @@ Source bắt đầu từ main A1 `69b8011`; tài liệu Task 2/matrix được �
 commit A1 `c7554b2`. Xem [nguồn kế thừa](docs/assignment2/SOURCE_PROVENANCE.md)
 để đối chiếu commit/PR, giới hạn bằng chứng và cách nhận các bản sửa tiếp theo.
 
-Bản tích hợp checkout tiếp nhận workflow A1 `3a70df6` trên nền A2 `3be4a11`: tạo/đọc đơn, thanh toán, hủy/hoàn mock, hết hạn, kho/điểm và giỏ v2. Giữ CI, PWA, Docker và Product API private của A2. Xem [phạm vi và kiểm tra tích hợp](docs/assignment2/CHECKOUT_INTEGRATION.md). Các kiểm tra chuẩn bị không thay review/CI/Windows/Compose A2 hoặc nghiệm thu Task 1–5; production vẫn cần triển khai riêng.
+Bản tích hợp checkout tiếp nhận workflow A1 `3a70df6` trên nền A2 `3be4a11`: tạo/đọc đơn, thanh toán, hủy/hoàn mock, hết hạn, kho/điểm và giỏ v2. Giữ CI, PWA, Docker và Product API private của A2. Xem [phạm vi và kiểm tra tích hợp](docs/assignment2/CHECKOUT_INTEGRATION.md). Các kiểm tra chuẩn bị không thay review/CI/Windows/Compose A2 hoặc nghiệm thu Task 1–5; kết quả production được ghi riêng ở CD #53, không suy từ QA local.
 
-## Yêu cầu trên máy
+## Chọn môi trường để chạy thử
+
+- **Dùng ngay bản online:** https://brewlite-production.up.railway.app. Không cần cài môi trường; thanh toán mô phỏng. Health public: /api/health, catalog: /api/products. Lượt này kiểm bản production, không chứng minh clone/chạy local.
+- **Người ngoài clone/chạy — ưu tiên Docker:** [COMPOSE.md](docs/assignment2/COMPOSE.md) có trọn bước secret → build → migration → catalog/demo stock → khởi động, dùng project review riêng. Cần Git, Node 24 và Docker Linux containers; không cần PostgreSQL trên host hoặc npm ci trên host.
+- **Local native:** phần cài đặt phía dưới dành cho máy có Node và PostgreSQL; dùng database/role A2 riêng. Chọn một đường local, không trộn lệnh native với Compose.
+
+Ghi kết quả vào [phiếu người ngoài chạy](docs/assignment2/OUTSIDER_RUN_CHECKLIST.md), kèm SHA/môi trường. Thử trên main sau khi PR tích hợp merge, hoặc chọn đúng nhánh docs/a2-final-closeout nếu đang review PR.
+
+## Yêu cầu khi chạy local native
 
 - Node.js 24, từ 24.15 trở lên trong dòng 24; npm đi kèm.
 - Git, trình soạn thảo và PostgreSQL 17.
@@ -156,7 +164,7 @@ Kết quả PWA local trước khi tách repo được ghi rõ là bằng chứn
 
 [docs/deployment.md](docs/deployment.md) hướng dẫn Railway, CI secret, migration, smoke và rollback. Sau triển khai bản mới, API catalog public ở `/api/products`, process health public ở `/api/health` qua BFF; API NestJS/database vẫn private.
 
-Workflow có đường phát hành chủ động từ main bằng `workflow_dispatch` với `deploy=true`, sau verify/publish cùng source. Chưa cấu hình token/IDs hoặc chưa có run deploy thực tế thì tiếp tục ghi chưa kiểm chứng production/CD. [Backlog hai Sprint](docs/assignment2/SPRINT_BACKLOG.md) và [checklist bàn giao](docs/assignment2/DELIVERY_CHECKLIST.md) ghi trạng thái và việc còn mở.
+Workflow có đường phát hành chủ động từ main bằng `workflow_dispatch` với `deploy=true`, sau verify/publish cùng source. Đã có [CD #53 và smoke 8/8](docs/assignment2/testing/railway-production-2026-11-15/README.md) tại source ce4faf6; kết quả đó không tự chuyển sang SHA tài liệu/release mới. [Backlog hai Sprint](docs/assignment2/SPRINT_BACKLOG.md) và [checklist bàn giao](docs/assignment2/DELIVERY_CHECKLIST.md) ghi trạng thái và việc còn mở.
 
 ## Cấu trúc và tài liệu
 
@@ -166,7 +174,7 @@ Workflow có đường phát hành chủ động từ main bằng `workflow_disp
 | `apps/api/` | NestJS, Prisma, migration/seed và kiểm thử backend |
 | `docs/requirements/` | Task 1: bối cảnh, SRS, UC-09 và ngữ cảnh hỗ trợ |
 | `docs/diagrams/` | Task 2: nguồn PlantUML, SVG và giải thích |
-| `docs/architecture/` | Đóng góp kiến trúc; còn cần hoàn thiện tổng thể/ADR/deployment |
+| `docs/architecture/` | Kiến trúc UI/BFF/API, ADR và nguồn quyết định thiết kế |
 | `docs/guides/` | Hướng dẫn kỹ thuật và Git A2 |
 | `docs/reference/a1/` | Ba bản tham khảo có nguồn, không phải hồ sơ nghiệm thu A2 |
 | `docs/assignment2/` | Kế hoạch, contract, nguồn kế thừa và PWA |
@@ -180,8 +188,12 @@ Cây A2 không giữ toàn bộ hồ sơ Sprint 1–3 A1. Chỉ ba tài liệu
 [tham khảo có nguồn](docs/reference/a1/README.md) còn được giữ cho contract/thiết kế/UI;
 chúng không phải Review/Retro hoặc nghiệm thu hai Sprint của A2.
 
-Mọi thay đổi A2 mở PR tại repo này, có reviewer trước merge. Task 1→5 được nghiệm thu theo thứ tự và lịch sử thật. CI xanh/đỏ đã có qua PR #2/#6; Compose/Product API private qua #7; checkout tích hợp và QA local qua #11. Hồ sơ PWA/UI ở #14; đối chiếu trạng thái review/merge trên PR. E đã báo cáo HTTPS/tạo PENDING của bản nền `0bea2e2` tại #15; không gán kết quả đó cho bản S3 mới. Run CD/smoke trên đúng bản phát hành, release và bằng chứng bàn giao cần được bổ sung theo checklist.
+Mọi thay đổi A2 mở PR tại repo này, có reviewer trước merge. Task 1→5 được nghiệm thu theo thứ tự và lịch sử thật. CI xanh/đỏ đã có qua PR #2/#6; Compose/Product API private qua #7; checkout tích hợp và QA local qua #11. Hồ sơ PWA/UI ở #14; đối chiếu trạng thái review/merge trên PR. E đã báo cáo HTTPS/tạo PENDING của bản nền `0bea2e2` tại #15; không gán kết quả đó cho bản S3 mới. CD #53 đã đạt; release/tag, xác nhận AC và hoạt động bàn giao còn theo checklist.
 
 ## Checkout và Docker A2
 
 Đọc [tích hợp checkout](docs/assignment2/CHECKOUT_INTEGRATION.md) và [Compose](docs/assignment2/COMPOSE.md). Web Compose dùng `http://localhost:3100`, database/volume riêng A2; backend/db private. Deploy migration mới trước backend mới. Không sao chép cấu hình/secret hoặc xóa volume A1/A2 để nhận code.
+
+## Bàn giao
+
+Trạng thái từng đầu ra (CI, image, deploy, release, demo, Review/Retro) và việc còn mở: [HANDOVER](docs/assignment2/HANDOVER.md). Ma trận 59 AC: [traceability-matrix](docs/traceability-matrix.md). Hướng dẫn chạy cho người ngoài nhóm: [phiếu ghi nhận](docs/assignment2/OUTSIDER_RUN_CHECKLIST.md).

@@ -1,6 +1,6 @@
 # Triển khai và phục hồi BrewLite Assignment 2
 
-Entry point Task 5.3/5.4. Hướng dẫn này bổ sung code CD; chưa xác nhận đã chạy deploy/smoke bằng CI trên Railway. Bằng chứng cũ ở [PR #15](https://github.com/giabaot400-boop/BrewLite-Assignment2/pull/15) thuộc source `0bea2e2`, trước workflow Sprint 3. Deployment diagram và cấu hình E đang review ở [PR #3](https://github.com/giabaot400-boop/BrewLite-Assignment2/pull/3).
+Entry point Task 5.3/5.4. Hướng dẫn này bổ sung code CD; đã có deploy/smoke qua CI #53, xem bằng chứng cuối trang. Bằng chứng cũ ở [PR #15](https://github.com/giabaot400-boop/BrewLite-Assignment2/pull/15) thuộc source `0bea2e2`, trước workflow Sprint 3. Deployment diagram và cấu hình E đang review ở [PR #3](https://github.com/giabaot400-boop/BrewLite-Assignment2/pull/3).
 
 ## Cấu hình mục tiêu
 
@@ -108,3 +108,7 @@ CI truyền `BREWLITE_BUILD_SHA` vào Docker build Web; Next.js inline giá tr�
 Trước khi dùng project token production, cấu hình Environment chỉ cho nhánh `main` và required reviewer. Workflow concurrency tách push/dispatch; chỉ chạy một lượt production deploy tại một thời điểm. Artifact giữ 7 ngày.
 
 Review bổ sung có test API thành công rồi Web thất bại (giữ hai deployment ID/pin cũ, không rollback database), deployment sai service, GitHub source còn nối, deployment cũ thất bại và checkout flag sai. Các test dùng fixture, không thay thế live Railway.
+
+## Bằng chứng triển khai đã chạy
+
+[CI #53 / source ce4faf6](assignment2/testing/railway-production-2026-11-15/README.md) đã verify/publish/deploy API rồi Web và smoke 8/8. Hai JSON nguyên bản được giữ trong repo. Đây là mốc code production, không tự là tag/release hoặc SHA của mọi commit tài liệu về sau. Kho đã bootstrap một lần; không lặp initializer ở production hiện tại.

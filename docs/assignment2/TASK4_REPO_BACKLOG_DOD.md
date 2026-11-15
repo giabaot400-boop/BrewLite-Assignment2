@@ -34,3 +34,9 @@ Product Backlog có hai Sprint theo Task 4/5: [SPRINT_BACKLOG.md](SPRINT_BACKLOG
 4. Tài liệu liên quan được cập nhật; liên kết không gãy.
 5. Không ghi PASS cho kết quả chưa chạy; bằng chứng nêu repo, SHA, môi trường, lệnh, mong đợi, thực tế.
 6. Thay đổi hành vi có test tương ứng hoặc ghi rõ vì sao chưa có.
+
+## Backlog và board hai Sprint
+
+Dùng [SPRINT_BACKLOG.md](SPRINT_BACKLOG.md) làm nguồn Product Backlog trong repo, [HANDOVER.md](HANDOVER.md) làm trạng thái bàn giao. Chưa có link board ngoài được xác minh; không suy từ API Issues rằng nhóm không có board ngoài. Các hoạt động lịch sử A1 giữ nguồn riêng, không đổi nhãn thành hai Sprint A2.
+
+Quy ước commit dùng một mục duy nhất: [GIT_WORKFLOW](../guides/GIT_WORKFLOW.md#quy-ước-commit). Chỉ cập nhật trạng thái item khi có PR/SHA/log thật.

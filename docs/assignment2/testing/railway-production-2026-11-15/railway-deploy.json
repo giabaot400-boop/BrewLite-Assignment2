@@ -1,0 +1,28 @@
+{
+  "sourceSha": "ce4faf64f394740108eb8911a1e3076728b85860",
+  "startedAt": "2026-11-15T05:44:41.546Z",
+  "projectId": "b7e91fe6-8323-406f-9a9e-b2025c775a8c",
+  "environmentId": "e2920a13-2464-41ab-999f-fae99808fc9b",
+  "passed": true,
+  "services": [
+    {
+      "service": "api",
+      "serviceId": "a527cf79-d164-42b2-8351-5ae547010cac",
+      "previousImage": "ghcr.io/giabaot400-boop/brewlite-a2-api@sha256:3e97fb1e625fd9535ff5bff0b0a152b07ac7c6c1142d65bb4141af9a89cb04d3",
+      "previousDeploymentId": "baab28b5-35ee-4dbf-82a2-88b2f983a02b",
+      "image": "ghcr.io/giabaot400-boop/brewlite-a2-api@sha256:b0769ed1a2696795c453dfaa85d467ce24cc8d9bf64cd37f465796a3109dc861",
+      "deploymentId": "202eb2e2-f6d9-4d77-91b5-d608d64d8780",
+      "status": "SUCCESS"
+    },
+    {
+      "service": "web",
+      "serviceId": "b4c84506-93d5-4d16-9594-bb6c2b7b0788",
+      "previousImage": "ghcr.io/giabaot400-boop/brewlite-a2-web@sha256:8d4d5fff0bba50ee3fb6e3ccc404470a0662d25be422e1e49d55990bfe19d034",
+      "previousDeploymentId": "98937ee6-3596-4922-a1a4-b1f1eecb8540",
+      "image": "ghcr.io/giabaot400-boop/brewlite-a2-web@sha256:88ec02b921b01277be14e5e120da1ee25fa5bfe5e6c2629f9dba8effd09aa9eb",
+      "deploymentId": "f0a97554-4745-45e5-be8f-de18e7606701",
+      "status": "SUCCESS"
+    }
+  ],
+  "finishedAt": "2026-11-15T05:46:29.665Z"
+}

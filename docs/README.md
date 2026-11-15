@@ -16,6 +16,7 @@ local và giới hạn bằng chứng; các PR A1 được dẫn đúng repo ngu
 | PWA | [Hướng dẫn và kết quả theo môi trường](assignment2/PWA.md) |
 | CI và DoD | [CI](assignment2/CI.md), [Cấu trúc repo/backlog/DoD](assignment2/TASK4_REPO_BACKLOG_DOD.md) |
 | Truy vết | [Ma trận FR/NFR→thiết kế→code/test](traceability-matrix.md) |
+| Bàn giao | [Trạng thái đầu ra](assignment2/HANDOVER.md), [ghi chú phát hành (nháp)](assignment2/RELEASE_NOTES.md), [CD và bằng chứng](assignment2/CD_DEPLOY_PLAN.md), [phiếu người ngoài chạy](assignment2/OUTSIDER_RUN_CHECKLIST.md), [Review/Retro](assignment2/REVIEW_RETRO_A2.md) |
 | Kỹ thuật và chạy source | [API sản phẩm](guides/API_CONTRACT.md), [UI dùng chung](guides/UI_SHARED_COMPONENTS.md), [Git A2](guides/GIT_WORKFLOW.md), [README gốc](../README.md) |
 
 ## Tham khảo có giới hạn
