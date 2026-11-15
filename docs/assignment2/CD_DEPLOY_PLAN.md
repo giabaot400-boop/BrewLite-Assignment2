@@ -40,6 +40,9 @@ Bản nháp workflow nằm ngoài repo, đánh dấu CHƯA KIỂM CHỨNG, chỉ
 
 ## Rollback (nguyên tắc)
 
+Chi tiết các bước nâng bản, cấp tồn kho và rollback theo tình huống: [DEPLOY_RUNBOOK](DEPLOY_RUNBOOK.md).
+
+
 - Quay lại digest của lần deploy thành công trước (lưu trong step summary).
 - Migration chỉ thêm (additive) mới an toàn để chạy lại bản cũ; migration phá vỡ tương thích phải ghi rõ và không rollback tự động.
 - Không đảo migration hoặc restore đè dữ liệu production nếu chưa có quyết định riêng và bản sao lưu.
