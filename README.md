@@ -12,9 +12,17 @@ Source bắt đầu từ main A1 `69b8011`; tài liệu Task 2/matrix được �
 commit A1 `c7554b2`. Xem [nguồn kế thừa](docs/assignment2/SOURCE_PROVENANCE.md)
 để đối chiếu commit/PR, giới hạn bằng chứng và cách nhận các bản sửa tiếp theo.
 
-Bản tích hợp checkout tiếp nhận workflow A1 `3a70df6` trên nền A2 `3be4a11`: tạo/đọc đơn, thanh toán, hủy/hoàn mock, hết hạn, kho/điểm và giỏ v2. Giữ CI, PWA, Docker và Product API private của A2. Xem [phạm vi và kiểm tra tích hợp](docs/assignment2/CHECKOUT_INTEGRATION.md). Các kiểm tra chuẩn bị không thay review/CI/Windows/Compose A2 hoặc nghiệm thu Task 1–5; production vẫn cần triển khai riêng.
+Bản tích hợp checkout tiếp nhận workflow A1 `3a70df6` trên nền A2 `3be4a11`: tạo/đọc đơn, thanh toán, hủy/hoàn mock, hết hạn, kho/điểm và giỏ v2. Giữ CI, PWA, Docker và Product API private của A2. Xem [phạm vi và kiểm tra tích hợp](docs/assignment2/CHECKOUT_INTEGRATION.md). Các kiểm tra chuẩn bị không thay review/CI/Windows/Compose A2 hoặc nghiệm thu Task 1–5; kết quả production được ghi riêng ở CD #53, không suy từ QA local.
 
-## Yêu cầu trên máy
+## Chọn môi trường để chạy thử
+
+- **Dùng ngay bản online:** https://brewlite-production.up.railway.app. Không cần cài môi trường; thanh toán mô phỏng. Health public: /api/health, catalog: /api/products. Lượt này kiểm bản production, không chứng minh clone/chạy local.
+- **Người ngoài clone/chạy — ưu tiên Docker:** [COMPOSE.md](docs/assignment2/COMPOSE.md) có trọn bước secret → build → migration → catalog/demo stock → khởi động, dùng project review riêng. Cần Git, Node 24 và Docker Linux containers; không cần PostgreSQL trên host hoặc npm ci trên host.
+- **Local native:** phần cài đặt phía dưới dành cho máy có Node và PostgreSQL; dùng database/role A2 riêng. Chọn một đường local, không trộn lệnh native với Compose.
+
+Ghi kết quả vào [phiếu người ngoài chạy](docs/assignment2/OUTSIDER_RUN_CHECKLIST.md), kèm SHA/môi trường. Thử trên main sau khi PR tích hợp merge, hoặc chọn đúng nhánh docs/a2-final-closeout nếu đang review PR.
+
+## Yêu cầu khi chạy local native
 
 - Node.js 24, từ 24.15 trở lên trong dòng 24; npm đi kèm.
 - Git, trình soạn thảo và PostgreSQL 17.

@@ -1,176 +1,72 @@
-# Docker Compose local — BrewLite Assignment 2
+# Chạy BrewLite A2 local bằng Docker Compose
 
-Ngày kiểm tra: 13/11/2026.
+Hướng dẫn hiện hành cho checkout v2; [hồ sơ Compose cũ](COMPOSE_HISTORY_2026-11-13.md) giữ các kết quả ngày 13/11. Hướng dẫn này được đối chiếu compose.yaml/Dockerfile/seed guard, chưa là lượt người ngoài chạy đã đạt.
 
-Nền source A2: db2afc7, cùng thay đổi trên nhánh chore/e-a2-docker.
+## Chọn cách chạy
 
-Chỉ xác nhận môi trường local; chưa triển khai Railway/GHCR.
+Đây là nhánh Docker của [README](../../README.md). Cần Git, Node.js 24 (>=24.15 <25) để tạo secret và Docker Desktop chạy Linux containers. Không cần cài PostgreSQL trên host, không cần npm ci/npm run setup trên host; dependency được cài trong bước build image. Dùng PowerShell, chạy tại gốc một bản clone A2 riêng.
 
-## Yêu cầu
+Người thử clone repo vào thư mục mới theo README. Nếu thử trước khi PR tài liệu merge, chọn đúng nhánh docs/a2-final-closeout; sau merge dùng main. Ghi `git rev-parse HEAD`, Node, Docker và OS vào [phiếu](OUTSIDER_RUN_CHECKLIST.md). Không clone lồng vào repo đã có.
 
-- Docker Desktop chạy Linux containers.
+## 1. Tạo cấu hình lần đầu
 
-- Chạy lệnh tại thư mục gốc repo BrewLite-Assignment2.
+Dùng project riêng `brewlite-a2-review` cho toàn bộ lệnh bên dưới để tách named volume. Đóng bộ local khác đang chiếm cổng 3100 trước; không dừng production. Không xóa/reset volume để vượt lỗi fixture.
 
-- Web dùng http://localhost:3100.
-
-- Database/volume riêng A2, không dùng dữ liệu A1.
-
-## Tạo secret lần đầu
-
-File .env.compose phải được Git bỏ qua.
-
-Không ghi đè file đã tồn tại hoặc đưa nội dung vào Git/log.
+Lệnh sau chỉ tạo .env.compose nếu chưa có, sinh secret ngẫu nhiên và không in giá trị:
 
 ```powershell
-
-node -e "const fs=require('node:fs'),c=require('node:crypto');const p='.env.compose';if(fs.existsSync(p))throw Error('File already exists; keep existing secrets.');fs.writeFileSync(p,'POSTGRES_PASSWORD='+c.randomBytes(24).toString('hex')+'\nAUTH_JWT_SECRET='+c.randomBytes(32).toString('hex')+'\n');console.log('Created A2 .env.compose');"
-
+node -e "const fs=require('node:fs'),c=require('node:crypto');const p='.env.compose';if(fs.existsSync(p))throw Error('File already exists; keep existing secrets.');fs.writeFileSync(p,'POSTGRES_PASSWORD='+c.randomBytes(24).toString('hex')+'\nAUTH_JWT_SECRET='+c.randomBytes(32).toString('hex')+'\nCHECKOUT_V2_ENABLED=1\n');console.log('Created A2 .env.compose');"
 git check-ignore .env.compose
-
-docker compose --env-file .env.compose config --quiet
-
+docker compose -p brewlite-a2-review --env-file .env.compose config --quiet
 ```
 
-## Cài đặt lần đầu
+Nếu file đã tồn tại, giữ nguyên secret và kiểm CHECKOUT_V2_ENABLED=1; không chạy lại lệnh tạo file. Không gửi .env.compose hoặc output config chứa secret vào phiếu.
+
+## 2. Build, migration và fixture mới
+
+Chạy từng bước, chỉ tiếp tục khi lệnh mã 0. Migration trước khi mở backend mới; không tự chạy seed khi restart.
 
 ```powershell
-
-docker compose --env-file .env.compose build backend frontend
-
-docker compose --env-file .env.compose up -d --wait db
-
-docker compose --env-file .env.compose run --rm --no-deps backend npm exec --workspace apps/api -- prisma migrate deploy
-
-docker compose --env-file .env.compose run --rm --no-deps backend npm run db:seed --workspace apps/api
-
-docker compose --env-file .env.compose up -d --wait backend frontend
-
+docker compose -p brewlite-a2-review --env-file .env.compose build backend frontend
+docker compose -p brewlite-a2-review --env-file .env.compose up -d --wait db
+docker compose -p brewlite-a2-review --env-file .env.compose run --rm --no-deps backend npm exec --workspace apps/api -- prisma migrate deploy
+docker compose -p brewlite-a2-review --env-file .env.compose run --rm --no-deps backend npm run db:seed --workspace apps/api
 ```
 
-Chỉ chạy seed catalog A2 khi cần dữ liệu mẫu.
-
-Không dùng seed-demo hoặc cấu hình database A1.
-
-Migration/seed không tự chạy ở mỗi app container.
-
-## Chạy lại
+Catalog seed tạo bốn sản phẩm/hai topping, **chưa cấp kho**. Trên fixture mới chưa có Order/reservation và stock/reserved/version đều 0, chạy demo seed một lần:
 
 ```powershell
-
-docker compose --env-file .env.compose up -d --wait
-
-docker compose --env-file .env.compose ps
-
-curl.exe -i http://localhost:3100/api/products
-
+docker compose -p brewlite-a2-review --env-file .env.compose run --rm --no-deps -e DEMO_SEED_ENABLED=true -e INIT_DEMO_STOCK=true backend sh -c 'cd /app/apps/api && node --import tsx prisma/seed-demo.ts'
 ```
 
-## Kiến trúc local
+Kỳ vọng `Demo ready: stock initialized to 10; DEMO10 upserted.` Guard kiểm database brewlite_a2 trên host db và fixture chưa sử dụng. Dữ liệu đã có đơn hoặc kho/version đã dùng thì dừng; không xóa đơn, sửa guard, reset hoặc down -v. Nếu cần fixture mới, dùng một project review mới thống nhất cho toàn bộ lệnh, ghi tên đó vào phiếu. Cửa sổ DEMO10 cố định 01/11–01/12/2026 UTC; sau mốc đó không đổi ngày hệ thống để làm ca khuyến mãi đạt.
 
-- Frontend publish 127.0.0.1:3100 → container port 3000.
-
-- API port 3001 và PostgreSQL port 5432 chỉ dùng trong network Compose.
-
-- Browser lấy menu qua /api/products trên Web.
-
-- Web server lấy chi tiết sản phẩm qua BACKEND_INTERNAL_URL.
-
-- Database: brewlite_a2.
-
-- Volume: brewlite-a2_postgres_data.
-
-- Cookie phiên: brewlite_a2_session.
-
-- Production HTTPS phải kiểm tra lại cookie/Origin và hostname private.
-
-## Biến build và runtime
-
-- NEXT_PUBLIC_PRODUCTS_SOURCE và NEXT_PUBLIC_AUTH_SOURCE được truyền lúc build.
-
-- Không đưa secret hoặc hostname private vào NEXT_PUBLIC_*.
-
-- Web runtime dùng BACKEND_INTERNAL_URL và APP_ORIGIN.
-
-- API runtime dùng DATABASE_URL, AUTH_JWT_SECRET, FRONTEND_ORIGIN và PORT.
-
-- Web hiện chạy cố định port 3000.
-
-- Image API giữ Prisma CLI, cấu hình và migration để chạy migrate deploy.
-
-## Kết quả đã quan sát
-
-- Build image API và Web: PASS.
-
-- Prisma CLI/client 7.10.1 trong image API: PASS.
-
-- bcrypt hash/compare trong image API: PASS.
-
-- Hai migration áp dụng trên database Docker A2 sạch: PASS.
-
-- Seed bốn sản phẩm và hai topping: PASS.
-
-- Ba service Healthy; Product BFF trả 200 với bốn sản phẩm.
-
-- Browser hiển thị menu và chi tiết cà phê sữa.
-
-- Size L + Kem + Trân châu: 57000; UI báo thêm vào giỏ.
-
-- Restart: ba service Healthy, API vẫn 200, dữ liệu còn 4 sản phẩm/2 topping.
-
-- Lint Web: PASS.
-
-- Web tests: 429/429 PASS.
-
-- API tests: 62/62 PASS.
-
-- Ngoài unit test, đã kiểm tra thủ công đăng nhập và tạo đơn PENDING
-  qua UI/BFF/API trong Compose; chưa kiểm thử thanh toán.
-- Đăng nhập qua giao diện Compose A2 thành công.
-- Tạo đơn từ giỏ qua UI/BFF/API: PENDING, total 57000.
-- Mã đơn kiểm chứng: c95ceabb-e1ac-4dbd-ba98-9bf122a9c885.
-- Database brewlite_a2 xác nhận ledger SUCCEEDED, hash khớp Order.
-- Giỏ được xóa sau khi tạo đơn thành công.
-- Đã tái hiện EACCES khi user node ghi .next/cache.
-- Dockerfile cấp quyền riêng cho thư mục cache; vẫn chạy USER node.
-- Sau rebuild/recreate, Web Healthy; user 1000 ghi và xóa file cache thành công.
-## Kiểm tra trong image
+## 3. Khởi động và thử local
 
 ```powershell
-
-docker run --rm brewlite-a2-web:local npm run lint --workspace apps/web
-
-docker run --rm brewlite-a2-web:local npm test --workspace apps/web
-
-docker run --rm brewlite-a2-api:local npm test --workspace apps/api
-
+docker compose -p brewlite-a2-review --env-file .env.compose up -d --wait backend frontend
+docker compose -p brewlite-a2-review --env-file .env.compose ps
+Invoke-RestMethod http://localhost:3100/api/health
+Invoke-RestMethod http://localhost:3100/api/products
 ```
 
-## Dừng
+Kỳ vọng ba service healthy, health status/api ok và checkoutV2Enabled=true, catalog có bốn sản phẩm. Build SHA local có thể unknown vì Compose không truyền CI build-arg; không lấy đó làm bằng chứng đã chạy đúng release production.
+
+Mở **http://localhost:3100**, dùng profile/browser riêng cho A2. Kiểm tám ca trong phiếu: menu/tùy chọn/giỏ/auth/tạo đơn/thanh toán/hủy/lịch sử. Chọn không dùng mã giảm giá khi đối chiếu cà phê sữa L + Kem + Trân châu = 57.000đ. Nhãn “Tạo và xem đơn” mở hộp; phải xác nhận cuối mới gửi tạo đơn. Thanh toán là Ví/Thẻ mô phỏng, không nhập thông tin thẻ thật.
+
+## 4. Chạy lại và dừng
+
+Sau lần đầu, không lặp seed hoặc initializer:
 
 ```powershell
-
-docker compose --env-file .env.compose down
-
+docker compose -p brewlite-a2-review --env-file .env.compose up -d --wait
+docker compose -p brewlite-a2-review --env-file .env.compose down
 ```
 
-Lệnh down giữ named volume. Không dùng down -v với dữ liệu cần giữ.
+Chỉ chạy down khi kết thúc lượt thử. Down giữ volume; không thêm -v. Giữ cùng project/env-file khi đọc lại dữ liệu. Thay runtime env cần recreate service; không rebuild image chỉ để thay CHECKOUT_V2_ENABLED. Thay NEXT_PUBLIC_* hoặc source thì build lại.
 
-## Giới hạn
+## Ranh giới môi trường
 
-- Chưa xác nhận thanh toán hoặc toàn bộ checkout end-to-end.
+Frontend publish 127.0.0.1:3100→3000. API:3001 và DB:5432 private trong Compose, BACKEND_INTERNAL_URL=http://backend:3001, cookie brewlite_a2_session; named volume có tiền tố project. Không dùng DATABASE_URL/token Railway trong lượt local. API Dockerfile giữ Prisma CLI, tsx, migration và client để chạy lệnh fixture.
 
-- Chưa kiểm thử trên máy thành viên khác.
-
-- Chưa kiểm thử backup/restore hoặc rollback deployment.
-
-- Chưa push registry, deploy Railway hoặc xác nhận production HTTPS.
-
-- Image hiện giữ devDependencies; chưa tối ưu dung lượng.
-
-- Web hiện dùng next start --port 3000, chưa đọc PORT động.
-  Railway phải đặt PORT=3000 và target port 3000 nếu giữ cách chạy này.
-- getProduct hiện phục vụ trang chi tiết trên server.
-  Chưa có route BFF /api/products/:id cho browser.
-  Nếu chuyển chi tiết sang client, cần bổ sung route tương ứng.
-- Build arg NEXT_PUBLIC_API_URL đã bỏ vì mã Product API không còn đọc.
+Kiểm unit/integration/E2E chuyên sâu theo [tests](../../tests/README.md); không bắt người dùng thử chạy mọi test để thay nghiệm thu nghiệp vụ. [Production](DEPLOYMENT.md) và [CD #53](testing/railway-production-2026-11-15/README.md) có source/evidence riêng.
