@@ -1,0 +1,51 @@
+{
+  "startedAt": "2026-11-15T05:46:29.705Z",
+  "origin": "https://brewlite-production.up.railway.app",
+  "expectedSourceSha": "ce4faf64f394740108eb8911a1e3076728b85860",
+  "observedSourceSha": "ce4faf64f394740108eb8911a1e3076728b85860",
+  "checks": [
+    {
+      "name": "Web home",
+      "passed": true,
+      "elapsedMs": 286
+    },
+    {
+      "name": "Web and private API process health",
+      "passed": true,
+      "elapsedMs": 115
+    },
+    {
+      "name": "Catalog BFF and database read",
+      "passed": true,
+      "elapsedMs": 188
+    },
+    {
+      "name": "Product page",
+      "passed": true,
+      "elapsedMs": 142
+    },
+    {
+      "name": "PWA manifest",
+      "passed": true,
+      "elapsedMs": 91
+    },
+    {
+      "name": "Service worker",
+      "passed": true,
+      "elapsedMs": 83
+    },
+    {
+      "name": "PWA icon 192",
+      "passed": true,
+      "elapsedMs": 82
+    },
+    {
+      "name": "PWA icon 512",
+      "passed": true,
+      "elapsedMs": 84
+    }
+  ],
+  "passed": true,
+  "healthAttempts": 1,
+  "finishedAt": "2026-11-15T05:46:30.779Z"
+}

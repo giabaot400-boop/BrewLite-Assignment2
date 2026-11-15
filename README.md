@@ -156,7 +156,7 @@ Kết quả PWA local trước khi tách repo được ghi rõ là bằng chứn
 
 [docs/deployment.md](docs/deployment.md) hướng dẫn Railway, CI secret, migration, smoke và rollback. Sau triển khai bản mới, API catalog public ở `/api/products`, process health public ở `/api/health` qua BFF; API NestJS/database vẫn private.
 
-Workflow có đường phát hành chủ động từ main bằng `workflow_dispatch` với `deploy=true`, sau verify/publish cùng source. Chưa cấu hình token/IDs hoặc chưa có run deploy thực tế thì tiếp tục ghi chưa kiểm chứng production/CD. [Backlog hai Sprint](docs/assignment2/SPRINT_BACKLOG.md) và [checklist bàn giao](docs/assignment2/DELIVERY_CHECKLIST.md) ghi trạng thái và việc còn mở.
+Workflow có đường phát hành chủ động từ main bằng `workflow_dispatch` với `deploy=true`, sau verify/publish cùng source. Đã có [CD #53 và smoke 8/8](docs/assignment2/testing/railway-production-2026-11-15/README.md) tại source ce4faf6; kết quả đó không tự chuyển sang SHA tài liệu/release mới. [Backlog hai Sprint](docs/assignment2/SPRINT_BACKLOG.md) và [checklist bàn giao](docs/assignment2/DELIVERY_CHECKLIST.md) ghi trạng thái và việc còn mở.
 
 ## Cấu trúc và tài liệu
 
@@ -166,7 +166,7 @@ Workflow có đường phát hành chủ động từ main bằng `workflow_disp
 | `apps/api/` | NestJS, Prisma, migration/seed và kiểm thử backend |
 | `docs/requirements/` | Task 1: bối cảnh, SRS, UC-09 và ngữ cảnh hỗ trợ |
 | `docs/diagrams/` | Task 2: nguồn PlantUML, SVG và giải thích |
-| `docs/architecture/` | Đóng góp kiến trúc; còn cần hoàn thiện tổng thể/ADR/deployment |
+| `docs/architecture/` | Kiến trúc UI/BFF/API, ADR và nguồn quyết định thiết kế |
 | `docs/guides/` | Hướng dẫn kỹ thuật và Git A2 |
 | `docs/reference/a1/` | Ba bản tham khảo có nguồn, không phải hồ sơ nghiệm thu A2 |
 | `docs/assignment2/` | Kế hoạch, contract, nguồn kế thừa và PWA |
@@ -180,8 +180,12 @@ Cây A2 không giữ toàn bộ hồ sơ Sprint 1–3 A1. Chỉ ba tài liệu
 [tham khảo có nguồn](docs/reference/a1/README.md) còn được giữ cho contract/thiết kế/UI;
 chúng không phải Review/Retro hoặc nghiệm thu hai Sprint của A2.
 
-Mọi thay đổi A2 mở PR tại repo này, có reviewer trước merge. Task 1→5 được nghiệm thu theo thứ tự và lịch sử thật. CI xanh/đỏ đã có qua PR #2/#6; Compose/Product API private qua #7; checkout tích hợp và QA local qua #11. Hồ sơ PWA/UI ở #14; đối chiếu trạng thái review/merge trên PR. E đã báo cáo HTTPS/tạo PENDING của bản nền `0bea2e2` tại #15; không gán kết quả đó cho bản S3 mới. Run CD/smoke trên đúng bản phát hành, release và bằng chứng bàn giao cần được bổ sung theo checklist.
+Mọi thay đổi A2 mở PR tại repo này, có reviewer trước merge. Task 1→5 được nghiệm thu theo thứ tự và lịch sử thật. CI xanh/đỏ đã có qua PR #2/#6; Compose/Product API private qua #7; checkout tích hợp và QA local qua #11. Hồ sơ PWA/UI ở #14; đối chiếu trạng thái review/merge trên PR. E đã báo cáo HTTPS/tạo PENDING của bản nền `0bea2e2` tại #15; không gán kết quả đó cho bản S3 mới. CD #53 đã đạt; release/tag, xác nhận AC và hoạt động bàn giao còn theo checklist.
 
 ## Checkout và Docker A2
 
 Đọc [tích hợp checkout](docs/assignment2/CHECKOUT_INTEGRATION.md) và [Compose](docs/assignment2/COMPOSE.md). Web Compose dùng `http://localhost:3100`, database/volume riêng A2; backend/db private. Deploy migration mới trước backend mới. Không sao chép cấu hình/secret hoặc xóa volume A1/A2 để nhận code.
+
+## Bàn giao
+
+Trạng thái từng đầu ra (CI, image, deploy, release, demo, Review/Retro) và việc còn mở: [HANDOVER](docs/assignment2/HANDOVER.md). Ma trận 59 AC: [traceability-matrix](docs/traceability-matrix.md). Hướng dẫn chạy cho người ngoài nhóm: [phiếu ghi nhận](docs/assignment2/OUTSIDER_RUN_CHECKLIST.md).

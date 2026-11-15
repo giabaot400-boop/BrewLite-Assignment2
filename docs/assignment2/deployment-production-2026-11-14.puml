@@ -1,0 +1,109 @@
+@startuml
+title BrewLite A2 — Railway deployment verified 14/11/2026
+top to bottom direction
+skinparam componentStyle uml2
+skinparam defaultFontSize 14
+skinparam nodesep 35
+skinparam ranksep 45
+
+node "Client device" {
+  artifact "Web browser" as browser
+}
+
+cloud "GitHub — BrewLite-Assignment2" {
+  artifact "Release source\n0bea2e2015c54cf23cb1d3b9f32bc146d2891136" as repo
+
+  node "GitHub Actions — CI #32" {
+    artifact "verify — PASS\nInstall / Prisma generate\nWeb lint / Typecheck\nUnit / Setup tests / Build" as gate
+    artifact "publish-ghcr — PASS\nBuild and push Web/API\nSHA tags and image digests" as publish
+  }
+
+  node "GHCR — public packages" {
+    artifact "brewlite-a2-web\nRelease digest recorded in PR #15" as webImage
+    artifact "brewlite-a2-api\nRelease digest recorded in PR #15" as apiImage
+  }
+}
+
+actor "E — operator\nManual Railway deployment" as operator
+
+cloud "Railway — BrewLite-Assignment2 / production" {
+  node "Railway HTTPS Edge" as edge
+
+  node "BrewLite — Web" as web {
+    artifact "Next.js UI + BFF\napps/web/Dockerfile\nPort 3000" as next
+  }
+
+  node "BrewLite-Assignment2 — API" as api {
+    artifact "NestJS application\napps/api/Dockerfile\nPort 3001" as nest
+  }
+
+  node "postgres — database service" {
+    database "PostgreSQL 17.12\nImage: postgres:17-bookworm\nDatabase: brewlite_a2" as pg
+  }
+
+  node "postgres-volume-gGFY" {
+    artifact "Mount: /var/lib/postgresql/data\nPGDATA: mount/pgdata" as data
+  }
+
+  node "API pre-deploy execution\nTemporary execution" {
+    artifact "prisma migrate deploy\nSame API image / private DB" as migrate
+  }
+
+  node "Runtime configuration and operations" {
+    artifact "Railway variables\nSecrets and private URLs" as config
+    artifact "Startup health checks\nWeb: GET /\nAPI: GET /health" as health
+    artifact "Application logs" as logs
+  }
+}
+
+repo --> gate : Release SHA
+gate --> publish : After verify PASS
+publish --> webImage
+publish --> apiImage
+publish ..> operator : CI result and digests
+operator ..> web : Configure image digest / deploy
+operator ..> api : Configure image digest / deploy
+webImage ..> web : Image pull
+apiImage ..> api : Image pull
+apiImage ..> migrate : Same API image
+
+browser --> edge : HTTPS / 443\nbrewlite-production.up.railway.app
+edge --> next : HTTP / target port 3000
+next --> nest : Private HTTP / 3001\nbrewlite-assignment2.railway.internal
+nest --> pg : Private PostgreSQL / 5432\npostgres-99de976c.railway.internal
+migrate --> pg : Private migration connection
+pg -- data : Persistent storage
+
+config ..> next
+config ..> nest
+health ..> next
+health ..> nest
+next ..> logs
+nest ..> logs
+
+note bottom of web
+Verified manually:
+HTTPS catalog, product options, cart,
+login and PENDING order total 57000.
+Database ledger SUCCEEDED; hashes match.
+end note
+
+note bottom of api
+API redeploy: no pending migrations.
+Catalog and existing order retained.
+This does not verify PostgreSQL restart
+or backup/restore.
+end note
+
+legend bottom
+Observed deployment uses images from source SHA 0bea2e2.
+Newer main commits are not claimed deployed.
+Only Web has a public domain; API and DB use private networking.
+GitHub sources disconnected from Web/API.
+Railway deployment is manual; automatic CD is not verified.
+Payment, rollback and backup/restore remain unverified.
+Initial PostgreSQL 18 service remains outside the target topology;
+it has not yet been removed.
+No secrets are included in this diagram.
+endlegend
+@enduml

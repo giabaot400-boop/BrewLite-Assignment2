@@ -1,0 +1,59 @@
+@startuml
+title BrewLite A2 - Railway production / CD #53 / 15-11-2026
+top to bottom direction
+skinparam componentStyle uml2
+skinparam defaultFontSize 14
+skinparam nodesep 40
+skinparam ranksep 50
+node "Client device" as client {
+ artifact "Browser / PWA" as browser
+}
+rectangle "CI and registry" as ci {
+ artifact "GitHub Actions\nverify: install, lint, tests, build\nSource: ce4faf6" as gate
+ artifact "GHCR public registry\nAPI + Web image digests\nTag: commit SHA" as registry
+ artifact "Deploy job\nworkflow_dispatch / deploy=true\nEnvironment: railway-production\nProject token: Environment secret" as deploy
+ artifact "Smoke 8/8\nGET health + Web build SHA\nGET catalog, product and PWA" as smoke
+ gate -down-> registry : verify PASS
+ registry -down-> deploy : pinned images
+ deploy -down-> smoke : rollout SUCCESS
+}
+node "Railway / BrewLite-Assignment2 / production" as railway {
+ node "Railway HTTPS Edge" as edge
+ node "BrewLite / Web :3000" as web {
+  artifact "Next.js UI + BFF\napps/web/Dockerfile" as next
+ }
+ node "BrewLite-Assignment2 / API :3001" as api {
+  artifact "NestJS + Prisma\nMockPaymentService\napps/api/Dockerfile" as nest
+  artifact "Pre-deploy execution (temporary)\nSame pinned API image\nprisma migrate deploy" as migrate
+ }
+ database "postgres / PostgreSQL 17.12\nbrewlite_a2 :5432\nPrivate network" as pg
+ artifact "Volume: postgres-volume-gCFY\n/var/lib/postgresql/data" as volume
+ edge -down-> next : HTTP 3000
+ next -down-> nest : Private HTTP 3001
+ nest -down-> pg : Private PostgreSQL 5432
+ migrate -down-> pg : Migration
+ pg -down- volume : Persistent storage
+ note right of web
+ Runtime configuration in Railway variables.
+ CHECKOUT_V2_ENABLED=1; origins/cookie/upstream.
+ Secrets excluded from Git and NEXT_PUBLIC_*.
+ Web /api/health proxies API /health.
+ Application logs available in Railway.
+ end note
+}
+browser --> edge : HTTPS 443
+deploy ..> railway : API first, then Web
+smoke ..> edge : Public HTTPS
+node "Local development (separate from production/A1)" as local {
+ artifact "Compose: Web/BFF :3000, API :3001, PostgreSQL :5432\nBrowser: localhost:3100 / separate DB, volume and env" as compose
+}
+legend bottom
+Only Web has public domain: brewlite-production.up.railway.app.
+API and DB use private network; hostnames/digests are listed in DEPLOYMENT.md and CD evidence.
+BFF belongs to Next.js; Prisma and mock payment belong to NestJS.
+Migration is temporary execution, not a fourth permanent service.
+CI script does not change scaling; high availability is not claimed.
+DB restart / live rollback / PWA HTTPS install and full AC sign-off remain unverified.
+Old Postgres 18 is outside target topology; not deleted.
+endlegend
+@enduml
